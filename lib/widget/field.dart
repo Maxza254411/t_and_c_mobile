@@ -1,0 +1,115 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+class RegisTextFormField extends StatefulWidget {
+  RegisTextFormField({
+    super.key,
+    required this.size,
+    this.controller,
+    this.isPassword = false,
+    this.hintText,
+    required this.heights,
+  });
+
+  final Size size;
+  TextEditingController? controller;
+  final bool isPassword;
+  String? hintText;
+  double heights;
+
+  @override
+  State<RegisTextFormField> createState() => _RegisTextFormFieldState();
+}
+
+class _RegisTextFormFieldState extends State<RegisTextFormField> {
+  late bool _show = true;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Color.fromARGB(255, 241, 241, 241),
+      height: widget.heights,
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextFormField(
+          controller: widget.controller,
+          onTap: () async {
+            await SystemChrome.setEnabledSystemUIMode(
+              SystemUiMode.immersiveSticky,
+            );
+          },
+          style: TextStyle(fontSize: 22),
+          obscureText: widget.isPassword ? _show : false,
+          decoration: InputDecoration(
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            hintText: widget.hintText,
+            hintStyle: TextStyle(fontSize: 22),
+            suffixIcon: widget.isPassword
+                ? GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _show = !_show;
+                      });
+                    },
+                    child: _show
+                        ? Image.asset('assets/icons/Eye.png', scale: 20)
+                        : Image.asset('assets/icons/EyeSlash.png', scale: 20),
+                  )
+                : null,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class InputTextFormField extends StatefulWidget {
+  InputTextFormField({
+    super.key,
+    required this.size,
+    this.hintText,
+    this.controller,
+    required this.heights,
+  });
+
+  final Size size;
+  TextEditingController? controller;
+  String? hintText;
+  double heights;
+
+  @override
+  State<InputTextFormField> createState() => _InputTextFormFieldState();
+}
+
+class _InputTextFormFieldState extends State<InputTextFormField> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Color.fromARGB(255, 241, 241, 241),
+      ),
+      width: double.infinity,
+      height: widget.heights,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextFormField(
+          controller: widget.controller,
+          onTap: () async {
+            await SystemChrome.setEnabledSystemUIMode(
+              SystemUiMode.immersiveSticky,
+            );
+          },
+          style: TextStyle(fontSize: 22),
+          decoration: InputDecoration(
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            hintText: widget.hintText,
+            hintStyle: TextStyle(fontSize: 15, fontFamily: 'IBMPlexSansThai'),
+          ),
+        ),
+      ),
+    );
+  }
+}
