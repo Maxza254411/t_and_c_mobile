@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/homepage.dart';
+import 'package:t_and_c_mobile/profile.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
@@ -15,50 +17,68 @@ class _FirstPageState extends State<FirstPage> {
   final List<Widget> _pages = [
     HomePage(),
     HomePage(),
-    HomePage(), // หน้าแรก
+    HomePage(), 
+    Profile(), 
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex], // เปลี่ยนตาม index
+      backgroundColor: kbgM,
+      body: _pages[_currentIndex], 
       bottomNavigationBar: BottomNavigationBar(
-  currentIndex: _currentIndex,
-  selectedItemColor: Colors.blue,
-  unselectedItemColor: Colors.grey,
-  onTap: (index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  },
-  items: [
-    BottomNavigationBarItem(
-      icon: Image.asset(
-        "assets/icons/home.png",
-        width: 24,
-        height: 24,
+        backgroundColor: kbgf,
+        currentIndex: _currentIndex,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              _currentIndex == 0
+                  ? "assets/icons/Home.png"
+                  : "assets/icons/HomF.png",
+              width: 24,
+              height: 24,
+            ),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              _currentIndex == 1
+                  ? "assets/icons/love.png"
+                  : "assets/icons/lovef.png",
+              width: 24,
+              height: 24,
+            ),
+            label: "Wishlist",
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              _currentIndex == 2
+                  ? "assets/icons/Paper.png"
+                  : "assets/icons/PaperF.png",
+              width: 24,
+              height: 24,
+            ),
+            label: "History",
+          ),
+           BottomNavigationBarItem(
+            icon: Image.asset(
+              _currentIndex == 3
+                  ? "assets/icons/Profile.png"
+                  : "assets/icons/ProfileF.png",
+              width: 24,
+              height: 24,
+            ),
+            label: "Account",
+          ),
+        ],
       ),
-      label: "Home",
-    ),
-    BottomNavigationBarItem(
-      icon: Image.asset(
-        "assets/icons/search.png",
-        width: 24,
-        height: 24,
-      ),
-      label: "Search",
-    ),
-    BottomNavigationBarItem(
-      icon: Image.asset(
-        "assets/icons/profile.png",
-        width: 24,
-        height: 24,
-      ),
-      label: "Profile",
-    ),
-  ],
-),
-
     );
   }
 }
