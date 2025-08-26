@@ -10,6 +10,8 @@ class Loginpage extends StatefulWidget {
 }
 
 class _LoginpageState extends State<Loginpage> {
+    final TextEditingController username = TextEditingController();
+  final TextEditingController password = TextEditingController();
   bool _isChecked = false;
   @override
   Widget build(BuildContext context) {
@@ -51,12 +53,14 @@ class _LoginpageState extends State<Loginpage> {
                 Text("Username"),
                 SizedBox(height: size.height * 0.01),
                 InputTextFormField(
+                  controller:username,
                   size: size,
                   heights: size.height * 0.05,
                 ),
                 Text("Password"),
                 SizedBox(height: size.height * 0.01),
                 RegisTextFormField(
+                  controller:password ,
                   size: size,
                   isPassword: true,
                   heights: size.height * 0.05,
@@ -84,6 +88,10 @@ class _LoginpageState extends State<Loginpage> {
           SizedBox(height: 20),
           GestureDetector(
             onTap: () {
+              setState(() {
+                
+           
+              });
             },
             child: Container(
               padding: EdgeInsets.all(16),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/login.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
    
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home:Loginpage()
+      home:FirstPage()
     );
   }
 }
