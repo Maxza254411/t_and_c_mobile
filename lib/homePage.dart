@@ -51,201 +51,315 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                height: size.height * 0.08,
-                width: double.infinity,
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(color: kbgf),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InputTextFormField(
-                  hintText: "Search here ...",
-                  controller: search,
-                  size: size,
-                  heights: size.height * 0.05,
-                  imagestatus: true,
-                  images: "assets/icons/Search.png",
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: size.height * 0.08,
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(color: kbgf),
                 ),
-              ),
-            ],
-          ),
-          Column(
-            children: [
-              CarouselSlider.builder(
-                carouselController: _controller,
-                itemCount: imgList.length,
-                itemBuilder: (context, index, realIndex) {
-                  return Container(
-                    margin: const EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      image: DecorationImage(
-                        image: AssetImage(imgList[index]),
-                        fit: BoxFit.cover,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InputTextFormField(
+                    hintText: "Search here ...",
+                    controller: search,
+                    size: size,
+                    heights: size.height * 0.05,
+                    imagestatus: true,
+                    images: "assets/icons/Search.png",
+                  ),
+                ),
+              ],
+            ),
+            Column(
+              children: [
+                CarouselSlider.builder(
+                  carouselController: _controller,
+                  itemCount: imgList.length,
+                  itemBuilder: (context, index, realIndex) {
+                    return Container(
+                      margin: const EdgeInsets.all(6.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        image: DecorationImage(
+                          image: AssetImage(imgList[index]),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                options: CarouselOptions(
-                  height: size.height * 0.2,
-                  enlargeCenterPage: true,
-                  autoPlay: true,
-                  aspectRatio: 16 / 9,
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  enableInfiniteScroll: true,
-                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                  viewportFraction: 0.8,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
+                    );
                   },
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: imgList.asMap().entries.map((entry) {
-                  return GestureDetector(
-                    onTap: () {
+                  options: CarouselOptions(
+                    height: size.height * 0.2,
+                    enlargeCenterPage: true,
+                    autoPlay: true,
+                    aspectRatio: 16 / 9,
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enableInfiniteScroll: true,
+                    autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                    viewportFraction: 0.8,
+                    onPageChanged: (index, reason) {
                       setState(() {
-                        _goToPage(entry.key);
+                        _currentIndex = index;
                       });
                     },
-                    child: Container(
-                      width: 12,
-                      height: 12,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _currentIndex == entry.key
-                            ? Colors.blueAccent
-                            : Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: imgList.asMap().entries.map((entry) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _goToPage(entry.key);
+                        });
+                      },
+                      child: Container(
+                        width: 12,
+                        height: 12,
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentIndex == entry.key
+                              ? Colors.blueAccent
+                              : Colors.grey,
+                        ),
                       ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                 SizedBox(width:size.width*0.02,),
+                  Text(
+                    "ประเภทสินค้า",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: kButtonColor,
                     ),
-                  );
-                }).toList(),
+                  ),
+                ],
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-               SizedBox(width:size.width*0.02,),
-                Text(
-                  "ประเภทสินค้า",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: kButtonColor,
-                  ),
-                ),
-              ],
             ),
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                    children: [
-                      Image.asset('assets/icons/TabGuoup.png', scale: 8),
-                      SizedBox(height: size.height * 0.01),
-                      Text(
-                        "แท็บเล็ต",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: kbgM,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Column(
+                      children: [
+                        Image.asset('assets/icons/TabGuoup.png', scale: 8),
+                        SizedBox(height: size.height * 0.01),
+                        Text(
+                          "แท็บเล็ต",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: kbgM,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                    children: [
-                      Image.asset('assets/icons/eargroup.png', scale: 8),
-                      SizedBox(height: size.height * 0.01),
-                      Text(
-                        "หูฟัง",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: kbgM,
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Column(
+                      children: [
+                        Image.asset('assets/icons/eargroup.png', scale: 8),
+                        SizedBox(height: size.height * 0.01),
+                        Text(
+                          "หูฟัง",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: kbgM,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                 Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                    children: [
-                      Image.asset('assets/icons/AccGroup.png', scale: 8),
-                      SizedBox(height: size.height * 0.01),
-                      Text(
-                        "ACC",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: kbgM,
+                   Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Column(
+                      children: [
+                        Image.asset('assets/icons/AccGroup.png', scale: 8),
+                        SizedBox(height: size.height * 0.01),
+                        Text(
+                          "ACC",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: kbgM,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                 Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                    children: [
-                      Image.asset('assets/icons/PhoneGroup.png', scale: 8),
-                      SizedBox(height: size.height * 0.01),
-                      Text(
-                        "โทรศัพท์",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: kbgM,
+                   Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Column(
+                      children: [
+                        Image.asset('assets/icons/PhoneGroup.png', scale: 8),
+                        SizedBox(height: size.height * 0.01),
+                        Text(
+                          "โทรศัพท์",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: kbgM,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                 Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                    children: [
-                      Image.asset('assets/icons/AllGroup.png', scale: 8),
-                      SizedBox(height: size.height * 0.01),
-                      Text(
-                        "All",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: kbgM,
+                   Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Column(
+                      children: [
+                        Image.asset('assets/icons/AllGroup.png', scale: 8),
+                        SizedBox(height: size.height * 0.01),
+                        Text(
+                          "All",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: kbgM,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-
-             
+        
+               
+                
               
-            
-              ],
+                ],
+              ),
+            ),
+          Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                 SizedBox(width:size.width*0.02,),
+                  Text(
+                    "สินค้าเเนะนำ",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: kButtonColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        SizedBox(
+          height:size.height*0.5 ,
+          width: size.width*1,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: GridView.builder(
+              itemCount: products.length,
+              gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 0.75, 
+              ),
+              itemBuilder: (context, index) {
+                final product = products[index];
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 6,
+                        spreadRadius: 2,
+                        offset: const Offset(2, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // รูปสินค้า
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                          child: Image.asset(
+                            product["image"]!,
+                            fit: BoxFit.cover,
+                            
+                          ),
+                        ),
+                      ),
+                      // ข้อมูลสินค้า
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              product["title"]!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              product["price"]!,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            // ปุ่มสั่งซื้อ
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue.shade700,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                onPressed: () {},
+                                child:  Text(
+                          "สั่งซื้อ",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: kbgf,
+                          ),
+                        ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
-        ],
+        ),
+          ],
+        ),
       ),
     );
   }
