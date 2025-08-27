@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:t_and_c_mobile/constang.dart';
 
 class RegisTextFormField extends StatefulWidget {
   RegisTextFormField({
@@ -113,6 +114,7 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
             hintStyle: const TextStyle(
               fontSize: 15,
               fontFamily: 'IBMPlexSansThai',
+              color: kbgM
             ),
           ),
         ),
