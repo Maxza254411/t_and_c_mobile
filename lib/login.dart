@@ -17,9 +17,50 @@ class Loginpage extends StatefulWidget {
 
 class _LoginpageState extends State<Loginpage> {
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
-  final TextEditingController username = TextEditingController();
+  final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
   bool _isChecked = false;
+
+  //ฟังชั่นดักอีเมล
+  bool validateEmail(BuildContext context, String? value) {
+    if (value == null || value.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text("แจ้งเตือน"),
+          content: Text("กรุณากรอกอีเมล"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("ตกลง"),
+            ),
+          ],
+        ),
+      );
+      return false;
+    }
+
+    String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    RegExp regex = RegExp(pattern);
+
+    if (!regex.hasMatch(value)) {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => AlertDialogYes(
+          title: 'แจ้งเตือน',
+          description: 'รูปแบบอีเมลไม่ถูกต้อง',
+          pressYes: () {
+            Navigator.pop(context);
+          },
+        ),
+      );
+      return false;
+    }
+
+    return true; // ✅ ผ่าน
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -37,125 +78,143 @@ class _LoginpageState extends State<Loginpage> {
         child: SingleChildScrollView(
           physics: NeverScrollableScrollPhysics(),
 
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Form(
+            key: _loginFormKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
 
-            children: [
-              SizedBox(height: size.height * 0.05),
-              SizedBox(
-                height: size.height * 0.3,
-                child: Image.asset("assets/images/LOGO CMYK-01.png"),
-              ),
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: kbgf,
-                  borderRadius: BorderRadius.circular(12),
+              children: [
+                SizedBox(height: size.height * 0.05),
+                SizedBox(
+                  height: size.height * 0.3,
+                  child: Image.asset("assets/images/LOGO CMYK-01.png"),
                 ),
-                width: size.width * 0.9,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Username"),
-                    SizedBox(height: size.height * 0.01),
-                    InputTextFormField(
-                      controller: username,
-                      size: size,
-                      heights: size.height * 0.05,
-                    ),
-                    Text("Password"),
-                    SizedBox(height: size.height * 0.01),
-                    RegisTextFormField(
-                      controller: password,
-                      size: size,
-                      isPassword: true,
-                      heights: size.height * 0.05,
-                    ),
-                    SizedBox(height: size.height * 0.01),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Checkbox(
-                          value: _isChecked,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              _isChecked = value ?? false;
-                            });
-                          },
-                        ),
-                        Text('Remember me'),
-                        SizedBox(width: size.width * 0.15),
-                        Text('Forgot Password ?'),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              GestureDetector(
-                onTap: () async {
-                  if (password.text == '' || username.text == '') {
-                    await showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (context) => AlertDialogYes(
-                        title: 'แจ้งเตือน',
-                        description: 'กรูณากรอกข้อมูล',
-                        pressYes: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    );
-                  } else {
-                    try {
-                      LoadingDialog.open(context);
-                      final _login = await LoginApi.login(
-                        username.text,
-                        password.text,
-                      );
-                      log("Good");
-                      LoadingDialog.close(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FirstPage()),
-                      );
-                    } on Exception catch (e) {
-                      if (!mounted) return;
-                      LoadingDialog.close(context);
-                      await showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) => AlertDialogYes(
-                          title: 'แจ้งเตือน',
-                          description: '$e',
-                          pressYes: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      );
-                    }
-                  }
-                },
-                child: Container(
+                Container(
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: ktextColr,
+                    color: kbgf,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   width: size.width * 0.9,
-                  child: Center(
-                    child: Text(
-                      "Login",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                        color: Colors.white,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: size.height * 0.01),
+                      Text("Email"),
+
+                      InputTextFormField(
+                        controller: email,
+                        size: size,
+                        heights: size.height * 0.05, imagestatus: false,
+                      ),
+                      SizedBox(height: size.height * 0.01),
+                      Text("Password"),
+
+                      RegisTextFormField(
+                        controller: password,
+                        size: size,
+                        isPassword: true,
+                        heights: size.height * 0.05,
+                      ),
+                      SizedBox(height: size.height * 0.01),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Checkbox(
+                            activeColor: kButtonColor,
+                            value: _isChecked,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                _isChecked = value ?? false;
+                              });
+                            },
+                          ),
+                          Text('Remember me'),
+                          SizedBox(width: size.width * 0.15),
+                          GestureDetector(
+                            onTap: () {
+                              
+                            },
+                            child: Text(
+                              'Forgot Password ?',
+                              style: TextStyle(color: kButtonColor),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () async {
+                    if (validateEmail(context, email.text)) {
+                      if (password.text == '' || email.text == '') {
+                        await showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) => AlertDialogYes(
+                            title: 'แจ้งเตือน',
+                            description: 'กรูณากรอกข้อมูล',
+                            pressYes: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        );
+                      } else {
+                        try {
+                          LoadingDialog.open(context);
+                          final _login = await LoginApi.login(
+                            email.text,
+                            password.text,
+                          );
+                          log("Good");
+                          LoadingDialog.close(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FirstPage(),
+                            ),
+                          );
+                        } on Exception catch (e) {
+                          if (!mounted) return;
+                          LoadingDialog.close(context);
+                          await showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) => AlertDialogYes(
+                              title: 'แจ้งเตือน',
+                              description: '$e',
+                              pressYes: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          );
+                        }
+                      }
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: ktextColr,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    width: size.width * 0.9,
+                    child: Center(
+                      child: Text(
+                        "Login",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

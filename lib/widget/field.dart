@@ -71,12 +71,18 @@ class InputTextFormField extends StatefulWidget {
     this.hintText,
     this.controller,
     required this.heights,
+    this.validator,
+    this.images,
+    required this.imagestatus,
   });
 
   final Size size;
   TextEditingController? controller;
   String? hintText;
   double heights;
+  String ? images;
+  bool imagestatus;
+   String? Function(String?)? validator; // ✅ ฟังก์ชัน validator
 
   @override
   State<InputTextFormField> createState() => _InputTextFormFieldState();
@@ -88,7 +94,7 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: Color.fromARGB(255, 241, 241, 241),
+        color: const Color.fromARGB(255, 241, 241, 241),
       ),
       width: double.infinity,
       height: widget.heights,
@@ -96,17 +102,18 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
         padding: const EdgeInsets.all(8.0),
         child: TextFormField(
           controller: widget.controller,
-          onTap: () async {
-            await SystemChrome.setEnabledSystemUIMode(
-              SystemUiMode.immersiveSticky,
-            );
-          },
-          style: TextStyle(fontSize: 22),
+          validator: widget.validator,
+          style: const TextStyle(fontSize: 22),
           decoration: InputDecoration(
+           
+           prefixIcon:  widget.imagestatus==true?  Image.asset(widget.images!,scale: 10,):SizedBox.shrink() ,
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
             hintText: widget.hintText,
-            hintStyle: TextStyle(fontSize: 15, fontFamily: 'IBMPlexSansThai'),
+            hintStyle: const TextStyle(
+              fontSize: 15,
+              fontFamily: 'IBMPlexSansThai',
+            ),
           ),
         ),
       ),
