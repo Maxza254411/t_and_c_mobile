@@ -1,6 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/fristPage.dart';
+import 'package:t_and_c_mobile/serviceLogin/loginApi.dart';
+import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
+import 'package:t_and_c_mobile/widget/loadingdialog.dart';
 
 class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
@@ -10,104 +16,149 @@ class Loginpage extends StatefulWidget {
 }
 
 class _LoginpageState extends State<Loginpage> {
-    final TextEditingController username = TextEditingController();
+  final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
+  final TextEditingController username = TextEditingController();
   final TextEditingController password = TextEditingController();
   bool _isChecked = false;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-  body: Container(
-    height: double.infinity,
-    width: double.infinity,
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Colors.white, kButtonColor],
-      ),
-    ),
-    child: SingleChildScrollView(
-      physics: NeverScrollableScrollPhysics(),
-    
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-    
-        children: [
-          SizedBox(height: size.height*0.05,
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.white, kButtonColor],
           ),
-          SizedBox(
-            height: size.height * 0.3,
-            child: Image.asset("assets/images/LOGO CMYK-01.png"),
-          ),
-          Container(
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: kbgf,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            width: size.width * 0.9,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Username"),
-                SizedBox(height: size.height * 0.01),
-                InputTextFormField(
-                  controller:username,
-                  size: size,
-                  heights: size.height * 0.05,
+        ),
+        child: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
+
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+              SizedBox(height: size.height * 0.05),
+              SizedBox(
+                height: size.height * 0.3,
+                child: Image.asset("assets/images/LOGO CMYK-01.png"),
+              ),
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: kbgf,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                Text("Password"),
-                SizedBox(height: size.height * 0.01),
-                RegisTextFormField(
-                  controller:password ,
-                  size: size,
-                  isPassword: true,
-                  heights: size.height * 0.05,
-                ),
-                SizedBox(height: size.height * 0.01),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                width: size.width * 0.9,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Checkbox(
-                      value: _isChecked,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _isChecked = value ?? false;
-                        });
-                      },
+                    Text("Username"),
+                    SizedBox(height: size.height * 0.01),
+                    InputTextFormField(
+                      controller: username,
+                      size: size,
+                      heights: size.height * 0.05,
                     ),
-                    Text('Remember me'),
-                    SizedBox(width: size.width * 0.15),
-                    Text('Forgot Password ?'),
+                    Text("Password"),
+                    SizedBox(height: size.height * 0.01),
+                    RegisTextFormField(
+                      controller: password,
+                      size: size,
+                      isPassword: true,
+                      heights: size.height * 0.05,
+                    ),
+                    SizedBox(height: size.height * 0.01),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Checkbox(
+                          value: _isChecked,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _isChecked = value ?? false;
+                            });
+                          },
+                        ),
+                        Text('Remember me'),
+                        SizedBox(width: size.width * 0.15),
+                        Text('Forgot Password ?'),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                
-           
-              });
-            },
-            child: Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: ktextColr,
-                borderRadius: BorderRadius.circular(12),
               ),
-              width: size.width * 0.9,
-              child: Center(child: Text("Login",style:TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color:Colors.white) ,)),
-            ),
+              SizedBox(height: 20),
+              GestureDetector(
+                onTap: () async {
+                  if (password.text == '' || username.text == '') {
+                    await showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) => AlertDialogYes(
+                        title: 'แจ้งเตือน',
+                        description: 'กรูณากรอกข้อมูล',
+                        pressYes: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  } else {
+                    try {
+                      LoadingDialog.open(context);
+                      final _login = await LoginApi.login(
+                        username.text,
+                        password.text,
+                      );
+                      log("Good");
+                      LoadingDialog.close(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FirstPage()),
+                      );
+                    } on Exception catch (e) {
+                      if (!mounted) return;
+                      LoadingDialog.close(context);
+                      await showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (context) => AlertDialogYes(
+                          title: 'แจ้งเตือน',
+                          description: '$e',
+                          pressYes: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      );
+                    }
+                  }
+                },
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: ktextColr,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  width: size.width * 0.9,
+                  child: Center(
+                    child: Text(
+                      "Login",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-    ),
-  ),
-);
-
+    );
   }
 }
