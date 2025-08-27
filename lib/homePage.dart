@@ -133,11 +133,12 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+               SizedBox(width:size.width*0.02,),
+                Text(
                   "ประเภทสินค้า",
                   style: TextStyle(
                     fontSize: 16,
@@ -145,133 +146,102 @@ class _HomePageState extends State<HomePage> {
                     color: kButtonColor,
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: size.height * 0.1,
-                        width: size.width * 0.2,
-
-                        decoration: BoxDecoration(
-                          color: kbgc,
-                          borderRadius: BorderRadius.circular(8),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    children: [
+                      Image.asset('assets/icons/TabGuoup.png', scale: 8),
+                      SizedBox(height: size.height * 0.01),
+                      Text(
+                        "แท็บเล็ต",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: kbgM,
                         ),
                       ),
-                    ),
-                    Text(
-                      "แท็บเล็ต",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: kbgM,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: size.height * 0.1,
-                        width: size.width * 0.2,
-
-                        decoration: BoxDecoration(
-                          color: kbgc,
-                          borderRadius: BorderRadius.circular(8),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    children: [
+                      Image.asset('assets/icons/eargroup.png', scale: 8),
+                      SizedBox(height: size.height * 0.01),
+                      Text(
+                        "หูฟัง",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: kbgM,
                         ),
                       ),
-                    ),
-                    Text(
-                      "หูฟัง",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: kbgM,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: size.height * 0.1,
-                        width: size.width * 0.2,
-
-                        decoration: BoxDecoration(
-                          color: kbgc,
-                          borderRadius: BorderRadius.circular(8),
+                 Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    children: [
+                      Image.asset('assets/icons/AccGroup.png', scale: 8),
+                      SizedBox(height: size.height * 0.01),
+                      Text(
+                        "ACC",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: kbgM,
                         ),
                       ),
-                    ),
-                    Text(
-                      "ACC",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: kbgM,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: size.height * 0.1,
-                        width: size.width * 0.2,
+                 Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    children: [
+                      Image.asset('assets/icons/PhoneGroup.png', scale: 8),
+                      SizedBox(height: size.height * 0.01),
+                      Text(
+                        "โทรศัพท์",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: kbgM,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                 Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    children: [
+                      Image.asset('assets/icons/AllGroup.png', scale: 8),
+                      SizedBox(height: size.height * 0.01),
+                      Text(
+                        "All",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: kbgM,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-                        decoration: BoxDecoration(
-                          color: kbgc,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                    Text(
-                      "โทรศัพท์",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: kbgM,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: size.height * 0.1,
-                        width: size.width * 0.2,
-                        decoration: BoxDecoration(
-                          color: kbgc,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                    Text(
-                      "All",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: kbgM,
-                      ),
-                    ),
-                  ],
-                ),
+             
+              
+            
               ],
             ),
           ),
