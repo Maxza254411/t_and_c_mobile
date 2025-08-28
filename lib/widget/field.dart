@@ -75,15 +75,17 @@ class InputTextFormField extends StatefulWidget {
     this.validator,
     this.images,
     required this.imagestatus,
+    required this.whatfield,
   });
 
   final Size size;
   TextEditingController? controller;
   String? hintText;
   double heights;
-  String ? images;
+  String? images;
   bool imagestatus;
-   String? Function(String?)? validator; // ✅ ฟังก์ชัน validator
+  bool whatfield;
+  String? Function(String?)? validator; // ✅ ฟังก์ชัน validator
 
   @override
   State<InputTextFormField> createState() => _InputTextFormFieldState();
@@ -92,33 +94,61 @@ class InputTextFormField extends StatefulWidget {
 class _InputTextFormFieldState extends State<InputTextFormField> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: const Color.fromARGB(255, 241, 241, 241),
-      ),
-      width: double.infinity,
-      height: widget.heights,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: TextFormField(
-          controller: widget.controller,
-          validator: widget.validator,
-          style: const TextStyle(fontSize: 22),
-          decoration: InputDecoration(
-           
-           prefixIcon:  widget.imagestatus==true?  Image.asset(widget.images!,scale: 10,):SizedBox.shrink() ,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            hintText: widget.hintText,
-            hintStyle: const TextStyle(
-              fontSize: 15,
-              fontFamily: 'IBMPlexSansThai',
-              color: kbgM
+    return widget.whatfield == true
+        ? Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: const Color.fromARGB(255, 241, 241, 241),
             ),
-          ),
-        ),
-      ),
-    );
+            width: double.infinity,
+            height: widget.heights,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: widget.controller,
+                validator: widget.validator,
+                style: const TextStyle(fontSize: 22),
+                decoration: InputDecoration(
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  hintText: widget.hintText,
+                  hintStyle: const TextStyle(
+                    fontSize: 15,
+                    fontFamily: 'IBMPlexSansThai',
+                    color: kbgM,
+                  ),
+                ),
+              ),
+            ),
+          )
+        : Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: const Color.fromARGB(255, 241, 241, 241),
+            ),
+            width: double.infinity,
+            height: widget.heights,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: widget.controller,
+                validator: widget.validator,
+                style: const TextStyle(fontSize: 22),
+                decoration: InputDecoration(
+                  prefixIcon: widget.imagestatus == true
+                      ? Image.asset(widget.images!, scale: 10)
+                      : SizedBox.shrink(),
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  hintText: widget.hintText,
+                  hintStyle: const TextStyle(
+                    fontSize: 15,
+                    fontFamily: 'IBMPlexSansThai',
+                    color: kbgM,
+                  ),
+                ),
+              ),
+            ),
+          );
   }
 }

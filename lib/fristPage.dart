@@ -27,7 +27,7 @@ class _FirstPageState extends State<FirstPage> {
       backgroundColor: kbgM,
       body: _pages[_currentIndex], 
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: kbgf,
+       backgroundColor: Colors.white, 
         currentIndex: _currentIndex,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,

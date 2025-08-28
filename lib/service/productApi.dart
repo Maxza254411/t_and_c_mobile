@@ -9,17 +9,17 @@ import 'package:t_and_c_mobile/widget/apiException.dart';
 
 class ProductApi {
   const ProductApi();
- static Future<List<Data>> banner() async {
+ static Future<List<Data>> getproductlist() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
-    final url = Uri.https(publicUrl, 'api/product-types/:${1}/products', 
-// {}
+    final url = Uri.https(publicUrl, '/api/product-types', 
+
     );
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = convert.jsonDecode(response.body);
-      final list = data as List;
+      final list = data["data"] as List;
       return list.map((e) => Data.fromJson(e)).toList();
     } else {
       final data = convert.jsonDecode(response.body);

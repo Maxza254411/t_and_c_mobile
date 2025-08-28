@@ -105,7 +105,9 @@ class _LoginpageState extends State<Loginpage> {
                       InputTextFormField(
                         controller: email,
                         size: size,
-                        heights: size.height * 0.05, imagestatus: false,
+                        heights: size.height * 0.05,
+                        imagestatus: false,
+                        whatfield: true,
                       ),
                       SizedBox(height: size.height * 0.01),
                       Text("Password"),
@@ -130,11 +132,9 @@ class _LoginpageState extends State<Loginpage> {
                             },
                           ),
                           Text('Remember me'),
-                          SizedBox(width: size.width * 0.15),
+                          SizedBox(width: size.width * 0.1),
                           GestureDetector(
-                            onTap: () {
-                              
-                            },
+                            onTap: () {},
                             child: Text(
                               'Forgot Password ?',
                               style: TextStyle(color: kButtonColor),
@@ -168,7 +168,7 @@ class _LoginpageState extends State<Loginpage> {
                             email.text,
                             password.text,
                           );
-                          log("Good");
+
                           LoadingDialog.close(context);
                           Navigator.push(
                             context,

@@ -1,7 +1,13 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/service/productController.dart';
+import 'package:t_and_c_mobile/tabletPage.dart';
+import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,9 +31,37 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> getapi() async {
+    // try {
+    final testproduct = await context.read<ProductController>().getproductlist();
+    inspect(testproduct);
+    // } on Exception catch (e) {
+    // if (!mounted) return;
+    //  await showDialog(
+    //     context: context,
+    //     builder: (context) => AlertDialogYes(
+    //       title: 'แจ้งเตือน',
+    //       description: '$e',
+    //       pressYes: () {
+    //         Navigator.pop(context);
+    //       },
+    //     ),
+    //   );
+    // }
+  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
+  //     await getapi();
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: kbgH,
       appBar: AppBar(
@@ -44,7 +78,11 @@ class _HomePageState extends State<HomePage> {
         ],
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Image.asset("assets/icons/Vector.png", scale: 15),
+          child: GestureDetector(
+            onTap: () {
+              getapi();
+            },
+            child: Image.asset("assets/icons/Vector.png", scale: 15)),
         ),
         title: Text(
           "Admin Admin",
@@ -70,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                     size: size,
                     heights: size.height * 0.05,
                     imagestatus: true,
-                    images: "assets/icons/Search.png",
+                    images: "assets/icons/Search.png", whatfield: false,
                   ),
                 ),
               ],
@@ -99,7 +137,9 @@ class _HomePageState extends State<HomePage> {
                     aspectRatio: 16 / 9,
                     autoPlayCurve: Curves.fastOutSlowIn,
                     enableInfiniteScroll: true,
-                    autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                    autoPlayAnimationDuration: const Duration(
+                      milliseconds: 800,
+                    ),
                     viewportFraction: 0.8,
                     onPageChanged: (index, reason) {
                       setState(() {
@@ -138,7 +178,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                 SizedBox(width:size.width*0.02,),
+                  SizedBox(width: size.width * 0.02),
                   Text(
                     "ประเภทสินค้า",
                     style: TextStyle(
@@ -156,19 +196,24 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(5.0),
-                    child: Column(
-                      children: [
-                        Image.asset('assets/icons/TabGuoup.png', scale: 8),
-                        SizedBox(height: size.height * 0.01),
-                        Text(
-                          "แท็บเล็ต",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: kbgM,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TabletPage()));
+                      },
+                      child: Column(
+                        children: [
+                          Image.asset('assets/icons/TabGuoup.png', scale: 8),
+                          SizedBox(height: size.height * 0.01),
+                          Text(
+                            "แท็บเล็ต",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: kbgM,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
@@ -188,7 +233,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                   Padding(
+                  Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Column(
                       children: [
@@ -205,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                   Padding(
+                  Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Column(
                       children: [
@@ -222,7 +267,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                   Padding(
+                  Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Column(
                       children: [
@@ -239,18 +284,14 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-        
-               
-                
-              
                 ],
               ),
             ),
-          Padding(
+            Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                 SizedBox(width:size.width*0.02,),
+                  SizedBox(width: size.width * 0.02),
                   Text(
                     "สินค้าเเนะนำ",
                     style: TextStyle(
@@ -262,102 +303,103 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-        SizedBox(
-          height:size.height*0.5 ,
-          width: size.width*1,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: GridView.builder(
-              itemCount: products.length,
-              gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.75, 
-              ),
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 6,
-                        spreadRadius: 2,
-                        offset: const Offset(2, 4),
-                      ),
-                    ],
+            SizedBox(
+              height: size.height * 0.5,
+              width: size.width * 1,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: GridView.builder(
+                  itemCount: products.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 0.75,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // รูปสินค้า
-                      Expanded(
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                          child: Image.asset(
-                            product["image"]!,
-                            fit: BoxFit.cover,
-                            
+                  itemBuilder: (context, index) {
+                    final product = products[index];
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6,
+                            spreadRadius: 2,
+                            offset: const Offset(2, 4),
                           ),
-                        ),
+                        ],
                       ),
-                      // ข้อมูลสินค้า
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              product["title"]!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // รูปสินค้า
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(16),
+                              ),
+                              child: Image.asset(
+                                product["image"]!,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              product["price"]!,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            // ปุ่มสั่งซื้อ
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue.shade700,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                          ),
+                          // ข้อมูลสินค้า
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  product["title"]!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                onPressed: () {},
-                                child:  Text(
-                          "สั่งซื้อ",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: kbgf,
+                                const SizedBox(height: 4),
+                                Text(
+                                  product["price"]!,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                // ปุ่มสั่งซื้อ
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue.shade700,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    onPressed: () {},
+                                    child: Text(
+                                      "สั่งซื้อ",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: kbgf,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                              ),
-                            )
-                          ],
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
-              },
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
-        ),
           ],
         ),
       ),
