@@ -26,8 +26,9 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           fontFamily: 'IBMPlexSansThai',
         ),
-        home: Loginpage()
-        // FirstPage(),
+        home: 
+        // Loginpage()
+        FirstPage(),
       ),
     );
   }

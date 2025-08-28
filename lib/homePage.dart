@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
-import 'package:t_and_c_mobile/tabletPage.dart';
+import 'package:t_and_c_mobile/category/catagory.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
 
@@ -198,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.all(5.0),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TabletPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>Catagory(status: 'T',)));
                       },
                       child: Column(
                         children: [
@@ -216,72 +216,92 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Column(
-                      children: [
-                        Image.asset('assets/icons/eargroup.png', scale: 8),
-                        SizedBox(height: size.height * 0.01),
-                        Text(
-                          "หูฟัง",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: kbgM,
+                  GestureDetector(
+                    onTap: () {
+                     Navigator.push(context, MaterialPageRoute(builder: (context)=>Catagory(status: 'E',))); 
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/icons/eargroup.png', scale: 8),
+                          SizedBox(height: size.height * 0.01),
+                          Text(
+                            "หูฟัง",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: kbgM,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Column(
-                      children: [
-                        Image.asset('assets/icons/AccGroup.png', scale: 8),
-                        SizedBox(height: size.height * 0.01),
-                        Text(
-                          "ACC",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: kbgM,
+                  GestureDetector(
+                    onTap: () {
+                       Navigator.push(context, MaterialPageRoute(builder: (context)=>Catagory(status: 'A',))); 
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/icons/AccGroup.png', scale: 8),
+                          SizedBox(height: size.height * 0.01),
+                          Text(
+                            "ACC",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: kbgM,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Column(
-                      children: [
-                        Image.asset('assets/icons/PhoneGroup.png', scale: 8),
-                        SizedBox(height: size.height * 0.01),
-                        Text(
-                          "โทรศัพท์",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: kbgM,
+                  GestureDetector(
+                    onTap: () {
+                       Navigator.push(context, MaterialPageRoute(builder: (context)=>Catagory(status: 'P',))); 
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/icons/PhoneGroup.png', scale: 8),
+                          SizedBox(height: size.height * 0.01),
+                          Text(
+                            "โทรศัพท์",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: kbgM,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Column(
-                      children: [
-                        Image.asset('assets/icons/AllGroup.png', scale: 8),
-                        SizedBox(height: size.height * 0.01),
-                        Text(
-                          "All",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: kbgM,
+                  GestureDetector(
+                    onTap: () {
+                       Navigator.push(context, MaterialPageRoute(builder: (context)=>Catagory(status: 'ALL',))); 
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/icons/AllGroup.png', scale: 8),
+                          SizedBox(height: size.height * 0.01),
+                          Text(
+                            "All",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: kbgM,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -374,7 +394,7 @@ class _HomePageState extends State<HomePage> {
                                   width: double.infinity,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue.shade700,
+                                      backgroundColor: kButtonColor,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),

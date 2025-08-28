@@ -14,7 +14,6 @@ class ProductApi {
     final token = prefs.getString('token');
     var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
     final url = Uri.https(publicUrl, '/api/product-types', 
-
     );
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200 || response.statusCode == 201) {
