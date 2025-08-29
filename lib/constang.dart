@@ -18,22 +18,22 @@ final List<String> imgList = [
 ];
  final List<Map<String, String>> products = [
       {
-        "image": "assets/images/banner 1.png",
+        "image": "assets/images/NoImage.jpg",
         "title": "Airpods pro",
         "price": "0.00 บาท"
       },
       {
-        "image": "assets/images/banner 1.png",
+        "image": "assets/images/NoImage.jpg",
         "title": "Aestheic Mug - white",
         "price": "0.00 บาท"
       },
       {
-        "image": "assets/images/banner 1.png",
+        "image": "assets/images/NoImage.jpg",
         "title": "Gaming Monitor",
         "price": "0.00 บาท"
       },
       {
-        "image": "assets/images/banner 1.png",
+        "image": "assets/images/NoImage.jpg",
         "title": "PS5 Controller",
         "price": "0.00 บาท"
       },

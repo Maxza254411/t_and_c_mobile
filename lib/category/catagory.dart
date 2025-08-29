@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
 
 class Catagory extends StatefulWidget {
@@ -65,7 +66,7 @@ class _CatagoryState extends State<Catagory> {
                     child: Image.asset('assets/icons/AllGroup.png', scale: 15),
                   ),
             //
-            SizedBox(width: 10,),
+            SizedBox(width: 10),
             widget.status == 'T'
                 ? Text(
                     "แท็บเล็ต",
@@ -193,7 +194,14 @@ class _CatagoryState extends State<Catagory> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Detailpro(proName:  product["title"]!, proPice:  product["price"]!,),
+                                      ),
+                                    );
+                                  },
                                   child: Text(
                                     "สั่งซื้อ",
                                     style: TextStyle(

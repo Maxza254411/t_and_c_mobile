@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () {
-              getapi();
+              // getapi();
             },
             child: Image.asset("assets/icons/Vector.png", scale: 15)),
         ),
