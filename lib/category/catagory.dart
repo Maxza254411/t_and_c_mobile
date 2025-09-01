@@ -119,7 +119,7 @@ class _CatagoryState extends State<Catagory> {
             ],
           ),
           SizedBox(
-            height: size.height * 0.8,
+            height: size.height * 0.7,
             width: size.width * 1,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
@@ -198,7 +198,7 @@ class _CatagoryState extends State<Catagory> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => Detailpro(proName:  product["title"]!, proPice:  product["price"]!,),
+                                        builder: (context) => Detailpro(proName:  product["title"]!, proPice:  product["price"]!, detail:product["detail"]!,),
                                       ),
                                     );
                                   },

@@ -85,6 +85,7 @@ class InputTextFormField extends StatefulWidget {
   String? images;
   bool imagestatus;
   bool whatfield;
+  double? fontsize;
   String? Function(String?)? validator; // ✅ ฟังก์ชัน validator
 
   @override
@@ -107,7 +108,7 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
               child: TextFormField(
                 controller: widget.controller,
                 validator: widget.validator,
-                style: const TextStyle(fontSize: 22),
+                style:  TextStyle(fontSize:widget.fontsize ?? 22),
                 decoration: InputDecoration(
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
