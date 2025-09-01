@@ -108,6 +108,7 @@ class _LoginpageState extends State<Loginpage> {
                         heights: size.height * 0.05,
                         imagestatus: false,
                         whatfield: true,
+                        width: double.infinity,
                       ),
                       SizedBox(height: size.height * 0.01),
                       Text("Password"),

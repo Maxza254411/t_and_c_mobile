@@ -50,3 +50,10 @@ final List<Map<String, String>> colorPro = [
   {"color": "assets/images/Rectangle 14.png"},
   {"color": "assets/images/Rectangle 15.png"},
 ];
+List<Map<String, String>> pay = [
+  {"pay": "เงินสด", "value": "cash"},
+  {"pay": "พร้อมเพลย์", "value": "promptpay"},
+  {"pay": "บัตรเครดิต", "value": "credit"},
+];
+
+String? selectedPay = "cash"; // ค่าเริ่มต้น

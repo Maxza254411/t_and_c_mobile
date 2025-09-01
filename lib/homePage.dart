@@ -109,6 +109,7 @@ class _HomePageState extends State<HomePage> {
                     heights: size.height * 0.05,
                     imagestatus: true,
                     images: "assets/icons/Search.png", whatfield: false,
+                     width: double.infinity,
                   ),
                 ),
               ],

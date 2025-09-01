@@ -72,21 +72,26 @@ class InputTextFormField extends StatefulWidget {
     this.hintText,
     this.controller,
     required this.heights,
+    required this.width,
     this.validator,
     this.images,
     required this.imagestatus,
     required this.whatfield,
+    this.maxLines,
+    this.fontsize
   });
 
   final Size size;
   TextEditingController? controller;
   String? hintText;
   double heights;
+  double width;
   String? images;
   bool imagestatus;
   bool whatfield;
   double? fontsize;
-  String? Function(String?)? validator; // ✅ ฟังก์ชัน validator
+  int? maxLines;
+  String? Function(String?)? validator;
 
   @override
   State<InputTextFormField> createState() => _InputTextFormFieldState();
@@ -97,18 +102,20 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
   Widget build(BuildContext context) {
     return widget.whatfield == true
         ? Container(
+          
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               color: const Color.fromARGB(255, 241, 241, 241),
             ),
-            width: double.infinity,
+            width: widget.width,
             height: widget.heights,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                maxLines: widget.maxLines,
                 controller: widget.controller,
                 validator: widget.validator,
-                style:  TextStyle(fontSize:widget.fontsize ?? 22),
+                style: TextStyle(fontSize: widget.fontsize ?? 22),
                 decoration: InputDecoration(
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,

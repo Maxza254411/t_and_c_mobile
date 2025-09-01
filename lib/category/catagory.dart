@@ -94,135 +94,137 @@ class _CatagoryState extends State<Catagory> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                height: size.height * 0.08,
-                width: double.infinity,
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(color: kbgf),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InputTextFormField(
-                  hintText: "Search here ...",
-                  controller: search,
-                  size: size,
-                  heights: size.height * 0.05,
-                  imagestatus: true,
-                  images: "assets/icons/Search.png",
-                  whatfield: false,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: size.height * 0.08,
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(color: kbgf),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: size.height * 0.7,
-            width: size.width * 1,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: GridView.builder(
-                itemCount: products.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.75,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InputTextFormField(
+                    hintText: "Search here ...",
+                    controller: search,
+                    size: size,
+                    heights: size.height * 0.05,
+                    imagestatus: true,
+                    images: "assets/icons/Search.png",
+                    whatfield: false, width: double.infinity,
+                  ),
                 ),
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 6,
-                          spreadRadius: 2,
-                          offset: const Offset(2, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // รูปสินค้า
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(16),
-                            ),
-                            child: Image.asset(
-                              product["image"]!,
-                              fit: BoxFit.cover,
+              ],
+            ),
+            SizedBox(
+              height: size.height * 0.7,
+              width: size.width * 1,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: GridView.builder(
+                  itemCount: products.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 0.75,
+                  ),
+                  itemBuilder: (context, index) {
+                    final product = products[index];
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6,
+                            spreadRadius: 2,
+                            offset: const Offset(2, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // รูปสินค้า
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(16),
+                              ),
+                              child: Image.asset(
+                                product["image"]!,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                        // ข้อมูลสินค้า
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                product["title"]!,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                product["price"]!,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              // ปุ่มสั่งซื้อ
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: kButtonColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                          // ข้อมูลสินค้า
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  product["title"]!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Detailpro(proName:  product["title"]!, proPice:  product["price"]!, detail:product["detail"]!,),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  product["price"]!,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                // ปุ่มสั่งซื้อ
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: kButtonColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
-                                    );
-                                  },
-                                  child: Text(
-                                    "สั่งซื้อ",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: kbgf,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Detailpro(proName:  product["title"]!, proPice:  product["price"]!, detail:product["detail"]!,),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      "สั่งซื้อ",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: kbgf,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
