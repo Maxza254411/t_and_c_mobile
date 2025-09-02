@@ -66,6 +66,100 @@ class _AlertDialogYesState extends State<AlertDialogYes> {
   }
 }
 
+class AlertDialogYesNo extends StatefulWidget {
+  AlertDialogYesNo({
+    Key? key,
+    required this.description,
+
+    required this.title,
+    this.fontsize,
+    InkWell? onTap,
+  }) : super(key: key);
+  final String title, description;
+
+  double? fontsize;
+
+  @override
+  State<AlertDialogYesNo> createState() => _AlertDialogYesNoState();
+}
+
+class _AlertDialogYesNoState extends State<AlertDialogYesNo> {
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return AlertDialog(
+      surfaceTintColor: Colors.white,
+      backgroundColor: Colors.white,
+      title: Center(
+        child: Text(
+          widget.title,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+      content: Text(
+        widget.description,
+        style: TextStyle(fontSize: 16),
+        textAlign: TextAlign.center,
+      ),
+      actionsAlignment: MainAxisAlignment.center,
+      actions: [
+        Row(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context, true);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: kButtonColor,
+                ),
+                height: size.height * 0.07,
+                width: size.width * 0.2,
+                child: Center(
+                  child: Text(
+                    'ตกลง',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width:size.width*0.05,),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context, false);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color:kButtonColor,),
+                  color:Colors.white,
+                ),
+                height: size.height * 0.07,
+                width: size.width * 0.2,
+                child: Center(
+                  child: Text(
+                    'ยกเลิก',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color:kButtonColor,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 class SucesDialog extends StatefulWidget {
   const SucesDialog({
     Key? key,
