@@ -138,7 +138,7 @@ class _BucketState extends State<Bucket> {
                               InkWell(
                                 onTap: () {
                                   setState(() {
-                                    quantities[index]++;
+                                    
                                   });
                                 },
                                 child: Image.asset(

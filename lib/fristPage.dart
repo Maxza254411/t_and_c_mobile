@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/homepage.dart';
 import 'package:t_and_c_mobile/profile.dart';
 
@@ -24,7 +23,7 @@ class _FirstPageState extends State<FirstPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kbgM,
+      backgroundColor: Colors.white,
       body: _pages[_currentIndex], 
       bottomNavigationBar: BottomNavigationBar(
        backgroundColor: Colors.white, 

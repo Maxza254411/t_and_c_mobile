@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
+import 'package:t_and_c_mobile/order/compleated.dart';
 
 class Detailpro extends StatefulWidget {
   Detailpro({
@@ -163,7 +164,12 @@ class _DetailproState extends State<Detailpro> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                            Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Compleated()),
+                          );
+                        },
                         child: Text(
                           "สั่งซื้อ",
                           style: TextStyle(

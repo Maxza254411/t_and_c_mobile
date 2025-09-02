@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:t_and_c_mobile/category/catagory.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
@@ -400,7 +401,14 @@ class _HomePageState extends State<HomePage> {
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Detailpro(proName:  product["title"]!, proPice:  product["price"]!, detail:product["detail"]!,),
+                                        ),
+                                      );
+                                    }, 
                                     child: Text(
                                       "สั่งซื้อ",
                                       style: TextStyle(
