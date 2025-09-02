@@ -4,7 +4,7 @@ import 'package:t_and_c_mobile/homepage.dart';
 import 'package:t_and_c_mobile/profile.dart';
 
 class FirstPage extends StatefulWidget {
-  const FirstPage({super.key});
+   FirstPage({super.key});
 
   @override
   State<FirstPage> createState() => _FirstPageState();

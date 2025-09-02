@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/fristPage.dart';
+import 'package:t_and_c_mobile/homepage.dart';
 import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
+import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
 
 class Compleated extends StatefulWidget {
@@ -302,13 +305,24 @@ class _CompleatedState extends State<Compleated> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Compleated(),
+                        onTap: () async {
+                          final out = await showDialog(
+                            barrierDismissible :true,
+                            context: context,
+                            builder: (context) => SucesDialog(
+                              title: 'แจ้งเตือน',
+                              description: 'สำเร็จ',
                             ),
                           );
+                          if (out == true) {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FirstPage(),
+                              ),
+                              (route) => false,
+                            );
+                          }
                         },
                         child: Padding(
                           padding: EdgeInsets.all(8.0),
