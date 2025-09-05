@@ -1,4 +1,4 @@
-import 'dart:developer';
+
 
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/constang.dart';

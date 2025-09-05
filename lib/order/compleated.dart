@@ -274,6 +274,7 @@ class _CompleatedState extends State<Compleated> {
 
                               child: Column(
                                 children: [
+                                  Divider(color: kButtonColor,),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(

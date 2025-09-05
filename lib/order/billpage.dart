@@ -75,14 +75,16 @@ class _BillPageState extends State<BillPage> {
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children:  [
+                            children: [
+                              Image.asset(
+                                "assets/images/LOGO CMYK-01.png",
+                                scale: 30,
+                              ),
+
                               Text(
-                                "Ecome Express",
+                                "บริษัทT&Cจำกัด",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              SizedBox(height: 8),
-                          Image.asset("assets/images/LOGO CMYK-01.png",scale: 30,),
-                              Text("9854565656256456"),
                             ],
                           ),
                         ],
@@ -108,16 +110,15 @@ class _BillPageState extends State<BillPage> {
                               children: [
                                 Text("ชื่อ : Product name"),
                                 Text("Order Date : 24/12/2022"),
-                                 Text("Order ID : #56452568"),
+                                Text("Order ID : #56452568"),
                               ],
                             ),
                           ),
-                          
                         ],
                       ),
 
-                       SizedBox(height: 12),
-                       Divider(),
+                      SizedBox(height: 12),
+                      Divider(),
 
                       // Table Header
                       Row(
@@ -133,22 +134,26 @@ class _BillPageState extends State<BillPage> {
 
                       // Table Rows
                       Column(
-                        children: List.generate(orderbill.length, (index)=>
-                        Row(
-                          children:  [
-                          Expanded(flex: 2, child: Text(orderbill[index]["productname"]!),),
-                          Expanded(child: Text(orderbill[index]["pice"]!)),
-                          Expanded(child: Text(orderbill[index]["qty"]!)),
-                          Expanded(child: Text(orderbill[index]["discount"]!)),
-                          Expanded(child: Text(orderbill[index]["total"]!)),
-                          ],
+                        children: List.generate(
+                          orderbill.length,
+                          (index) => Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Text(orderbill[index]["productname"]!),
+                              ),
+                              Expanded(child: Text(orderbill[index]["pice"]!)),
+                              Expanded(child: Text(orderbill[index]["qty"]!)),
+                              Expanded(
+                                child: Text(orderbill[index]["discount"]!),
+                              ),
+                              Expanded(child: Text(orderbill[index]["total"]!)),
+                            ],
+                          ),
                         ),
-                        ),
-                     
                       ),
-                     
 
-                       Divider(),
+                      Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: const [
@@ -186,10 +191,12 @@ class _BillPageState extends State<BillPage> {
                                   ),
                                 ),
                                 Text(
-                                  "AJX Cloths",
+                                  "สถานที่จัดส่ง",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                Text("1456 Veltri Drive,\nAnchorage, AK 99502"),
+                                Text(
+                                  '''123/45 ถนนสุขุมวิท 55 แขวงคลองตันเหนือ เขตวัฒนา กรุงเทพมหานคร 10110 โทร. 02-123-4567''',
+                                ),
                               ],
                             ),
                           ),
@@ -205,18 +212,19 @@ class _BillPageState extends State<BillPage> {
                                   ),
                                 ),
                                 Text(
-                                  "Suman Modi",
+                                  "ส่งถึง",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                Text("1456 Veltri Drive,\nAnchorage, AK 99502"),
+                                Text(
+                                  "99/123 หมู่บ้านสุขใจ ถนนประชาร่วมใจ แขวงบางกะปิ เขตห้วยขวาง กรุงเทพมหานคร 10310",
+                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
-                       SizedBox(height: 12),
-                       Divider(),
-                     
+                      SizedBox(height: 12),
+                      Divider(),
                     ],
                   ),
                 ),
