@@ -28,58 +28,60 @@ class _FirstPageState extends State<FirstPage> {
       backgroundColor: Colors.white,
       body: _pages[_currentIndex], 
       bottomNavigationBar: BottomNavigationBar(
-       backgroundColor: Colors.white, 
-        currentIndex: _currentIndex,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              _currentIndex == 0
-                  ? "assets/icons/Home.png"
-                  : "assets/icons/HomF.png",
-              width: 24,
-              height: 24,
-            ),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              _currentIndex == 1
-                  ? "assets/icons/love.png"
-                  : "assets/icons/lovef.png",
-              width: 24,
-              height: 24,
-            ),
-            label: "Wishlist",
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              _currentIndex == 2
-                  ? "assets/icons/Paper.png"
-                  : "assets/icons/PaperF.png",
-              width: 24,
-              height: 24,
-            ),
-            label: "History",
-          ),
-           BottomNavigationBarItem(
-            icon: Image.asset(
-              _currentIndex == 3
-                  ? "assets/icons/Profile.png"
-                  : "assets/icons/ProfileF.png",
-              width: 24,
-              height: 24,
-            ),
-            label: "Account",
-          ),
-        ],
+  type: BottomNavigationBarType.fixed, // 👈 สำคัญ
+  backgroundColor: Colors.white, 
+  currentIndex: _currentIndex,
+  selectedItemColor: kButtonColor,
+  unselectedItemColor: Colors.grey,
+  onTap: (index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  },
+  items: [
+    BottomNavigationBarItem(
+      icon: Image.asset(
+        _currentIndex == 0
+            ? "assets/icons/Home.png"
+            : "assets/icons/HomF.png",
+        width: 24,
+        height: 24,
       ),
+      label: "Home",
+    ),
+    BottomNavigationBarItem(
+      icon: Image.asset(
+        _currentIndex == 1
+            ? "assets/icons/love.png"
+            : "assets/icons/lovef.png",
+        width: 24,
+        height: 24,
+      ),
+      label: "Wishlist",
+    ),
+    BottomNavigationBarItem(
+      icon: Image.asset(
+        _currentIndex == 2
+            ? "assets/icons/Paper.png"
+            : "assets/icons/PaperF.png",
+        width: 24,
+        height: 24,
+      ),
+      label: "History",
+    ),
+    BottomNavigationBarItem(
+      icon: Image.asset(
+        _currentIndex == 3
+            ? "assets/icons/Profile.png"
+            : "assets/icons/ProfileF.png",
+        width: 24,
+        height: 24,
+      ),
+      label: "Account",
+    ),
+  ],
+),
+
     );
   }
 }

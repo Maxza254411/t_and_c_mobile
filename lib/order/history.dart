@@ -109,7 +109,7 @@ class _HistoryState extends State<History> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("Total"),
+                                  Text("ราคารวม"),
                                 
                               Text("0.00 บาท",style:TextStyle(fontSize: 20,color: kButtonColor,fontWeight: FontWeight.bold),)
                                 ],

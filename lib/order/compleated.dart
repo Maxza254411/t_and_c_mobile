@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/homepage.dart';
+import 'package:t_and_c_mobile/order/billpage.dart';
 import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
 
 class Compleated extends StatefulWidget {
-   Compleated({super.key,required this.status});
-bool status;
+  Compleated({super.key, required this.status});
+  bool status;
   @override
   State<Compleated> createState() => _CompleatedState();
 }
@@ -78,16 +79,35 @@ class _CompleatedState extends State<Compleated> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          InputTextFormField(
-                            fontsize: 16,
-                            controller: addes,
-                            size: size,
-                            heights: size.height * 0.1,
-                            imagestatus: false,
-                            whatfield: true,
-                            hintText: "เช่น ห้องเลขที่/ซอย",
-                            width: size.width * 1,
-                          ),
+                          widget.status == true
+                              ? Container(
+                                  height: size.height * 0.1,
+                                  width: size.width * 1,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: const Color.fromARGB(
+                                      255,
+                                      241,
+                                      241,
+                                      241,
+                                    ),
+                                  ),
+
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("เอาวางไว้ชั่น 2"),
+                                  ),
+                                )
+                              : InputTextFormField(
+                                  fontsize: 16,
+                                  controller: addes,
+                                  size: size,
+                                  heights: size.height * 0.1,
+                                  imagestatus: false,
+                                  whatfield: true,
+                                  hintText: "เช่น ห้องเลขที่/ซอย",
+                                  width: size.width * 1,
+                                ),
                         ],
                       ),
                     ),
@@ -140,19 +160,36 @@ class _CompleatedState extends State<Compleated> {
                             scale: 15,
                           ),
                           title: Text("ข้อความถึงหนักงาน"),
-                          subtitle: InputTextFormField(
-                            maxLines: 1,
-                            fontsize: 16,
-                            controller: addes,
-                            size: size,
-                            heights: size.height * 0.05,
-                            imagestatus: false,
-                            whatfield: true,
-                            hintText: "พิมพ์ข้อความ",
-                            width: size.width * 1,
-                          ),
+                          subtitle: widget.status == true
+                              ? Container(
+                                  height: size.height * 0.05,
+                                  width: size.width * 1,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: const Color.fromARGB(
+                                      255,
+                                      241,
+                                      241,
+                                      241,
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("ถึงแล้วโทรมานะครับ"),
+                                  ),
+                                )
+                              : InputTextFormField(
+                                  maxLines: 1,
+                                  fontsize: 16,
+                                  controller: addes,
+                                  size: size,
+                                  heights: size.height * 0.05,
+                                  imagestatus: false,
+                                  whatfield: true,
+                                  hintText: "พิมพ์ข้อความ",
+                                  width: size.width * 1,
+                                ),
                         ),
-                        Divider(),
                       ],
                     ),
                   ],
@@ -168,7 +205,7 @@ class _CompleatedState extends State<Compleated> {
                 ),
                 child: Column(
                   children: [
-                    ContainerHeader(size: size, text: 'รายการสินค้า'),
+                    ContainerHeader(size: size, text: 'รายการสินค้า',status: true,),
                     Column(
                       children: List.generate(
                         products.length,
@@ -225,110 +262,159 @@ class _CompleatedState extends State<Compleated> {
                         ),
                       ),
                     ),
+                    widget.status == true
+                        
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.white,
+                              ),
 
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white,
-                ),
-                child: Column(
-                  children: [
-                    ContainerHeader(size: size, text: 'วิธีการชำระเงิน'),
-
-                    // แสดงวิธีจ่ายเงิน
-                    Column(
-                      children: List.generate(
-                        pay.length,
-                        (index) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: BuildRadioOption(
-                            title: pay[index]['pay']!, // ชื่อวิธีจ่าย
-                            value:
-                                pay[index]['value']!, // ค่า เช่น "cash" หรือ "promptpay"
-                            groupValue: selectedPay, // state ที่เก็บค่าที่เลือก
-                            onChanged: (val) {
-                              setState(() {
-                                selectedPay = val;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white,
-                ),
-
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text("ราคารวม"), Text("0.00 บาท")],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        final out = await showDialog(
-                          barrierDismissible: true,
-                          context: context,
-                          builder: (context) => SucesDialog(
-                            title: 'แจ้งเตือน',
-                            description: 'สำเร็จ',
-                          ),
-                        );
-                        if (out == true) {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => FirstPage(),
-                            ),
-                            (route) => false,
-                          );
-                        }
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: kButtonColor,
-                          ),
-                          height: size.height * 0.05,
-                          width: double.infinity,
-                          child: Center(
-                            child: Text(
-                              "ชำระเงิน",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: kbgf,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("ราคารวม"),
+                                        Text("0.00 บาท",style:TextStyle(fontSize: 20,color: kButtonColor,fontWeight: FontWeight.bold),)
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
+                          )
+                          :SizedBox.shrink()
                   ],
                 ),
               ),
             ),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    children: [
+                      ContainerHeader(size: size, text: 'วิธีการชำระเงิน'),
+                      // แสดงวิธีจ่ายเงิน
+                      widget.status == true
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: BuildRadioOption(
+                                title: "เงินสด", // ชื่อวิธีจ่าย
+                                value:
+                                    pay[0]['value']!, // ค่า เช่น "cash" หรือ "promptpay"
+                                groupValue:
+                                    selectedPay, // state ที่เก็บค่าที่เลือก
+                                onChanged: (val) {
+                                  setState(() {
+                                    selectedPay = val;
+                                  });
+                                },
+                              ),
+                            )
+                          : Column(
+                              children: List.generate(
+                                pay.length,
+                                (index) => Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: BuildRadioOption(
+                                    title: pay[index]['pay']!, // ชื่อวิธีจ่าย
+                                    value:
+                                        pay[index]['value']!, // ค่า เช่น "cash" หรือ "promptpay"
+                                    groupValue:
+                                        selectedPay, // state ที่เก็บค่าที่เลือก
+                                    onChanged: (val) {
+                                      setState(() {
+                                        selectedPay = val;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            widget.status == true
+                ? SizedBox.shrink()
+                : SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
+                        ),
+
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [Text("ราคารวม"), Text("0.00 บาท")],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                final out = await showDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (context) => SucesDialog(
+                                    title: 'แจ้งเตือน',
+                                    description: 'สำเร็จ',
+                                  ),
+                                );
+                                if (out == true) {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FirstPage(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                }
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: kButtonColor,
+                                  ),
+                                  height: size.height * 0.05,
+                                  width: double.infinity,
+                                  child: Center(
+                                    child: Text(
+                                      "ชำระเงิน",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: kbgf,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
           ],
         ),
       ),
@@ -337,10 +423,11 @@ class _CompleatedState extends State<Compleated> {
 }
 
 class ContainerHeader extends StatelessWidget {
-  ContainerHeader({super.key, required this.size, required this.text});
+  ContainerHeader({super.key, required this.size, required this.text,this.status =false});
 
   final Size size;
   String text;
+  bool? status;
 
   @override
   Widget build(BuildContext context) {
@@ -361,8 +448,9 @@ class ContainerHeader extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(width: 10),
+           
               Text(
                 text,
                 style: TextStyle(
@@ -371,6 +459,18 @@ class ContainerHeader extends StatelessWidget {
                   color: kbgf,
                 ),
               ),
+              status==true
+            ? GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>BillPage()));
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Icon(Icons.receipt_long,color: 
+                Colors.white,),
+              ),
+            ) 
+           : SizedBox.shrink()
             ],
           ),
         ),
