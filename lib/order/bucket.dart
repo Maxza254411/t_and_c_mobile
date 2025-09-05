@@ -183,7 +183,7 @@ class _BucketState extends State<Bucket> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Compleated(),
+                              builder: (context) => Compleated(status: true,),
                             ),
                           );
                         }

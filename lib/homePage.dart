@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:carousel_slider/carousel_options.dart';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +8,6 @@ import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:t_and_c_mobile/category/catagory.dart';
-import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
 
 class HomePage extends StatefulWidget {
@@ -93,27 +92,20 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Stack(
-              children: [
-                Container(
-                  height: size.height * 0.08,
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(color: kbgf),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: InputTextFormField(
-                    hintText: "Search here ...",
-                    controller: search,
-                    size: size,
-                    heights: size.height * 0.05,
-                    imagestatus: true,
-                    images: "assets/icons/Search.png", whatfield: false,
-                     width: double.infinity,
-                  ),
-                ),
-              ],
+            Container(
+              height: size.height * 0.08,
+              width: double.infinity,
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(color: kbgf),
+              child:  InputTextFormField(
+                hintText: "Search here ...",
+                controller: search,
+                size: size,
+                heights: size.height * 0.05,
+                imagestatus: true,
+                images: "assets/icons/Search.png", whatfield: false,
+                 width: double.infinity,
+              ),
             ),
             Column(
               children: [

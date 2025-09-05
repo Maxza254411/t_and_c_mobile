@@ -97,28 +97,22 @@ class _CatagoryState extends State<Catagory> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Stack(
-              children: [
-                Container(
-                  height: size.height * 0.08,
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(color: kbgf),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: InputTextFormField(
-                    hintText: "Search here ...",
-                    controller: search,
-                    size: size,
-                    heights: size.height * 0.05,
-                    imagestatus: true,
-                    images: "assets/icons/Search.png",
-                    whatfield: false, width: double.infinity,
-                  ),
-                ),
-              ],
+            Container(
+              height: size.height * 0.08,
+              width: double.infinity,
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(color: kbgf),
+              child: InputTextFormField(
+                hintText: "Search here ...",
+                controller: search,
+                size: size,
+                heights: size.height * 0.05,
+                imagestatus: true,
+                images: "assets/icons/Search.png",
+                whatfield: false, width: double.infinity,
+              ),
             ),
+            
             SizedBox(
               height: size.height * 0.7,
               width: size.width * 1,

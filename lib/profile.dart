@@ -5,7 +5,7 @@ import 'package:t_and_c_mobile/login.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({super.key});
+   Profile({super.key});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -48,7 +48,7 @@ class _ProfileState extends State<Profile> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    /// พื้นหลัง (แบ่งครึ่ง)
+                  
                     Column(
                       children: [
                         Expanded(

@@ -167,7 +167,7 @@ class _DetailproState extends State<Detailpro> {
                         onPressed: () {
                             Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Compleated()),
+                            MaterialPageRoute(builder: (context) => Compleated(status: false,)),
                           );
                         },
                         child: Text(

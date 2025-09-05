@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/homepage.dart';
+import 'package:t_and_c_mobile/order/history.dart';
 import 'package:t_and_c_mobile/profile.dart';
 
 class FirstPage extends StatefulWidget {
@@ -16,7 +18,7 @@ class _FirstPageState extends State<FirstPage> {
   final List<Widget> _pages = [
     HomePage(),
     HomePage(),
-    HomePage(), 
+    History(), 
     Profile(), 
   ];
 

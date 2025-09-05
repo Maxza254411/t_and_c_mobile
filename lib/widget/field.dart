@@ -102,7 +102,6 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
   Widget build(BuildContext context) {
     return widget.whatfield == true
         ? Container(
-          
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               color: const Color.fromARGB(255, 241, 241, 241),
@@ -144,7 +143,7 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
                 style: const TextStyle(fontSize: 22),
                 decoration: InputDecoration(
                   prefixIcon: widget.imagestatus == true
-                      ? Image.asset(widget.images!, scale: 10)
+                      ? Image.asset(widget.images!, scale: 20)
                       : SizedBox.shrink(),
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
