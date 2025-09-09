@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:t_and_c_mobile/category/catagory.dart';
@@ -20,6 +21,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController search = TextEditingController();
   int _currentIndex = 0;
+  String? idPro;
   final CarouselSliderController _controller = CarouselSliderController();
 
   void _goToPage(int index) {
@@ -66,7 +68,7 @@ class _HomePageState extends State<HomePage> {
 
     return Consumer<ProductController>(
       builder: (context, controller, child) {
-       final products=controller.products;
+        final products = controller.products;
         return Scaffold(
           backgroundColor: kbgH,
           appBar: AppBar(
@@ -191,163 +193,92 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Catagory(status: 'T'),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: size.width * 0.78,
+                        ), // กำหนดความกว้าง
+                        child: DropdownButtonFormField<String>(
+                          isExpanded: true, // ขยายเต็มพื้นที่
+                          dropdownColor: Colors.white, // สีพื้นหลังของ popup
+                          decoration: InputDecoration(
+                            // labelText: "เลือกสินค้า",
+                            // labelStyle: TextStyle(color: kButtonColor),
+                            filled: true, // ทำให้พื้นหลังสีทำงาน
+                            fillColor: Colors.white, // สีพื้นหลังขาว
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: kButtonColor,
+                              ), // ขอบสีน้ำเงิน
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: kButtonColor,
+                              ), // ขอบสีน้ำเงินเมื่อยังไม่ได้เลือก
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: kButtonColor,
+                                width: 2,
+                              ), // ขอบสีน้ำเงินเมื่อโฟกัส
+                            ),
+                          ),
+                          items: products.map((product) {
+                            return DropdownMenuItem<String>(
+                              value: product.id.toString() ,
+                              child: Text(
+                                product.name_en ?? "",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: TextStyle(fontSize: 14),
                               ),
                             );
+                          }).toList(),
+                          onChanged: (value) {
+                          print(value);
+                          idPro=value;
                           },
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                'assets/icons/TabGuoup.png',
-                                scale: 8,
-                              ),
-                              SizedBox(height: size.height * 0.01),
-                              Text(
-                                "แท็บเล็ต",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: kbgM,
-                                ),
-                              ),
-                            ],
-                          ),
                         ),
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Catagory(status: 'E'),
-                            ),
-                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Catagory(status: "T", id: idPro!, title: '',)));
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                'assets/icons/eargroup.png',
-                                scale: 8,
-                              ),
-                              SizedBox(height: size.height * 0.01),
-                              Text(
-                                "หูฟัง",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: kbgM,
-                                ),
-                              ),
-                            ],
+                        child: Container(
+                          width: size.width * 0.15,
+                          height: size.height * 0.05,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                        
+                            color: kButtonColor,
                           ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Catagory(status: 'A'),
+                          child: Center(
+                            child: Text(
+                              "ค้นหา",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: kbgf,
+                              ),
                             ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                'assets/icons/AccGroup.png',
-                                scale: 8,
-                              ),
-                              SizedBox(height: size.height * 0.01),
-                              Text(
-                                "ACC",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: kbgM,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Catagory(status: 'P'),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                'assets/icons/PhoneGroup.png',
-                                scale: 8,
-                              ),
-                              SizedBox(height: size.height * 0.01),
-                              Text(
-                                "โทรศัพท์",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: kbgM,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Catagory(status: 'ALL'),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                'assets/icons/AllGroup.png',
-                                scale: 8,
-                              ),
-                              SizedBox(height: size.height * 0.01),
-                              Text(
-                                "All",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: kbgM,
-                                ),
-                              ),
-                            ],
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -402,7 +333,7 @@ class _HomePageState extends State<HomePage> {
                                     top: Radius.circular(16),
                                   ),
                                   child: Image.asset(
-                                   "assets/images/NoImage.jpg",
+                                    "assets/images/NoImage.jpg",
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -414,7 +345,7 @@ class _HomePageState extends State<HomePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                     product.name_en??"",
+                                      product.name_en ?? "",
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -423,7 +354,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                     "",
+                                      "",
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
@@ -447,7 +378,7 @@ class _HomePageState extends State<HomePage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => Detailpro(
-                                                proName: product.name_en??"",
+                                                proName: product.name_en ?? "",
                                                 proPice: "0.00",
                                                 detail: "",
                                               ),
