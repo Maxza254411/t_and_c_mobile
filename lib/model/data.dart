@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
-import 'package:t_and_c_mobile/model/product.dart';
+import 'package:t_and_c_mobile/model/productTyp.dart';
 
 part 'data.g.dart';
 
@@ -13,7 +13,7 @@ class Data {
   int? color_id;
   int? status;
   String? cardType;
-  Product?product;
+  ProductTyp?product;
   Colorp?color;
 
   Data(

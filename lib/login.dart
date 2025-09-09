@@ -1,6 +1,5 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/serviceLogin/loginApi.dart';
@@ -105,7 +104,7 @@ class _LoginpageState extends State<Loginpage> {
                       InputTextFormField(
                         controller: email,
                         size: size,
-                        heights: size.height * 0.05,
+                        heights: size.height * 0.07,
                         imagestatus: false,
                         whatfield: true,
                         width: double.infinity,
@@ -117,7 +116,7 @@ class _LoginpageState extends State<Loginpage> {
                         controller: password,
                         size: size,
                         isPassword: true,
-                        heights: size.height * 0.05,
+                        heights: size.height * 0.07,
                       ),
                       SizedBox(height: size.height * 0.01),
                       Row(
@@ -169,6 +168,11 @@ class _LoginpageState extends State<Loginpage> {
                             email.text,
                             password.text,
                           );
+                          if (_login["token"] != null) {
+                            final prefs = await SharedPreferences.getInstance();
+                            await prefs.setString("token", _login["token"]);
+                          }
+                          print(_login["token"]);
 
                           LoadingDialog.close(context);
                           Navigator.push(

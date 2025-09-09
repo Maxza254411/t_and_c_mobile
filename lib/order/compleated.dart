@@ -208,7 +208,7 @@ class _CompleatedState extends State<Compleated> {
                     ContainerHeader(size: size, text: 'รายการสินค้า',status: true,),
                     Column(
                       children: List.generate(
-                        products.length,
+                        productMog.length,
                         (index) => Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
@@ -221,7 +221,7 @@ class _CompleatedState extends State<Compleated> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(left: 12),
-                                  child: Image.asset(products[index]['image']!),
+                                  child: Image.asset(productMog[index]['image']!),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -237,7 +237,7 @@ class _CompleatedState extends State<Compleated> {
                                   children: [
                                     Row(
                                       children: [
-                                        Text(products[index]["title"]!),
+                                        Text(productMog[index]["title"]!),
                                         SizedBox(width: size.width * 0.1),
                                         Text(
                                           "X 1",
@@ -251,7 +251,7 @@ class _CompleatedState extends State<Compleated> {
                                     ),
                                     Row(
                                       children: [
-                                        Text(products[index]["price"]!),
+                                        Text(productMog[index]["price"]!),
                                       ],
                                     ),
                                   ],

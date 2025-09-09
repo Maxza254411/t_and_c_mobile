@@ -17,7 +17,7 @@ Data _$DataFromJson(Map<String, dynamic> json) =>
         json['cardType'] as String?,
         json['product'] == null
             ? null
-            : Product.fromJson(json['product'] as Map<String, dynamic>),
+            : ProductTyp.fromJson(json['product'] as Map<String, dynamic>),
       )
       ..color = json['color'] == null
           ? null

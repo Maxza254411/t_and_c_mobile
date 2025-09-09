@@ -19,7 +19,7 @@ class LoginApi {
     });
     if (response.statusCode == 200) {
       final data = convert.jsonDecode(response.body);
-      return data['accessToken'];
+      return data;
     } else {
       final data = convert.jsonDecode(response.body);
       throw ApiException(data['message']);

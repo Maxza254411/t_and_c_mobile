@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:t_and_c_mobile/model/product.dart';
+import 'package:t_and_c_mobile/model/productTyp.dart';
 
 part 'colorp.g.dart';
 

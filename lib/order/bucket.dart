@@ -13,8 +13,8 @@ class _BucketState extends State<Bucket> {
   @override
   void initState() {
     super.initState();
-    checked = List.generate(products.length, (_) => false);
-    quantities = List.generate(products.length, (_) => 1);
+    checked = List.generate(productMog.length, (_) => false);
+    quantities = List.generate(productMog.length, (_) => 1);
   }
 
   List<bool> checked = [];
@@ -59,7 +59,7 @@ class _BucketState extends State<Bucket> {
         children: [
           Column(
             children: List.generate(
-              products.length,
+              productMog.length,
               (index) => Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
@@ -82,7 +82,7 @@ class _BucketState extends State<Bucket> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
-                        child: Image.asset(products[index]['image']!),
+                        child: Image.asset(productMog[index]['image']!),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -96,10 +96,10 @@ class _BucketState extends State<Bucket> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(children: [Text(products[index]["title"]!)]),
+                          Row(children: [Text(productMog[index]["title"]!)]),
                           Row(
                             children: [
-                              Text(products[index]["price"]!),
+                              Text(productMog[index]["price"]!),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(

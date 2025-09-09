@@ -14,7 +14,7 @@ final List<String> imgList = [
   "assets/images/banner 2.png",
   "assets/images/banner 3.png",
 ];
-final List<Map<String, String>> products = [
+final List<Map<String, String>> productMog = [
   {
     "image": "assets/images/NoImage.jpg",
     "title": "Airpods pro",

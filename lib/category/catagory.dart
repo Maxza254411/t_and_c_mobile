@@ -119,7 +119,7 @@ class _CatagoryState extends State<Catagory> {
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: GridView.builder(
-                  itemCount: products.length,
+                  itemCount: productMog.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 12,
@@ -127,7 +127,7 @@ class _CatagoryState extends State<Catagory> {
                     childAspectRatio: 0.75,
                   ),
                   itemBuilder: (context, index) {
-                    final product = products[index];
+                    final product = productMog[index];
                     return Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
