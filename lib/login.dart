@@ -104,10 +104,11 @@ class _LoginpageState extends State<Loginpage> {
                       InputTextFormField(
                         controller: email,
                         size: size,
-                        heights: size.height * 0.07,
+                        heights: size.height * 0.05,
                         imagestatus: false,
                         whatfield: true,
                         width: double.infinity,
+                        fontsize: 16,
                       ),
                       SizedBox(height: size.height * 0.01),
                       Text("Password"),
@@ -116,7 +117,8 @@ class _LoginpageState extends State<Loginpage> {
                         controller: password,
                         size: size,
                         isPassword: true,
-                        heights: size.height * 0.07,
+                        heights: size.height * 0.05,
+                         fontsize: 16,   width: double.infinity,
                       ),
                       SizedBox(height: size.height * 0.01),
                       Row(

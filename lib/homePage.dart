@@ -4,12 +4,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:t_and_c_mobile/category/catagory.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
+import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController search = TextEditingController();
   int _currentIndex = 0;
   String? idPro;
+  String? namePro;
   final CarouselSliderController _controller = CarouselSliderController();
 
   void _goToPage(int index) {
@@ -35,11 +38,12 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getapi() async {
     try {
-      final testproduct = await context
-          .read<ProductController>()
-          .getproductlist();
-      inspect(testproduct);
+      LoadingDialog.open(context);
+      await context.read<ProductController>().getproductlist();
+      await context.read<ProductController>().getproduct();
+      LoadingDialog.close(context);
     } on Exception catch (e) {
+      LoadingDialog.close(context);
       if (!mounted) return;
       await showDialog(
         context: context,
@@ -68,7 +72,9 @@ class _HomePageState extends State<HomePage> {
 
     return Consumer<ProductController>(
       builder: (context, controller, child) {
-        final products = controller.products;
+        final productTyp = controller.productTyp;
+        final product = controller.product;
+
         return Scaffold(
           backgroundColor: kbgH,
           appBar: AppBar(
@@ -201,41 +207,37 @@ class _HomePageState extends State<HomePage> {
                         constraints: BoxConstraints(
                           maxWidth: size.width * 0.78,
                         ), // กำหนดความกว้าง
-                        child: DropdownButtonFormField<String>(
-                          isExpanded: true, // ขยายเต็มพื้นที่
-                          dropdownColor: Colors.white, // สีพื้นหลังของ popup
+                        child: DropdownButtonFormField<ProductTyp>(
+                          isExpanded: true,
+                          dropdownColor: Colors.white,
                           decoration: InputDecoration(
-                            // labelText: "เลือกสินค้า",
-                            // labelStyle: TextStyle(color: kButtonColor),
-                            filled: true, // ทำให้พื้นหลังสีทำงาน
-                            fillColor: Colors.white, // สีพื้นหลังขาว
+                            labelText: "เลือกสินค้า",
+                            labelStyle: TextStyle(color: kbgM),
+                            filled: true,
+                            fillColor: Colors.white,
                             contentPadding: EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 8,
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: kButtonColor,
-                              ), // ขอบสีน้ำเงิน
+                              borderSide: BorderSide(color: kButtonColor),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: kButtonColor,
-                              ), // ขอบสีน้ำเงินเมื่อยังไม่ได้เลือก
+                              borderSide: BorderSide(color: kButtonColor),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
                                 color: kButtonColor,
                                 width: 2,
-                              ), // ขอบสีน้ำเงินเมื่อโฟกัส
+                              ),
                             ),
                           ),
-                          items: products.map((product) {
-                            return DropdownMenuItem<String>(
-                              value: product.id.toString() ,
+                          items: productTyp.map((product) {
+                            return DropdownMenuItem<ProductTyp>(
+                              value: product, // 👈 ส่ง object ทั้งตัว
                               child: Text(
                                 product.name_en ?? "",
                                 overflow: TextOverflow.ellipsis,
@@ -245,14 +247,24 @@ class _HomePageState extends State<HomePage> {
                             );
                           }).toList(),
                           onChanged: (value) {
-                          print(value);
-                          idPro=value;
+                            if (value != null) {
+                              print("ID: ${value.id}");
+                              print("Name: ${value.name_en}");
+                              idPro = value.id.toString();
+                              namePro = value.name_en ?? "";
+                            }
                           },
                         ),
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Catagory(status: "T", id: idPro!, title: '',)));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  Catagory(id: idPro!, title: namePro ?? ""),
+                            ),
+                          );
                         },
                         child: Container(
                           width: size.width * 0.15,
@@ -260,7 +272,7 @@ class _HomePageState extends State<HomePage> {
                           margin: const EdgeInsets.symmetric(horizontal: 4),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
-                        
+
                             color: kButtonColor,
                           ),
                           child: Center(
@@ -301,7 +313,7 @@ class _HomePageState extends State<HomePage> {
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: GridView.builder(
-                      itemCount: products.length,
+                      itemCount: product.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 12,
@@ -309,7 +321,7 @@ class _HomePageState extends State<HomePage> {
                         childAspectRatio: 0.75,
                       ),
                       itemBuilder: (context, index) {
-                        final product = products[index];
+                        final products = product[index];
                         return Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -345,7 +357,7 @@ class _HomePageState extends State<HomePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      product.name_en ?? "",
+                                      products.product?.name_th ?? "",
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -354,7 +366,11 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      "",
+                                      double.tryParse(
+                                            products.product?.srp_inc_vat ??
+                                                "0",
+                                          )?.toStringAsFixed(2) ??
+                                          "0.00",
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
@@ -378,8 +394,17 @@ class _HomePageState extends State<HomePage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => Detailpro(
-                                                proName: product.name_en ?? "",
-                                                proPice: "0.00",
+                                                proName:
+                                                    products.product?.name_en ??
+                                                    "",
+                                                proPice:
+                                                    double.tryParse(
+                                                      products
+                                                              .product
+                                                              ?.srp_inc_vat ??
+                                                          "0",
+                                                    )?.toStringAsFixed(2) ??
+                                                    "0.00",
                                                 detail: "",
                                               ),
                                             ),

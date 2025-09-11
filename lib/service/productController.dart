@@ -7,17 +7,23 @@ class ProductController extends ChangeNotifier {
   ProductController({this.api = const ProductApi()});
   ProductApi api;
 
-  List<ProductTyp> products = [];
+  List<ProductTyp> productTyp = [];
   List<Data>productbyid =[];
+  List<Data>product =[];
 
   getproductlist() async {
-    products.clear();
-    products = await ProductApi.getproductlist();
+    productTyp.clear();
+    productTyp = await ProductApi.getproductlist();
     notifyListeners();
   }
   getproductbyid({required int id,required int page }) async {
     productbyid.clear();
     productbyid = await ProductApi.getproductbyid(id: id,page: page);
+    notifyListeners();
+  }
+  getproduct() async {
+    product.clear();
+    product = await ProductApi.getproduct();
     notifyListeners();
   }
 }

@@ -10,6 +10,8 @@ class RegisTextFormField extends StatefulWidget {
     this.isPassword = false,
     this.hintText,
     required this.heights,
+    this.fontsize,
+      required this.width,
   });
 
   final Size size;
@@ -17,6 +19,8 @@ class RegisTextFormField extends StatefulWidget {
   final bool isPassword;
   String? hintText;
   double heights;
+   double? fontsize;
+   double? width;
 
   @override
   State<RegisTextFormField> createState() => _RegisTextFormFieldState();
@@ -27,25 +31,36 @@ class _RegisTextFormFieldState extends State<RegisTextFormField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color.fromARGB(255, 241, 241, 241),
-      height: widget.heights,
-      width: double.infinity,
+        decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: const Color.fromARGB(255, 241, 241, 241),
+              
+            ),
+              width: widget.width,
+            height: widget.heights,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left: 10),
         child: TextFormField(
+          
           controller: widget.controller,
           onTap: () async {
             await SystemChrome.setEnabledSystemUIMode(
               SystemUiMode.immersiveSticky,
             );
           },
-          style: TextStyle(fontSize: 22),
+              style: TextStyle(fontSize: widget.fontsize ?? 22),
           obscureText: widget.isPassword ? _show : false,
           decoration: InputDecoration(
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
             hintText: widget.hintText,
-            hintStyle: TextStyle(fontSize: 22),
+            
+        
+             hintStyle: const TextStyle(
+                    fontSize: 15,
+                    fontFamily: 'IBMPlexSansThai',
+                    color: kbgM,
+                  ),
             suffixIcon: widget.isPassword
                 ? GestureDetector(
                     onTap: () {
@@ -78,7 +93,7 @@ class InputTextFormField extends StatefulWidget {
     required this.imagestatus,
     required this.whatfield,
     this.maxLines,
-    this.fontsize
+    this.fontsize,
   });
 
   final Size size;
@@ -109,7 +124,7 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
             width: widget.width,
             height: widget.heights,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(left: 10),
               child: TextFormField(
                 maxLines: widget.maxLines,
                 controller: widget.controller,

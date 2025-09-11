@@ -48,19 +48,22 @@ class _DetailproState extends State<Detailpro> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
+          child: Column(
           children: [
             Center(child: Image.asset("assets/images/NoImage.jpg")),
             SizedBox(height: 10),
             Row(
               children: [
                 SizedBox(width: size.width * 0.05),
-                Text(
-                  widget.proName,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                SizedBox(
+                  width: size.width*0.8,
+                  child: Text(
+                    widget.proName,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ],
@@ -78,21 +81,21 @@ class _DetailproState extends State<Detailpro> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: List.generate(
-                  colorPro.length,
-                  (index) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(
-                      '${colorPro[index]['color']}',
-                      scale: 10,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: Row(
+            //     children: List.generate(
+            //       colorPro.length,
+            //       (index) => Padding(
+            //         padding: const EdgeInsets.all(8.0),
+            //         child: Image.asset(
+            //           '${colorPro[index]['color']}',
+            //           scale: 10,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Row(
               children: [
                 SizedBox(width: size.width * 0.05),
@@ -118,6 +121,7 @@ class _DetailproState extends State<Detailpro> {
                 ),
               ],
             ),
+            
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
