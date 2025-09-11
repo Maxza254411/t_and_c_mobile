@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
 import 'package:t_and_c_mobile/order/compleated.dart';
+import 'package:t_and_c_mobile/povider/cartProvider.dart';
 
 class Detailpro extends StatefulWidget {
   Detailpro({
@@ -9,10 +12,12 @@ class Detailpro extends StatefulWidget {
     required this.proName,
     required this.proPice,
     required this.detail,
+    required this.color,
   });
   String proName;
   String proPice;
   String detail;
+  String color;
 
   @override
   State<Detailpro> createState() => _DetailproState();
@@ -21,6 +26,7 @@ class Detailpro extends StatefulWidget {
 class _DetailproState extends State<Detailpro> {
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -29,10 +35,42 @@ class _DetailproState extends State<Detailpro> {
         centerTitle: true,
         actions: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Bucket()),
+              );
+            },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Image.asset("assets/icons/BuyBack.png", scale: 15),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Image.asset("assets/icons/BuyBack.png", scale: 15),
+
+                  if (cart.items.isNotEmpty) // แสดง badge เมื่อมีสินค้า
+                    Positioned(
+                      right: -6,
+                      top: -6,
+                      child: Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: Text(
+                          "${cart.items.length}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ],
@@ -48,7 +86,7 @@ class _DetailproState extends State<Detailpro> {
         ),
       ),
       body: SingleChildScrollView(
-          child: Column(
+        child: Column(
           children: [
             Center(child: Image.asset("assets/images/NoImage.jpg")),
             SizedBox(height: 10),
@@ -56,7 +94,7 @@ class _DetailproState extends State<Detailpro> {
               children: [
                 SizedBox(width: size.width * 0.05),
                 SizedBox(
-                  width: size.width*0.8,
+                  width: size.width * 0.8,
                   child: Text(
                     widget.proName,
                     style: TextStyle(
@@ -68,11 +106,14 @@ class _DetailproState extends State<Detailpro> {
                 ),
               ],
             ),
+              SizedBox(height: size.height * 0.001),
             Row(
               children: [
-                SizedBox(width: size.width * 0.05),
+              SizedBox(width: size.width*0.05,),
+                
                 Text(
-                  widget.proPice,
+                  "${widget.proPice} บาท ",
+                  
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -81,26 +122,13 @@ class _DetailproState extends State<Detailpro> {
                 ),
               ],
             ),
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: Row(
-            //     children: List.generate(
-            //       colorPro.length,
-            //       (index) => Padding(
-            //         padding: const EdgeInsets.all(8.0),
-            //         child: Image.asset(
-            //           '${colorPro[index]['color']}',
-            //           scale: 10,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            SizedBox(height: size.height * 0.001),
             Row(
               children: [
-                SizedBox(width: size.width * 0.05),
+              SizedBox(width: size.width*0.05,),
+                
                 Text(
-                  "คำบรรยายสินค้า",
+                  "สี ${widget.color}",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -109,19 +137,7 @@ class _DetailproState extends State<Detailpro> {
                 ),
               ],
             ),
-            Row(
-              children: [
-                SizedBox(width: size.width * 0.05),
-                SizedBox(
-                  width: size.width * 0.8,
-                  child: Text(
-                    widget.detail,
-                    style: TextStyle(fontSize: 14, color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-            
+           SizedBox(height: size.height*0.19,),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -140,6 +156,20 @@ class _DetailproState extends State<Detailpro> {
                           ),
                         ),
                         onPressed: () {
+                          final shoping = Shoping(
+                            name: widget.proName,
+                            price: widget.proPice,
+                            detail: widget.detail, 
+                            color:widget.color
+                          );
+
+                          // เรียก provider มาเพิ่มสินค้าในตะกร้า
+                          Provider.of<CartProvider>(
+                            context,
+                            listen: false,
+                          ).addItem(shoping);
+
+                          // ไปหน้า Bucket
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => Bucket()),
@@ -169,9 +199,11 @@ class _DetailproState extends State<Detailpro> {
                           ),
                         ),
                         onPressed: () {
-                            Navigator.push(
+                          Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Compleated(status: false,)),
+                            MaterialPageRoute(
+                              builder: (context) => Compleated(status: false),
+                            ),
                           );
                         },
                         child: Text(

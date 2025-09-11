@@ -138,7 +138,7 @@ class _ProfileState extends State<Profile> {
                   context: context,
                   builder: (context) => AlertDialogYesNo(
                     description: 'คุณต้องการออกจากระบบหรือไม่',
-                    title: 'เเจ้งเตือน',
+                    title: 'แจ้งเตือน',
                   ),
                 );
                 if (out == true) {

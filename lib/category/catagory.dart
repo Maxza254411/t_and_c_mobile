@@ -204,10 +204,9 @@ class _CatagoryState extends State<Catagory> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      double.tryParse(
-                                            product.product?.srp_inc_vat ?? "0",
-                                          )?.toStringAsFixed(2) ??
-                                          "0.00",
+                                      formatNumber(
+                                        product.product?.srp_inc_vat ?? "0",
+                                      ),
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
@@ -233,15 +232,14 @@ class _CatagoryState extends State<Catagory> {
                                                 proName:
                                                     product.product?.name_en ??
                                                     "",
-                                                proPice:
-                                                    double.tryParse(
-                                                      product
-                                                              .product
-                                                              ?.srp_inc_vat ??
-                                                          "0",
-                                                    )?.toStringAsFixed(2) ??
-                                                    "0.00",
+                                                proPice: formatNumber(
+                                                  product .product?.srp_inc_vat ?? "0",
+                                                ),
+
                                                 detail: "",
+                                                color:
+                                                    product.color?.name_en ??
+                                                    " - ",
                                               ),
                                             ),
                                           );

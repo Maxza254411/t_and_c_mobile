@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 const kButtonColor = Color(0xFF2C64AF);
 const kbgf = Color(0xFFE4E4E4);
@@ -63,3 +64,22 @@ List<Map<String, String>> orderbill = [
 ];
 
 String? selectedPay = "cash"; // ค่าเริ่มต้น
+
+String formatNumber(dynamic value, {int decimal = 2}) {
+  // แปลงค่าให้เป็น double ก่อน
+  double number = 0;
+  if (value is String) {
+    number = double.tryParse(value) ?? 0;
+  } else if (value is num) {
+    number = value.toDouble();
+  }
+
+  // format โดยใช้ intl
+  final formatter = NumberFormat.currency(
+    locale: 'en_US', // ใช้ en_US จะมีลูกน้ำคั่นหลักพัน
+    symbol: '', // ไม่ใส่สัญลักษณ์เงิน
+    decimalDigits: decimal, // จำนวนทศนิยม
+  );
+
+  return formatter.format(number).trim();
+}

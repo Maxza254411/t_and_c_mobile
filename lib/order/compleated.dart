@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/homepage.dart';
+import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/billpage.dart';
 import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
 
 class Compleated extends StatefulWidget {
-  Compleated({super.key, required this.status});
+  Compleated({super.key, required this.status, this.selectedItems,this.totalPrice});
   bool status;
+  List<Shoping>? selectedItems; // รับสินค้าที่ติ๊ก
+  double? totalPrice;
   @override
   State<Compleated> createState() => _CompleatedState();
 }
@@ -205,65 +208,97 @@ class _CompleatedState extends State<Compleated> {
                 ),
                 child: Column(
                   children: [
-                    ContainerHeader(size: size, text: 'รายการสินค้า',status: true,),
-                    Column(
-                      children: List.generate(
-                        productMog.length,
-                        (index) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.white,
-                            ),
-                            height: size.height * 0.06,
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 12),
-                                  child: Image.asset(productMog[index]['image']!),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    width: 1,
-                                    height: size.height * 0.05,
-                                    color: kButtonColor,
+                    ContainerHeader(
+                      size: size,
+                      text: 'รายการสินค้า',
+                      status: true,
+                    ),
+                    widget.selectedItems!.isEmpty
+                        ? SizedBox.shrink()
+                        : Column(
+                            children: List.generate(
+                              widget.selectedItems!.length,
+                              (index) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.white,
+                                  ),
+                                  height: size.height * 0.1,
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 12,
+                                        ),
+                                        child: Image.asset(
+                                          "assets/images/LOGO CMYK-01.png",
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          width: 1,
+                                          height: size.height * 0.05,
+                                          color: kButtonColor,
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                width: size.width*0.4,
+                                                child: Text(
+                                                  widget
+                                                      .selectedItems![index]
+                                                      .name,
+                                                       maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style:  TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                                ),
+                                              ),
+                                              SizedBox(width: size.width * 0.1),
+                                              Text(
+                                                "X ${ widget
+                                                    .selectedItems![index]
+                                                    .quantity
+                                                    .toString()}",
+                                               
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: kbgM,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                widget
+                                                    .selectedItems![index]
+                                                    .price
+                                                    .toString(),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(productMog[index]["title"]!),
-                                        SizedBox(width: size.width * 0.1),
-                                        Text(
-                                          "X 1",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: kbgM,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(productMog[index]["price"]!),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
                     widget.status == true
-                        
                         ? Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
@@ -274,7 +309,7 @@ class _CompleatedState extends State<Compleated> {
 
                               child: Column(
                                 children: [
-                                  Divider(color: kButtonColor,),
+                                  Divider(color: kButtonColor),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(
@@ -282,7 +317,14 @@ class _CompleatedState extends State<Compleated> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text("ราคารวม"),
-                                        Text("0.00 บาท",style:TextStyle(fontSize: 20,color: kButtonColor,fontWeight: FontWeight.bold),)
+                                        Text(
+                                          "0.00 บาท",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: kButtonColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -290,7 +332,7 @@ class _CompleatedState extends State<Compleated> {
                               ),
                             ),
                           )
-                          :SizedBox.shrink()
+                        : SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -366,7 +408,7 @@ class _CompleatedState extends State<Compleated> {
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [Text("ราคารวม"), Text("0.00 บาท")],
+                                children: [Text("ราคารวม"), Text("${widget.totalPrice} บาท")],
                               ),
                             ),
                             GestureDetector(
@@ -424,7 +466,12 @@ class _CompleatedState extends State<Compleated> {
 }
 
 class ContainerHeader extends StatelessWidget {
-  ContainerHeader({super.key, required this.size, required this.text,this.status =false});
+  ContainerHeader({
+    super.key,
+    required this.size,
+    required this.text,
+    this.status = false,
+  });
 
   final Size size;
   String text;
@@ -451,7 +498,6 @@ class ContainerHeader extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-           
               Text(
                 text,
                 style: TextStyle(
@@ -460,18 +506,20 @@ class ContainerHeader extends StatelessWidget {
                   color: kbgf,
                 ),
               ),
-              status==true
-            ? GestureDetector(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>BillPage()));
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Icon(Icons.receipt_long,color: 
-                Colors.white,),
-              ),
-            ) 
-           : SizedBox.shrink()
+              status == true
+                  ? GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BillPage()),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Icon(Icons.receipt_long, color: Colors.white),
+                      ),
+                    )
+                  : SizedBox.shrink(),
             ],
           ),
         ),

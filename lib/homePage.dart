@@ -1,12 +1,12 @@
-import 'dart:developer';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
+import 'package:t_and_c_mobile/order/bucket.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
+import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:t_and_c_mobile/category/catagory.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    final cart = Provider.of<CartProvider>(context);
     return Consumer<ProductController>(
       builder: (context, controller, child) {
         final productTyp = controller.productTyp;
@@ -80,9 +80,44 @@ class _HomePageState extends State<HomePage> {
           appBar: AppBar(
             backgroundColor: kButtonColor,
             actions: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset("assets/icons/Buy.png", scale: 15),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Bucket()),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Image.asset("assets/icons/Buy.png", scale: 15),
+
+                      if (cart.items.isNotEmpty) // แสดง badge เมื่อมีสินค้า
+                        Positioned(
+                          right: -6,
+                          top: -6,
+                          child: Container(
+                            padding: EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                            child: Text(
+                              "${cart.items.length}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -297,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       SizedBox(width: size.width * 0.02),
                       Text(
-                        "สินค้าเเนะนำ",
+                        "สินค้าแนะนำ",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -366,14 +401,8 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      double.tryParse(
-                                            products.product?.srp_inc_vat ??
-                                                "0",
-                                          )?.toStringAsFixed(2) ??
-                                          "0.00",
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
+                                      formatNumber(
+                                        products.product?.srp_inc_vat ?? "0",
                                       ),
                                     ),
                                     const SizedBox(height: 8),
@@ -397,15 +426,16 @@ class _HomePageState extends State<HomePage> {
                                                 proName:
                                                     products.product?.name_en ??
                                                     "",
-                                                proPice:
-                                                    double.tryParse(
-                                                      products
-                                                              .product
-                                                              ?.srp_inc_vat ??
-                                                          "0",
-                                                    )?.toStringAsFixed(2) ??
-                                                    "0.00",
+                                                proPice: formatNumber(
+                                                  products
+                                                          .product
+                                                          ?.srp_inc_vat ??
+                                                      "0",
+                                                ),
                                                 detail: "",
+                                                color:
+                                                    products.color?.name_en ??
+                                                    "",
                                               ),
                                             ),
                                           );

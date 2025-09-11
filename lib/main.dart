@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/homePage.dart';
 import 'package:t_and_c_mobile/login.dart';
+import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 
 void main() {
@@ -18,17 +19,16 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ProductController()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
       ],
       child: MaterialApp(
-        
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
           fontFamily: 'IBMPlexSansThai',
         ),
-        home: 
-        Loginpage()
+        home: Loginpage(),
         // FirstPage(),
       ),
     );
