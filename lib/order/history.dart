@@ -59,7 +59,7 @@ class _HistoryState extends State<History> {
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Compleated(status: true,)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Compleated(status: true, selectedItems: [],)));
                     },
                     child: Container(
                       decoration: BoxDecoration(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/compleated.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
@@ -60,7 +61,10 @@ class _BucketState extends State<Bucket> {
         backgroundColor: kButtonColor,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FirstPage()),
+            );
           },
           icon: Icon(Icons.chevron_left, color: Colors.white),
         ),
@@ -160,111 +164,103 @@ class _BucketState extends State<Bucket> {
                                         children: [
                                           // แสดงราคาฟอร์แมต
                                           Text("${product.price} บาท"),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Row(
-                                              children: [
-                                                // ลดจำนวน
-                                                InkWell(
-                                                  onTap: () async {
-                                                    if (product.quantity > 1) {
-                                                      setState(() {
-                                                        product.quantity--;
-                                                      });
-                                                    } else {
-                                                      final out =
-                                                          await showDialog<
-                                                            bool
-                                                          >(
-                                                            barrierDismissible:
-                                                                true,
-                                                            context: context,
-                                                            builder: (context) =>
-                                                                AlertDialogYesNo(
-                                                                  description:
-                                                                      'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                                  title:
-                                                                      'แจ้งเตือน',
-                                                                ),
-                                                          );
-                                                      if (out == true) {
-                                                        setState(() {
-                                                          cart.removeItem(
-                                                            product,
-                                                          );
-                                                          checked.removeAt(
-                                                            index,
-                                                          );
-                                                          quantities.removeAt(
-                                                            index,
-                                                          );
-                                                        });
-                                                      }
-                                                    }
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                          2.0,
-                                                        ),
-                                                    child: Image.asset(
-                                                      "assets/icons/minus.png",
-                                                      scale: 30,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text("${product.quantity}"),
-                                                SizedBox(width: 10),
-                                                // เพิ่มจำนวน
-                                                InkWell(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      product.quantity++;
-                                                    });
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                          2.0,
-                                                        ),
-                                                    child: Image.asset(
-                                                      "assets/icons/Regular.png",
-                                                      scale: 30,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          // ปุ่มลบสินค้า
-                                          InkWell(
-                                            onTap: () async {
-                                              final out = await showDialog<bool>(
-                                                barrierDismissible: true,
-                                                context: context,
-                                                builder: (context) =>
-                                                    AlertDialogYesNo(
-                                                      description:
-                                                          'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                      title: 'แจ้งเตือน',
-                                                    ),
-                                              );
-
-                                              if (out == true) {
-                                                setState(() {
-                                                  cart.removeItem(product);
-                                                  checked.removeAt(index);
-                                                  quantities.removeAt(index);
-                                                });
-                                              }
-                                            },
-                                            child: Image.asset(
-                                              "assets/icons/Trash.png",
-                                              scale: 30,
-                                            ),
-                                          ),
                                         ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          children: [
+                                            // ลดจำนวน
+                                            InkWell(
+                                              onTap: () async {
+                                                if (product.quantity > 1) {
+                                                  setState(() {
+                                                    product.quantity--;
+                                                  });
+                                                } else {
+                                                  final out =
+                                                      await showDialog<bool>(
+                                                        barrierDismissible:
+                                                            true,
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            AlertDialogYesNo(
+                                                              description:
+                                                                  'ต้องการลบสินค้ารายการนี้หรือไม่',
+                                                              title:
+                                                                  'แจ้งเตือน',
+                                                            ),
+                                                      );
+                                                  if (out == true) {
+                                                    setState(() {
+                                                      cart.removeItem(product);
+                                                      checked.removeAt(index);
+                                                      quantities.removeAt(
+                                                        index,
+                                                      );
+                                                    });
+                                                  }
+                                                }
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  2.0,
+                                                ),
+                                                child: Image.asset(
+                                                  "assets/icons/minus.png",
+                                                  scale: 30,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text("${product.quantity}"),
+                                            SizedBox(width: 10),
+                                            // เพิ่มจำนวน
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  product.quantity++;
+                                                });
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  2.0,
+                                                ),
+                                                child: Image.asset(
+                                                  "assets/icons/Regular.png",
+                                                  scale: 30,
+                                                ),
+                                              ),
+                                            ),
+                                             SizedBox(width: 10),
+                                            InkWell(
+                                              onTap: () async {
+                                                final out = await showDialog<bool>(
+                                                  barrierDismissible: true,
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      AlertDialogYesNo(
+                                                        description:
+                                                            'ต้องการลบสินค้ารายการนี้หรือไม่',
+                                                        title: 'แจ้งเตือน',
+                                                      ),
+                                                );
+
+                                                if (out == true) {
+                                                  setState(() {
+                                                    cart.removeItem(product);
+                                                    checked.removeAt(index);
+                                                    quantities.removeAt(index);
+                                                  });
+                                                }
+                                              },
+                                              child: Image.asset(
+                                                "assets/icons/Trash.png",
+                                                scale: 30,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -299,7 +295,7 @@ class _BucketState extends State<Bucket> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("ราคารวม"),
-                                  Text("${(totalPrice)} บาท"),
+                                  Text("${formatNumber(totalPrice)} บาท"),
                                 ],
                               ),
                             ),

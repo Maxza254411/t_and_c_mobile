@@ -25,7 +25,8 @@ class _CatagoryState extends State<Catagory> {
   int _page = 1;
   bool _isLoadingMore = false;
   bool _hasMore = true;
-  List<Data> products = [];
+  List<Data> allProducts = []; // ✅ เก็บทั้งหมด
+  List<Data> products = [];    // ✅ เก็บที่โชว์ (filter แล้ว)
 
   Future<void> getapi({bool isLoadMore = false}) async {
     try {
@@ -47,11 +48,14 @@ class _CatagoryState extends State<Catagory> {
       } else {
         setState(() {
           if (isLoadMore) {
-            products.addAll(newProducts); // ✅ ต่อท้าย
+            allProducts.addAll(newProducts); // ✅ เก็บทั้งหมด
           } else {
-            products = newProducts; // ✅ หน้าแรกทับได้
+            allProducts = newProducts;       // ✅ หน้าแรกทับได้
           }
           _page++;
+
+          // ทุกครั้งที่โหลดใหม่ ต้อง filter อีกรอบ
+          filterProducts(search.text);
         });
       }
     } on Exception catch (e) {
@@ -69,6 +73,22 @@ class _CatagoryState extends State<Catagory> {
     } finally {
       setState(() => _isLoadingMore = false);
     }
+  }
+
+  /// ✅ ฟังก์ชันกรอง
+  void filterProducts(String keyword) {
+    if (keyword.isEmpty) {
+      products = List.from(allProducts);
+    } else {
+      products = allProducts
+          .where((item) =>
+              item.product?.name_en
+                  ?.toLowerCase()
+                  .contains(keyword.toLowerCase()) ??
+              false)
+          .toList();
+    }
+    setState(() {});
   }
 
   @override
@@ -92,6 +112,7 @@ class _CatagoryState extends State<Catagory> {
   @override
   void dispose() {
     _scrollController.dispose();
+    search.dispose();
     super.dispose();
   }
 
@@ -99,184 +120,201 @@ class _CatagoryState extends State<Catagory> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Consumer<ProductController>(
-      builder: (context, controller, child) {
-        return Scaffold(
-          backgroundColor: kbgH,
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: kButtonColor,
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.chevron_left, color: Colors.white),
-            ),
-            centerTitle: true,
-            title: Text(
-              widget.title,
-              style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
-            ),
-          ),
-          body: Column(
-            children: [
-              // Search
-              Container(
-                height: size.height * 0.08,
-                width: double.infinity,
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(color: kbgf),
-                child: InputTextFormField(
-                  hintText: "Search here ...",
-                  controller: search,
-                  size: size,
-                  heights: size.height * 0.05,
-                  imagestatus: true,
-                  images: "assets/icons/Search.png",
-                  whatfield: false,
-                  width: double.infinity,
-                ),
+    return Scaffold(
+      backgroundColor: kbgH,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: kButtonColor,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.chevron_left, color: Colors.white),
+        ),
+        centerTitle: true,
+        title: Text(
+          widget.title,
+          style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: Column(
+        children: [
+           Padding(
+             padding: const EdgeInsets.all(8.0),
+             child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: const Color.fromARGB(255, 241, 241, 241),
               ),
-
-              // GridView
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: GridView.builder(
-                    controller: _scrollController,
-                    itemCount: products.length + 1,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 0.75,
-                    ),
-                    itemBuilder: (context, index) {
-                      if (index < products.length) {
-                        final product = products[index];
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 6,
-                                spreadRadius: 2,
-                                offset: const Offset(2, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              // รูป
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(16),
-                                  ),
-                                  child: product.product?.image_url == null
-                                      ? Image.asset(
-                                          "assets/images/NoImage.jpg",
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Image.network(
-                                          product.product!.image_url!,
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
-                              ),
-                              // ข้อมูล
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product.product?.name_en ?? "",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      formatNumber(
-                                        product.product?.srp_inc_vat ?? "0",
-                                      ),
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: kButtonColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => Detailpro(
-                                                proName:
-                                                    product.product?.name_en ??
-                                                    "",
-                                                proPice: formatNumber(
-                                                  product .product?.srp_inc_vat ?? "0",
-                                                ),
-
-                                                detail: "",
-                                                color:
-                                                    product.color?.name_en ??
-                                                    " - ",
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: Text(
-                                          "สั่งซื้อ",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: kbgf,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        // Loader ด้านล่าง
-                        return _isLoadingMore
-                            ? Center(
-                                child: CircularProgressIndicator(
-                                  color: kButtonColor,
-                                ),
-                              )
-                            : const SizedBox();
-                      }
-                    },
+              width: double.infinity,
+              height: size.height * 0.05,
+              child: TextFormField(
+                controller:search,
+                style:  TextStyle(fontSize: 22),
+                decoration: InputDecoration(
+                   prefixIcon: Image.asset( "assets/icons/Search.png", scale: 20),
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                      hintText: "Search here ...",
+                  hintStyle: const TextStyle(
+                    fontSize: 15,
+                    fontFamily: 'IBMPlexSansThai',
+                    color: kbgM,
                   ),
                 ),
+                    onChanged: (value) {
+                filterProducts(value); // ✅ เรียกกรองทุกครั้งที่พิมพ์
+              },
               ),
-            ],
+                       ),
+           ),
+          // Search
+          // Container(
+            
+          //   height: size.height * 0.08,
+          //   width: double.infinity,
+          //   padding: EdgeInsets.all(16),
+          //   decoration: BoxDecoration(color: kbgf),
+          //   child: TextField(
+          //     controller: search,
+          //     decoration: InputDecoration(
+          //       hintText: "Search here ...",
+          //       prefixIcon: Icon(Icons.search),
+          //       border: OutlineInputBorder(
+          //         borderRadius: BorderRadius.circular(8),
+          //       ),
+          //     ),
+          //     onChanged: (value) {
+          //       filterProducts(value); // ✅ เรียกกรองทุกครั้งที่พิมพ์
+          //     },
+          //   ),
+          // ),
+
+          // GridView
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: GridView.builder(
+                controller: _scrollController,
+                itemCount: products.length + (_isLoadingMore ? 1 : 0),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.75,
+                ),
+                itemBuilder: (context, index) {
+                  if (index < products.length) {
+                    final product = products[index];
+                    return _buildProductCard(product);
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(color: kButtonColor),
+                    );
+                  }
+                },
+              ),
+            ),
           ),
-        );
-      },
+        ],
+      ),
+    );
+  }
+
+  /// ✅ แยกการสร้างการ์ดสินค้าออกมาให้อ่านง่าย
+  Widget _buildProductCard(Data product) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            spreadRadius: 2,
+            offset: const Offset(2, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // รูป
+          Expanded(
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
+              child: product.product?.image_url == null
+                  ? Image.asset(
+                      "assets/images/NoImage.jpg",
+                      fit: BoxFit.cover,
+                    )
+                  : Image.network(
+                      product.product!.image_url!,
+                      fit: BoxFit.cover,
+                    ),
+            ),
+          ),
+          // ข้อมูล
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product.product?.name_en ?? "",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  formatNumber(product.product?.srp_inc_vat ?? "0"),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kButtonColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Detailpro(
+                            proName: product.product?.name_en ?? "",
+                            proPice: formatNumber(
+                                product.product?.srp_inc_vat ?? "0"),
+                            detail: "",
+                            color: product.color?.name_en ?? " - ",
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "สั่งซื้อ",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: kbgf,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

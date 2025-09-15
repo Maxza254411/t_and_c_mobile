@@ -201,7 +201,7 @@ class _DetailproState extends State<Detailpro> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Compleated(status: false),
+                              builder: (context) => Compleated(status: false, selectedItems: [],),
                             ),
                           );
                         },

@@ -187,6 +187,11 @@ class _LoginpageState extends State<Loginpage> {
                               "staff_code",
                               _login["user"]["staff_code"],
                             );
+                               await prefs.setString(
+                              "email",
+                              _login["user"]["email"],
+                            );
+                           
                           }
                   
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
@@ -22,6 +23,7 @@ class _ProfileState extends State<Profile> {
     first_name = prefs.getString('first_name');
     last_name = prefs.getString('last_name');
     staff_code = prefs.getString('staff_code');
+    setState(() {});
   }
 
   @override
@@ -136,7 +138,7 @@ class _ProfileState extends State<Profile> {
             ),
             BoxProfile(
               size: size,
-              title: 'รหัสประจำตัวผู้ใช้(User Id)',
+              title: 'email',
               description: '***************',
             ),
             BoxProfile(
@@ -171,17 +173,43 @@ class _ProfileState extends State<Profile> {
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: double.infinity,
-                  height: size.height * 0.08,
-                  decoration: BoxDecoration(
-                    color: kButtonColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "ออกจากระบบ",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                child: GestureDetector(
+                  onTap: () async {
+                    final ok = await showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) => AlertDialogYesNo(
+                        title: 'แจ้งเตือน',
+                        description: 'คุณต้องออกจากระบบหรือไม่',
+                      ),
+                    );
+
+                    if (ok == true) {
+                      if (!mounted) return;
+
+                      final prefs = await SharedPreferences.getInstance();
+
+                      // ✅ ลบข้อมูลทั้งหมด
+                      await prefs.clear();
+                      // หรือถ้าจะลบเฉพาะ key ที่ใช้ login เช่น token
+                      // await prefs.remove('token');
+                      // ✅ ย้ายไปหน้า Login
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Loginpage()), (route) => false);
+                    }
+                  },
+
+                  child: Container(
+                    width: double.infinity,
+                    height: size.height * 0.08,
+                    decoration: BoxDecoration(
+                      color: kButtonColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "ออกจากระบบ",
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
                     ),
                   ),
                 ),

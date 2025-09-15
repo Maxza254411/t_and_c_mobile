@@ -3,7 +3,7 @@ import 'package:t_and_c_mobile/model/shoping.dart';
 
 
 class CartProvider with ChangeNotifier {
-  final String userId; // userId ของผู้ใช้ปัจจุบัน
+  final int userId; // userId ของผู้ใช้ปัจจุบัน
   final List<Shoping> _items = [];
 
   CartProvider(this.userId);
@@ -13,7 +13,7 @@ class CartProvider with ChangeNotifier {
       _items.where((item) => item.userId == userId).toList();
 
   void addItem(Shoping shoping) {
-    shoping.userId = userId; // เพิ่ม userId ให้กับสินค้า
+    shoping.userId = userId; // กำหนด userId ให้กับสินค้า
 
     final index = _items.indexWhere(
         (item) => item.name == shoping.name && item.userId == userId);

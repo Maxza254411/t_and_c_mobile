@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_and_c_mobile/constang.dart';
 
 class LoadingDialog {
   static Future<void> open(BuildContext context) async {
@@ -14,7 +15,9 @@ class LoadingDialog {
               child: SizedBox(
                 width: 80,
                 height: 80,
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: kButtonColor,
+                ),
               ),
             ),
           ],

@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/homePage.dart';
@@ -7,25 +10,33 @@ import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async {
+
+String? token;
+int? userId;
+late SharedPreferences prefs;
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // โหลด userId จาก SharedPreferences
-  final prefs = await SharedPreferences.getInstance();
-  final userId = prefs.getInt('userId') ?? ''; // ถ้ายังไม่มี ให้เป็น ''
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.immersiveSticky,
+  );
 
-  runApp(MyApp(userId: userId.toString()));
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  prefs = await SharedPreferences.getInstance();
+  token = prefs.getString('token');
+  userId = prefs.getInt('userId');
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final String userId; // รับ userId
-  MyApp({super.key, required this.userId});
+  // final String userId; // รับ userId
+  MyApp(  {super.key,});
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ProductController()),
-        ChangeNotifierProvider(create: (_) => CartProvider(userId)), // ใส่ userId
+        ChangeNotifierProvider(create: (_) => CartProvider(userId!)), // ใส่ userId
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -34,7 +45,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           fontFamily: 'IBMPlexSansThai',
         ),
-        home: Loginpage(),
+        home: token == null ? Loginpage() : FirstPage(),
+        // Loginpage(),
         // FirstPage(),
       ),
     );

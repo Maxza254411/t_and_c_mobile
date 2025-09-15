@@ -9,9 +9,9 @@ import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
 
 class Compleated extends StatefulWidget {
-  Compleated({super.key, required this.status, this.selectedItems,this.totalPrice});
+  Compleated({super.key, required this.status, required this.selectedItems,this.totalPrice});
   bool status;
-  List<Shoping>? selectedItems; // รับสินค้าที่ติ๊ก
+  List<Shoping> selectedItems = []; // รับสินค้าที่ติ๊ก
   double? totalPrice;
   @override
   State<Compleated> createState() => _CompleatedState();
@@ -19,6 +19,7 @@ class Compleated extends StatefulWidget {
 
 class _CompleatedState extends State<Compleated> {
   final TextEditingController addes = TextEditingController();
+    final TextEditingController talk = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -184,7 +185,7 @@ class _CompleatedState extends State<Compleated> {
                               : InputTextFormField(
                                   maxLines: 1,
                                   fontsize: 16,
-                                  controller: addes,
+                                  controller: talk,
                                   size: size,
                                   heights: size.height * 0.05,
                                   imagestatus: false,
@@ -213,11 +214,11 @@ class _CompleatedState extends State<Compleated> {
                       text: 'รายการสินค้า',
                       status: true,
                     ),
-                    widget.selectedItems!.isEmpty
+                    widget.selectedItems.isEmpty
                         ? SizedBox.shrink()
                         : Column(
                             children: List.generate(
-                              widget.selectedItems!.length,
+                              widget.selectedItems.length,
                               (index) => Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Container(
@@ -408,7 +409,7 @@ class _CompleatedState extends State<Compleated> {
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [Text("ราคารวม"), Text("${widget.totalPrice} บาท")],
+                                children: [Text("ราคารวม"), Text("${formatNumber(widget.totalPrice)} บาท")],
                               ),
                             ),
                             GestureDetector(

@@ -5,7 +5,7 @@ class Shoping {
   final String detail;
   final String color;
   int quantity;
-  String? userId;
+  int? userId;
   Shoping({
     required this.name,
     required this.price,

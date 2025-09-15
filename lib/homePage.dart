@@ -151,22 +151,19 @@ class _HomePageState extends State<HomePage> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  height: size.height * 0.08,
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(color: kbgf),
-                  child: InputTextFormField(
-                    hintText: "Search here ...",
-                    controller: search,
-                    size: size,
-                    heights: size.height * 0.05,
-                    imagestatus: true,
-                    images: "assets/icons/Search.png",
-                    whatfield: false,
-                    width: double.infinity,
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: InputTextFormField(
+                //     hintText: "Search here ...",
+                //     controller: search,
+                //     size: size,
+                //     heights: size.height * 0.05,
+                //     imagestatus: true,
+                //     images: "assets/icons/Search.png",
+                //     whatfield: false,
+                //     width: double.infinity,
+                //   ),
+                // ),
                 Column(
                   children: [
                     CarouselSlider.builder(
@@ -352,13 +349,15 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                SizedBox(
+                product.isEmpty
+                 ? SizedBox.shrink()
+                 : SizedBox(
                   height: size.height * 0.5,
                   width: size.width * 1,
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: GridView.builder(
-                      itemCount: product.length,
+                      itemCount: 4,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 12,
