@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/homepage.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/billpage.dart';
+import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
 
 class Compleated extends StatefulWidget {
-  Compleated({super.key, required this.status, required this.selectedItems,this.totalPrice});
+  Compleated({
+    super.key,
+    required this.status,
+    required this.selectedItems,
+    this.totalPrice,
+  });
   bool status;
   List<Shoping> selectedItems = []; // รับสินค้าที่ติ๊ก
   double? totalPrice;
@@ -19,7 +26,7 @@ class Compleated extends StatefulWidget {
 
 class _CompleatedState extends State<Compleated> {
   final TextEditingController addes = TextEditingController();
-    final TextEditingController talk = TextEditingController();
+  final TextEditingController talk = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -254,25 +261,23 @@ class _CompleatedState extends State<Compleated> {
                                           Row(
                                             children: [
                                               SizedBox(
-                                                width: size.width*0.4,
+                                                width: size.width * 0.4,
                                                 child: Text(
                                                   widget
                                                       .selectedItems![index]
                                                       .name,
-                                                       maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style:  TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
                                               ),
                                               SizedBox(width: size.width * 0.1),
                                               Text(
-                                                "X ${ widget
-                                                    .selectedItems![index]
-                                                    .quantity
-                                                    .toString()}",
-                                               
+                                                "X ${widget.selectedItems![index].quantity.toString()}",
+
                                                 style: TextStyle(
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.bold,
@@ -409,11 +414,24 @@ class _CompleatedState extends State<Compleated> {
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [Text("ราคารวม"), Text("${formatNumber(widget.totalPrice)} บาท")],
+                                children: [
+                                  Text("ราคารวม"),
+                                  Text(
+                                    "${formatNumber(widget.totalPrice)} บาท",
+                                  ),
+                                ],
                               ),
                             ),
                             GestureDetector(
                               onTap: () async {
+                                final cart = Provider.of<CartProvider>(
+                                  context,
+                                  listen: false,
+                                );
+
+                                // ลบเฉพาะสินค้าที่เลือก
+                                cart.removeSelected(widget.selectedItems);
+
                                 final out = await showDialog(
                                   barrierDismissible: true,
                                   context: context,
@@ -422,6 +440,7 @@ class _CompleatedState extends State<Compleated> {
                                     description: 'สำเร็จ',
                                   ),
                                 );
+
                                 if (out == true) {
                                   Navigator.pushAndRemoveUntil(
                                     context,
@@ -432,6 +451,7 @@ class _CompleatedState extends State<Compleated> {
                                   );
                                 }
                               },
+
                               child: Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Container(

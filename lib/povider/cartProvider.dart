@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 
-
 class CartProvider with ChangeNotifier {
   final int userId; // userId ของผู้ใช้ปัจจุบัน
   final List<Shoping> _items = [];
@@ -12,29 +11,50 @@ class CartProvider with ChangeNotifier {
   List<Shoping> get items =>
       _items.where((item) => item.userId == userId).toList();
 
+  // เพิ่มสินค้า
   void addItem(Shoping shoping) {
-    shoping.userId = userId; // กำหนด userId ให้กับสินค้า
+    shoping.userId = userId;
 
-    final index = _items.indexWhere(
-        (item) => item.name == shoping.name && item.userId == userId);
+    // ตรวจสอบสินค้าที่ชื่อเหมือนและสีเหมือนกัน
+    final index = _items.indexWhere((item) =>
+        item.userId == userId &&
+        item.name == shoping.name &&
+        item.color == shoping.color);
 
     if (index != -1) {
-      _items[index].quantity++;
+      // ถ้ามีสินค้าสีเดียวกันแล้ว เพิ่ม quantity
+      _items[index].quantity += shoping.quantity;
     } else {
+      // ถ้าไม่มีสินค้าสีเดียวกัน เพิ่มสินค้าใหม่
       _items.add(shoping);
     }
+
     notifyListeners();
   }
 
+  // ลบสินค้า
   void removeItem(Shoping shoping) {
-    _items.removeWhere(
-        (item) => item.name == shoping.name && item.userId == userId);
+    _items.removeWhere((item) =>
+        item.name == shoping.name &&
+        item.color == shoping.color &&
+        item.userId == userId);
     notifyListeners();
   }
 
+  // ลบสินค้าทั้งหมดของ user
   void clearCart() {
     _items.removeWhere((item) => item.userId == userId);
     notifyListeners();
   }
-}
 
+  // ลบสินค้าที่เลือก
+  void removeSelected(List<Shoping> selectedItems) {
+    for (final item in selectedItems) {
+      _items.removeWhere((i) =>
+          i.name == item.name &&
+          i.color == item.color &&
+          i.userId == userId);
+    }
+    notifyListeners();
+  }
+}

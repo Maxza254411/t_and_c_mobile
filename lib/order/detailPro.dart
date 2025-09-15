@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/model/colorp.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
 import 'package:t_and_c_mobile/order/compleated.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
+import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
+import 'package:t_and_c_mobile/widget/dialog.dart';
 
 class Detailpro extends StatefulWidget {
   Detailpro({
@@ -12,18 +15,28 @@ class Detailpro extends StatefulWidget {
     required this.proName,
     required this.proPice,
     required this.detail,
-    required this.color,
+    this.color,
   });
   String proName;
   String proPice;
   String detail;
-  String color;
+  List<Colorp?>? color;
 
   @override
   State<Detailpro> createState() => _DetailproState();
 }
 
 class _DetailproState extends State<Detailpro> {
+  String? selectedColor;
+  @override
+  void initState() {
+    super.initState();
+    // เลือกอันแรกถ้ามี
+    if (widget.color != null && widget.color!.isNotEmpty) {
+      selectedColor = widget.color![0]?.name_en ?? "";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
@@ -106,14 +119,14 @@ class _DetailproState extends State<Detailpro> {
                 ),
               ],
             ),
-              SizedBox(height: size.height * 0.001),
+            SizedBox(height: size.height * 0.001),
             Row(
               children: [
-              SizedBox(width: size.width*0.05,),
-                
+                SizedBox(width: size.width * 0.05),
+
                 Text(
                   "${widget.proPice} บาท ",
-                  
+
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -123,21 +136,34 @@ class _DetailproState extends State<Detailpro> {
               ],
             ),
             SizedBox(height: size.height * 0.001),
-            Row(
-              children: [
-              SizedBox(width: size.width*0.05,),
-                
-                Text(
-                  "สี ${widget.color}",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
+
+            SingleChildScrollView(
+              child: Row(
+                children: List.generate(widget.color!.length, (index) {
+                  final colorItem = widget.color![index];
+                  return colorItem?.name_en != ""
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            width: size.width * 0.4,
+                            child: BuildRadioOption(
+                              title: colorItem!.name_en ?? "",
+                              value: colorItem.name_en ?? "",
+                              groupValue: selectedColor,
+                              onChanged: (val) {
+                                setState(() {
+                                  selectedColor = val;
+                                });
+                              },
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink();
+                }),
+              ),
             ),
-           SizedBox(height: size.height*0.19,),
+
+            SizedBox(height: size.height * 0.19),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -159,8 +185,8 @@ class _DetailproState extends State<Detailpro> {
                           final shoping = Shoping(
                             name: widget.proName,
                             price: widget.proPice,
-                            detail: widget.detail, 
-                            color:widget.color
+                            detail: widget.detail,
+                            color: selectedColor!,
                           );
 
                           Provider.of<CartProvider>(
@@ -186,36 +212,64 @@ class _DetailproState extends State<Detailpro> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: size.width * 0.4,
-                      height: size.height * 0.08,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: kbgM,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Compleated(status: false, selectedItems: [],),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "สั่งซื้อ",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: kbgf,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+  padding: const EdgeInsets.all(8.0),
+  child: SizedBox(
+    width: size.width * 0.4,
+    height: size.height * 0.08,
+    child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white, // พื้นหลังขาว
+        side: BorderSide(color: kButtonColor, width: 2), // ขอบฟ้า
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      onPressed: () async{
+          if (widget.proPice != "0.00") {
+            final selectedItems = <Shoping>[];
+            final shoping = Shoping(
+              name: widget.proName,
+              price: widget.proPice,
+              detail: widget.detail,
+              color: selectedColor!,
+            );
+            selectedItems.add(shoping);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Compleated(
+                  totalPrice: double.parse(widget.proPice),
+                  status: false,
+                  selectedItems: selectedItems,
+                ),
+              ),
+            );
+          }else{
+             await showDialog(
+         context: context,
+         builder: (context) => AlertDialogYes(
+          title: 'แจ้งเตือน',
+          description: 'ไม่สามารถทำรายการได้ \n เพราะราคามีค่าเป็น 0.00 บาท',
+          pressYes: () {
+            Navigator.pop(context);
+          },
+        ),
+      );
+          }
+    
+      },
+      child: Text(
+        "สั่งซื้อ",
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color:kButtonColor, // ตัวหนังสือสีฟ้า
+        ),
+      ),
+    ),
+  ),
+),
+
                 ],
               ),
             ),

@@ -8,6 +8,7 @@ import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
+import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:t_and_c_mobile/category/catagory.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
@@ -28,8 +29,9 @@ class _HomePageState extends State<HomePage> {
   String? namePro;
   String? first_name;
   String? last_name;
+  List<ProductTyp?> uniqueProducts = [];
   final CarouselSliderController _controller = CarouselSliderController();
-
+  List<Data> product = [];
   void _goToPage(int index) {
     // ✅ เช็คก่อนว่า controller attach แล้วหรือยัง
     if (_controller.ready) {
@@ -43,7 +45,14 @@ class _HomePageState extends State<HomePage> {
     try {
       LoadingDialog.open(context);
       await context.read<ProductController>().getproductlist();
-      await context.read<ProductController>().getproduct();
+      //  await context.read<ProductController>().getproduct();
+      final producs = await ProductApi.getproduct();
+      product = producs;
+      uniqueProducts = product
+          .map((e) => e.product) // เอาเฉพาะ object product
+          .toSet() // แปลงเป็น Set เพื่อลบซ้ำ
+          .toList();
+
       LoadingDialog.close(context);
     } on Exception catch (e) {
       LoadingDialog.close(context);
@@ -71,8 +80,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getapi();
       await getpreferences();
+      await getapi();
     });
   }
 
@@ -83,7 +92,6 @@ class _HomePageState extends State<HomePage> {
     return Consumer<ProductController>(
       builder: (context, controller, child) {
         final productTyp = controller.productTyp;
-        final product = controller.product;
 
         return Scaffold(
           backgroundColor: kbgH,
@@ -241,97 +249,103 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: size.width * 0.78,
-                        ), // กำหนดความกว้าง
-                        child: DropdownButtonFormField<ProductTyp>(
-                          isExpanded: true,
-                          dropdownColor: Colors.white,
-                          decoration: InputDecoration(
-                            labelText: "เลือกสินค้า",
-                            labelStyle: TextStyle(color: kbgM),
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: kButtonColor),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: kButtonColor),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: kButtonColor,
-                                width: 2,
+                productTyp.isEmpty
+                    ? SizedBox.shrink()
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: size.width * 0.78,
+                              ), // กำหนดความกว้าง
+                              child: DropdownButtonFormField<ProductTyp>(
+                                isExpanded: true,
+                                dropdownColor: Colors.white,
+                                decoration: InputDecoration(
+                                  labelText: "เลือกสินค้า",
+                                  labelStyle: TextStyle(color: kbgM),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(color: kButtonColor),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(color: kButtonColor),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: kButtonColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                                items: productTyp.map((product) {
+                                  return DropdownMenuItem<ProductTyp>(
+                                    value: product,
+                                    child: Text(
+                                      product.name_en ?? "",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    print("ID: ${value.id}");
+                                    print("Name: ${value.name_en}");
+                                    idPro = value.id.toString();
+                                    namePro = value.name_en ?? "";
+                                  }
+                                },
                               ),
                             ),
-                          ),
-                          items: productTyp.map((product) {
-                            return DropdownMenuItem<ProductTyp>(
-                              value: product, // 👈 ส่ง object ทั้งตัว
-                              child: Text(
-                                product.name_en ?? "",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: TextStyle(fontSize: 14),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            if (value != null) {
-                              print("ID: ${value.id}");
-                              print("Name: ${value.name_en}");
-                              idPro = value.id.toString();
-                              namePro = value.name_en ?? "";
-                            }
-                          },
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  Catagory(id: idPro!, title: namePro ?? ""),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          width: size.width * 0.15,
-                          height: size.height * 0.05,
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Catagory(
+                                      id: idPro!,
+                                      title: namePro ?? "",
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: size.width * 0.15,
+                                height: size.height * 0.05,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
 
-                            color: kButtonColor,
-                          ),
-                          child: Center(
-                            child: Text(
-                              "ค้นหา",
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: kbgf,
+                                  color: kButtonColor,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "ค้นหา",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: kbgf,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
 
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -349,126 +363,155 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                product.isEmpty
-                 ? SizedBox.shrink()
-                 : SizedBox(
-                  height: size.height * 0.5,
-                  width: size.width * 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: GridView.builder(
-                      itemCount: 4,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.75,
-                      ),
-                      itemBuilder: (context, index) {
-                        final products = product[index];
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 6,
-                                spreadRadius: 2,
-                                offset: const Offset(2, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              // รูปสินค้า
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(16),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/images/NoImage.jpg",
-                                    fit: BoxFit.cover,
-                                  ),
+                uniqueProducts.isEmpty
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: kButtonColor,
+                        ), // แสดง loading
+                      )
+                    : SizedBox(
+                        height: size.height * 0.5,
+                        width: size.width * 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: // uniqueProducts คือ list ของ product ที่ไม่ซ้ำ id
+                          GridView.builder(
+                            itemCount: 4,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 12,
+                                  childAspectRatio: 0.75,
                                 ),
-                              ),
-                              // ข้อมูลสินค้า
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
+                            itemBuilder: (context, index) {
+                              final selectedProduct =
+                                  uniqueProducts[index]; // <-- นี่คือ selectedProduct
+
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 6,
+                                      spreadRadius: 2,
+                                      offset: Offset(2, 4),
+                                    ),
+                                  ],
+                                ),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
-                                    Text(
-                                      products.product?.name_th ?? "",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
+                                    // รูปสินค้า
+                                    Expanded(
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                              top: Radius.circular(16),
+                                            ),
+                                        child:
+                                            selectedProduct?.image_url == null
+                                            ? Image.asset(
+                                                "assets/images/NoImage.jpg",
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Image.network(
+                                                selectedProduct!.image_url!,
+                                                fit: BoxFit.cover,
+                                              ),
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      formatNumber(
-                                        products.product?.srp_inc_vat ?? "0",
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    // ปุ่มสั่งซื้อ
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: kButtonColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              8,
+
+                                    // ข้อมูล
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            selectedProduct?.name_en ?? "",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => Detailpro(
-                                                proName:
-                                                    products.product?.name_en ??
-                                                    "",
-                                                proPice: formatNumber(
-                                                  products
-                                                          .product
-                                                          ?.srp_inc_vat ??
-                                                      "0",
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            formatNumber(
+                                              selectedProduct?.srp_inc_vat ??
+                                                  "0",
+                                            ),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: kButtonColor,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
                                                 ),
-                                                detail: "",
-                                                color:
-                                                    products.color?.name_en ??
-                                                    "",
+                                              ),
+                                              onPressed: () {
+                                                // หา colors ของ product ที่กด
+                                                final colors = product
+                                                    .where(
+                                                      (e) =>
+                                                          e.product!.id ==
+                                                          selectedProduct!.id,
+                                                    )
+                                                    .map((e) => e.color)
+                                                    .toList();
+
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => Detailpro(
+                                                      proName:
+                                                          selectedProduct
+                                                              ?.name_en ??
+                                                          "",
+                                                      proPice: formatNumber(
+                                                        selectedProduct
+                                                                ?.srp_inc_vat ??
+                                                            "",
+                                                      ),
+                                                      detail: '',
+                                                      color: colors,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Text(
+                                                "สั่งซื้อ",
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: kbgf,
+                                                ),
                                               ),
                                             ),
-                                          );
-                                        },
-                                        child: Text(
-                                          "สั่งซื้อ",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: kbgf,
                                           ),
-                                        ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                        ),
+                      ),
               ],
             ),
           ),

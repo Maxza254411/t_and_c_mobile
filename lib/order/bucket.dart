@@ -61,10 +61,11 @@ class _BucketState extends State<Bucket> {
         backgroundColor: kButtonColor,
         leading: IconButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FirstPage()),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => FirstPage()),
+            // );
+            Navigator.pop(context);
           },
           icon: Icon(Icons.chevron_left, color: Colors.white),
         ),

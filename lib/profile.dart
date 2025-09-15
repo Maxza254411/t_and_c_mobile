@@ -17,12 +17,14 @@ class _ProfileState extends State<Profile> {
   String? first_name;
   String? last_name;
   String? staff_code;
+  String? email;
 
   Future<void> getpreferences() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     first_name = prefs.getString('first_name');
     last_name = prefs.getString('last_name');
     staff_code = prefs.getString('staff_code');
+      email  = prefs.getString('email');
     setState(() {});
   }
 
@@ -139,7 +141,7 @@ class _ProfileState extends State<Profile> {
             BoxProfile(
               size: size,
               title: 'email',
-              description: '***************',
+              description: '${email}',
             ),
             BoxProfile(
               size: size,

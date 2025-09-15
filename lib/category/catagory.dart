@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
-import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
-import 'package:t_and_c_mobile/widget/field.dart';
 
 class Catagory extends StatefulWidget {
   Catagory({super.key, required this.id, required this.title});
 
-  String id;
-  String title;
+  final String id;
+  final String title;
 
   @override
   State<Catagory> createState() => _CatagoryState();
@@ -25,80 +22,13 @@ class _CatagoryState extends State<Catagory> {
   int _page = 1;
   bool _isLoadingMore = false;
   bool _hasMore = true;
-  List<Data> allProducts = []; // ✅ เก็บทั้งหมด
-  List<Data> products = [];    // ✅ เก็บที่โชว์ (filter แล้ว)
-
-  Future<void> getapi({bool isLoadMore = false}) async {
-    try {
-      if (_isLoadingMore || !_hasMore) return;
-
-      if (isLoadMore) {
-        setState(() => _isLoadingMore = true);
-      }
-
-      final newProducts = await ProductApi.getproductbyid(
-        id: int.parse(widget.id),
-        page: _page,
-      );
-
-      if (newProducts.isEmpty) {
-        setState(() {
-          _hasMore = false;
-        });
-      } else {
-        setState(() {
-          if (isLoadMore) {
-            allProducts.addAll(newProducts); // ✅ เก็บทั้งหมด
-          } else {
-            allProducts = newProducts;       // ✅ หน้าแรกทับได้
-          }
-          _page++;
-
-          // ทุกครั้งที่โหลดใหม่ ต้อง filter อีกรอบ
-          filterProducts(search.text);
-        });
-      }
-    } on Exception catch (e) {
-      if (!mounted) return;
-      await showDialog(
-        context: context,
-        builder: (context) => AlertDialogYes(
-          title: 'แจ้งเตือน',
-          description: '$e',
-          pressYes: () {
-            Navigator.pop(context);
-          },
-        ),
-      );
-    } finally {
-      setState(() => _isLoadingMore = false);
-    }
-  }
-
-  /// ✅ ฟังก์ชันกรอง
-  void filterProducts(String keyword) {
-    if (keyword.isEmpty) {
-      products = List.from(allProducts);
-    } else {
-      products = allProducts
-          .where((item) =>
-              item.product?.name_en
-                  ?.toLowerCase()
-                  .contains(keyword.toLowerCase()) ??
-              false)
-          .toList();
-    }
-    setState(() {});
-  }
+  List<Data> allProducts = []; // เก็บข้อมูลทั้งหมด
+  List<Data> filteredProducts = []; // เก็บข้อมูลกรองแล้ว
 
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getapi();
-    });
-
+    WidgetsBinding.instance.addPostFrameCallback((_) => getapi());
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 200 &&
@@ -116,6 +46,71 @@ class _CatagoryState extends State<Catagory> {
     super.dispose();
   }
 
+  Future<void> getapi({bool isLoadMore = false}) async {
+    try {
+      if (_isLoadingMore || !_hasMore) return;
+
+      if (isLoadMore) setState(() => _isLoadingMore = true);
+
+      final newProducts = await ProductApi.getproductbyid(
+        id: int.parse(widget.id),
+        page: _page,
+      );
+
+      if (newProducts.isEmpty) {
+        setState(() => _hasMore = false);
+      } else {
+        setState(() {
+          if (isLoadMore) {
+            allProducts.addAll(newProducts);
+          } else {
+            allProducts = newProducts;
+          }
+          _page++;
+          filterProducts(search.text);
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialogYes(
+          title: 'แจ้งเตือน',
+          description: '$e',
+          pressYes: () => Navigator.pop(context),
+        ),
+      );
+    } finally {
+      setState(() => _isLoadingMore = false);
+    }
+  }
+
+  void filterProducts(String keyword) {
+    if (keyword.isEmpty) {
+      filteredProducts = List.from(allProducts);
+    } else {
+      filteredProducts = allProducts
+          .where((item) =>
+              item.product?.name_en
+                  ?.toLowerCase()
+                  .contains(keyword.toLowerCase()) ??
+              false)
+          .toList();
+    }
+    setState(() {});
+  }
+
+  /// สร้าง list ไม่ซ้ำตาม product.id
+  List<Data> get uniqueProducts {
+    final Map<int, Data> map = {};
+    for (var item in filteredProducts) {
+      if (!map.containsKey(item.product!.id)) {
+        map[item.product!.id] = item;
+      }
+    }
+    return map.values.toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -126,22 +121,19 @@ class _CatagoryState extends State<Catagory> {
         automaticallyImplyLeading: false,
         backgroundColor: kButtonColor,
         leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.chevron_left, color: Colors.white),
         ),
         centerTitle: true,
-        title: Text(
-          widget.title,
-          style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
-        ),
+        title: Text(widget.title,
+            style: TextStyle(color: kbgf, fontWeight: FontWeight.bold)),
       ),
       body: Column(
         children: [
-           Padding(
-             padding: const EdgeInsets.all(8.0),
-             child: Container(
+          // Search field
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: const Color.fromARGB(255, 241, 241, 241),
@@ -149,46 +141,26 @@ class _CatagoryState extends State<Catagory> {
               width: double.infinity,
               height: size.height * 0.05,
               child: TextFormField(
-                controller:search,
-                style:  TextStyle(fontSize: 22),
+                controller: search,
+                style: TextStyle(fontSize: 22),
                 decoration: InputDecoration(
-                   prefixIcon: Image.asset( "assets/icons/Search.png", scale: 20),
+                  prefixIcon: Image.asset(
+                    "assets/icons/Search.png",
+                    scale: 20,
+                  ),
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
-                      hintText: "Search here ...",
+                  hintText: "Search here ...",
                   hintStyle: const TextStyle(
                     fontSize: 15,
                     fontFamily: 'IBMPlexSansThai',
                     color: kbgM,
                   ),
                 ),
-                    onChanged: (value) {
-                filterProducts(value); // ✅ เรียกกรองทุกครั้งที่พิมพ์
-              },
+                onChanged: filterProducts,
               ),
-                       ),
-           ),
-          // Search
-          // Container(
-            
-          //   height: size.height * 0.08,
-          //   width: double.infinity,
-          //   padding: EdgeInsets.all(16),
-          //   decoration: BoxDecoration(color: kbgf),
-          //   child: TextField(
-          //     controller: search,
-          //     decoration: InputDecoration(
-          //       hintText: "Search here ...",
-          //       prefixIcon: Icon(Icons.search),
-          //       border: OutlineInputBorder(
-          //         borderRadius: BorderRadius.circular(8),
-          //       ),
-          //     ),
-          //     onChanged: (value) {
-          //       filterProducts(value); // ✅ เรียกกรองทุกครั้งที่พิมพ์
-          //     },
-          //   ),
-          // ),
+            ),
+          ),
 
           // GridView
           Expanded(
@@ -196,7 +168,7 @@ class _CatagoryState extends State<Catagory> {
               padding: const EdgeInsets.all(12.0),
               child: GridView.builder(
                 controller: _scrollController,
-                itemCount: products.length + (_isLoadingMore ? 1 : 0),
+                itemCount: uniqueProducts.length + (_isLoadingMore ? 1 : 0),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 12,
@@ -204,8 +176,8 @@ class _CatagoryState extends State<Catagory> {
                   childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
-                  if (index < products.length) {
-                    final product = products[index];
+                  if (index < uniqueProducts.length) {
+                    final product = uniqueProducts[index];
                     return _buildProductCard(product);
                   } else {
                     return Center(
@@ -221,8 +193,13 @@ class _CatagoryState extends State<Catagory> {
     );
   }
 
-  /// ✅ แยกการสร้างการ์ดสินค้าออกมาให้อ่านง่าย
   Widget _buildProductCard(Data product) {
+    // สร้าง list สีทั้งหมดของสินค้านี้
+    final productColors = allProducts
+        .where((item) => item.product!.id == product.product!.id)
+        .map((e) => e.color)
+        .toList();
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -232,30 +209,23 @@ class _CatagoryState extends State<Catagory> {
             color: Colors.black12,
             blurRadius: 6,
             spreadRadius: 2,
-            offset: const Offset(2, 4),
+            offset: Offset(2, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // รูป
+          // รูปสินค้า
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
-              ),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               child: product.product?.image_url == null
-                  ? Image.asset(
-                      "assets/images/NoImage.jpg",
-                      fit: BoxFit.cover,
-                    )
-                  : Image.network(
-                      product.product!.image_url!,
-                      fit: BoxFit.cover,
-                    ),
+                  ? Image.asset("assets/images/NoImage.jpg", fit: BoxFit.cover)
+                  : Image.network(product.product!.image_url!, fit: BoxFit.cover),
             ),
           ),
+
           // ข้อมูล
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -271,10 +241,7 @@ class _CatagoryState extends State<Catagory> {
                 const SizedBox(height: 4),
                 Text(
                   formatNumber(product.product?.srp_inc_vat ?? "0"),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
@@ -283,8 +250,7 @@ class _CatagoryState extends State<Catagory> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kButtonColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                          borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -292,21 +258,18 @@ class _CatagoryState extends State<Catagory> {
                         MaterialPageRoute(
                           builder: (context) => Detailpro(
                             proName: product.product?.name_en ?? "",
-                            proPice: formatNumber(
-                                product.product?.srp_inc_vat ?? "0"),
-                            detail: "",
-                            color: product.color?.name_en ?? " - ",
+                            proPice:
+                                formatNumber(product.product?.srp_inc_vat ?? "0"),
+                         detail: '', color:productColors, // ส่ง list สีทั้งหมด
                           ),
                         ),
+                        
                       );
                     },
                     child: Text(
                       "สั่งซื้อ",
                       style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: kbgf,
-                      ),
+                          fontSize: 12, fontWeight: FontWeight.bold, color: kbgf),
                     ),
                   ),
                 ),
