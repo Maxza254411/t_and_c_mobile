@@ -118,7 +118,8 @@ class _LoginpageState extends State<Loginpage> {
                         size: size,
                         isPassword: true,
                         heights: size.height * 0.05,
-                         fontsize: 16,   width: double.infinity,
+                        fontsize: 16,
+                        width: double.infinity,
                       ),
                       SizedBox(height: size.height * 0.01),
                       Row(
@@ -173,8 +174,21 @@ class _LoginpageState extends State<Loginpage> {
                           if (_login["token"] != null) {
                             final prefs = await SharedPreferences.getInstance();
                             await prefs.setString("token", _login["token"]);
+                            await prefs.setInt("userId", _login["user"]["id"]);
+                            await prefs.setString(
+                              "first_name",
+                              _login["user"]["first_name"],
+                            );
+                            await prefs.setString(
+                              "last_name",
+                              _login["user"]["last_name"],
+                            );
+                              await prefs.setString(
+                              "staff_code",
+                              _login["user"]["staff_code"],
+                            );
                           }
-                          print(_login["token"]);
+                  
 
                           LoadingDialog.close(context);
                           Navigator.push(

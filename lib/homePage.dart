@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
@@ -25,6 +26,8 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   String? idPro;
   String? namePro;
+  String? first_name;
+  String? last_name;
   final CarouselSliderController _controller = CarouselSliderController();
 
   void _goToPage(int index) {
@@ -58,11 +61,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> getpreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    first_name = prefs.getString('first_name');
+    last_name = prefs.getString('last_name');
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getapi();
+      await getpreferences();
     });
   }
 
@@ -134,7 +144,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             title: Text(
-              "Admin Admin",
+              "${first_name} ${last_name}",
               style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
             ),
           ),

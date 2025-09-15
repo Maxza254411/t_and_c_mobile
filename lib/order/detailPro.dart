@@ -163,7 +163,6 @@ class _DetailproState extends State<Detailpro> {
                             color:widget.color
                           );
 
-                          // เรียก provider มาเพิ่มสินค้าในตะกร้า
                           Provider.of<CartProvider>(
                             context,
                             listen: false,

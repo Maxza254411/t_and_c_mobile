@@ -5,12 +5,13 @@ class Shoping {
   final String detail;
   final String color;
   int quantity;
-
+  String? userId;
   Shoping({
     required this.name,
     required this.price,
     required this.detail,
     required this.color,
     this.quantity = 1,
+    this.userId
   });
 }

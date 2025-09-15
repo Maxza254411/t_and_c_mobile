@@ -101,7 +101,6 @@ class _CatagoryState extends State<Catagory> {
 
     return Consumer<ProductController>(
       builder: (context, controller, child) {
-        final productbyid = controller.productbyid;
         return Scaffold(
           backgroundColor: kbgH,
           appBar: AppBar(

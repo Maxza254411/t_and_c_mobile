@@ -96,6 +96,10 @@ class _BucketState extends State<Bucket> {
                     itemCount: cart.items.length,
                     itemBuilder: (context, index) {
                       final product = cart.items[index];
+                      if (index >= checked.length) {
+                        checked.add(false); // default = false
+                        quantities.add(product.quantity);
+                      }
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
@@ -132,7 +136,8 @@ class _BucketState extends State<Bucket> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
@@ -144,8 +149,7 @@ class _BucketState extends State<Bucket> {
                                         ),
                                       ),
                                       Text(
-                                        "สี ${product.color}"
-                                        ,
+                                        "สี ${product.color}",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
@@ -169,7 +173,9 @@ class _BucketState extends State<Bucket> {
                                                       });
                                                     } else {
                                                       final out =
-                                                          await showDialog<bool>(
+                                                          await showDialog<
+                                                            bool
+                                                          >(
                                                             barrierDismissible:
                                                                 true,
                                                             context: context,
@@ -186,7 +192,9 @@ class _BucketState extends State<Bucket> {
                                                           cart.removeItem(
                                                             product,
                                                           );
-                                                          checked.removeAt(index);
+                                                          checked.removeAt(
+                                                            index,
+                                                          );
                                                           quantities.removeAt(
                                                             index,
                                                           );
@@ -195,9 +203,10 @@ class _BucketState extends State<Bucket> {
                                                     }
                                                   },
                                                   child: Padding(
-                                                    padding: const EdgeInsets.all(
-                                                      2.0,
-                                                    ),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          2.0,
+                                                        ),
                                                     child: Image.asset(
                                                       "assets/icons/minus.png",
                                                       scale: 30,
@@ -215,9 +224,10 @@ class _BucketState extends State<Bucket> {
                                                     });
                                                   },
                                                   child: Padding(
-                                                    padding: const EdgeInsets.all(
-                                                      2.0,
-                                                    ),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          2.0,
+                                                        ),
                                                     child: Image.asset(
                                                       "assets/icons/Regular.png",
                                                       scale: 30,
@@ -240,7 +250,7 @@ class _BucketState extends State<Bucket> {
                                                       title: 'แจ้งเตือน',
                                                     ),
                                               );
-                                  
+
                                               if (out == true) {
                                                 setState(() {
                                                   cart.removeItem(product);
@@ -307,7 +317,7 @@ class _BucketState extends State<Bucket> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => Compleated(
-                                        totalPrice:totalPrice,
+                                        totalPrice: totalPrice,
                                         status: false,
                                         selectedItems:
                                             selectedItems, // ส่งไปหน้า Compleated
