@@ -196,12 +196,13 @@ class _LoginpageState extends State<Loginpage> {
                   
 
                           LoadingDialog.close(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => FirstPage(),
-                            ),
-                          );
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Loginpage()), (route) => false);
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => FirstPage(),
+                          //   ),
+                          // );
                         } on Exception catch (e) {
                           if (!mounted) return;
                           LoadingDialog.close(context);
@@ -219,8 +220,8 @@ class _LoginpageState extends State<Loginpage> {
                         }
                       }
                     }
-                  },
-                  child: Container(
+                   },
+                   child: Container(
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: ktextColr,

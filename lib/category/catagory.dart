@@ -151,8 +151,8 @@ class _CatagoryState extends State<Catagory> {
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   hintText: "Search here ...",
-                  hintStyle: const TextStyle(
-                    fontSize: 15,
+                  hintStyle:  TextStyle(
+                    fontSize: 20,
                     fontFamily: 'IBMPlexSansThai',
                     color: kbgM,
                   ),

@@ -198,7 +198,7 @@ class _DetailproState extends State<Detailpro> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
-                      width: size.width * 0.4,
+                      width: size.width * 0.45,
                       height: size.height * 0.08,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(

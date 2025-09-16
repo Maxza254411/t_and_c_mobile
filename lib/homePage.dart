@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getapi() async {
     try {
-      LoadingDialog.open(context);
+      // LoadingDialog.open(context);
       await context.read<ProductController>().getproductlist();
       //  await context.read<ProductController>().getproduct();
       final producs = await ProductApi.getproduct();
@@ -55,9 +55,9 @@ class _HomePageState extends State<HomePage> {
           .toSet() // แปลงเป็น Set เพื่อลบซ้ำ
           .toList();
 
-      LoadingDialog.close(context);
+      // LoadingDialog.close(context);
     } on Exception catch (e) {
-      LoadingDialog.close(context);
+      // LoadingDialog.close(context);
       if (!mounted) return;
       await showDialog(
         context: context,
