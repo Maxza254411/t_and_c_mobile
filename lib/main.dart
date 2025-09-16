@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 String? token;
-int? userId;
+int? userId = 1;
 late SharedPreferences prefs;
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();

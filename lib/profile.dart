@@ -246,7 +246,7 @@ class BoxProfile extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            height: size.height * 0.1,
+            height: size.height * 0.12,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               color: kButtonColor,
@@ -257,7 +257,7 @@ class BoxProfile extends StatelessWidget {
             padding: const EdgeInsets.only(left: 20),
             child: Container(
               padding: EdgeInsets.all(12),
-              height: size.height * 0.1,
+              height: size.height * 0.12,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,

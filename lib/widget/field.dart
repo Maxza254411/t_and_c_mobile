@@ -150,24 +150,21 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
             ),
             width: double.infinity,
             height: widget.heights,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: widget.controller,
-                validator: widget.validator,
-                style: const TextStyle(fontSize: 22),
-                decoration: InputDecoration(
-                  prefixIcon: widget.imagestatus == true
-                      ? Image.asset(widget.images!, scale: 20)
-                      : SizedBox.shrink(),
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  hintText: widget.hintText,
-                  hintStyle: const TextStyle(
-                    fontSize: 15,
-                    fontFamily: 'IBMPlexSansThai',
-                    color: kbgM,
-                  ),
+            child: TextFormField(
+              controller: widget.controller,
+              validator: widget.validator,
+              style: const TextStyle(fontSize: 22),
+              decoration: InputDecoration(
+                prefixIcon: widget.imagestatus == true
+                    ? Image.asset(widget.images!, scale: 20)
+                    : SizedBox.shrink(),
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                hintText: widget.hintText,
+                hintStyle: const TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'IBMPlexSansThai',
+                  color: kbgM,
                 ),
               ),
             ),
