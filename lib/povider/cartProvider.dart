@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 
 class CartProvider with ChangeNotifier {
-  final int userId; // userId ของผู้ใช้ปัจจุบัน
+   int userId; // userId ของผู้ใช้ปัจจุบัน
   final List<Shoping> _items = [];
 
   CartProvider(this.userId);

@@ -196,7 +196,7 @@ class _LoginpageState extends State<Loginpage> {
                   
 
                           LoadingDialog.close(context);
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Loginpage()), (route) => false);
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => FirstPage()), (route) => false);
                           // Navigator.push(
                           //   context,
                           //   MaterialPageRoute(
