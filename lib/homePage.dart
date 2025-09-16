@@ -5,9 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
+import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
+import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:t_and_c_mobile/category/catagory.dart';
@@ -249,6 +251,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
+
                 productTyp.isEmpty
                     ? SizedBox.shrink()
                     : Padding(
@@ -440,16 +443,71 @@ class _HomePageState extends State<HomePage> {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            formatNumber(
-                                              selectedProduct?.srp_inc_vat ??
-                                                  "0",
-                                            ),
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                                          SizedBox(height: 4),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                formatNumber(
+                                                  selectedProduct
+                                                          ?.srp_inc_vat ??
+                                                      "0",
+                                                ),
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+
+                                              Consumer<FavoriteProvider>(
+                                                builder: (context, favProvider, child) {
+                                                  final colors = product
+                                                      .where(
+                                                        (e) =>
+                                                            e.product!.id ==
+                                                            selectedProduct!.id,
+                                                      )
+                                                      .map((e) => e.color)
+                                                      .toList();
+
+                                                  final currentProduct = Shoping(
+                                                    name:
+                                                        selectedProduct
+                                                            ?.name_en ??
+                                                        "",
+                                                    price: formatNumber(
+                                                      selectedProduct
+                                                              ?.srp_inc_vat ??
+                                                          "0",
+                                                    ),
+                                                    detail: "",
+                                                    colors: colors,
+                                                    color: '', // ยังไม่เลือกสี
+                                                  );
+
+                                                  final isFav = favProvider
+                                                      .isFavorite(
+                                                        currentProduct,
+                                                      );
+
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      favProvider
+                                                          .toggleFavorite(
+                                                            currentProduct,
+                                                          );
+                                                    },
+                                                    child: Image.asset(
+                                                      isFav
+                                                          ? "assets/icons/HertOn.png" // ❤️
+                                                          : "assets/icons/HertOff.png", // 🤍
+                                                      scale: 15,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ],
                                           ),
                                           const SizedBox(height: 8),
                                           SizedBox(

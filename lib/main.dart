@@ -7,6 +7,7 @@ import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/homePage.dart';
 import 'package:t_and_c_mobile/login.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
+import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => ProductController()),
         ChangeNotifierProvider(create: (_) => CartProvider(userId!)), // ใส่ userId
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

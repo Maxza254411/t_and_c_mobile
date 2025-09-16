@@ -6,6 +6,7 @@ import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
 import 'package:t_and_c_mobile/order/compleated.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
+import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 
@@ -121,21 +122,46 @@ class _DetailproState extends State<Detailpro> {
             ),
             SizedBox(height: size.height * 0.001),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(width: size.width * 0.05),
-
-                Text(
-                  "${widget.proPice} บาท ",
-
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Text(
+                    "${widget.proPice} บาท ",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
+                ),
+                Consumer<FavoriteProvider>(
+                  builder: (context, favProvider, child) {
+                    final currentProduct = Shoping(
+                      name: widget.proName,
+                      price: widget.proPice,
+                      detail: widget.detail,
+                      colors: widget.color, // list สีที่ส่งมา
+                      color: selectedColor ?? "",
+                    );
+
+                    final isFav = favProvider.isFavorite(currentProduct);
+
+                    return GestureDetector(
+                      onTap: () {
+                        favProvider.toggleFavorite(currentProduct);
+                      },
+                      child: Image.asset(
+                        isFav
+                            ? "assets/icons/HertOn.png" // ❤️
+                            : "assets/icons/HertOff.png", // 🤍
+                        scale: 10,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
-            SizedBox(height: size.height * 0.001),
 
             SingleChildScrollView(
               child: Row(
@@ -212,64 +238,66 @@ class _DetailproState extends State<Detailpro> {
                     ),
                   ),
                   Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: SizedBox(
-    width: size.width * 0.4,
-    height: size.height * 0.08,
-    child: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white, // พื้นหลังขาว
-        side: BorderSide(color: kButtonColor, width: 2), // ขอบฟ้า
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      onPressed: () async{
-          if (widget.proPice != "0.00") {
-            final selectedItems = <Shoping>[];
-            final shoping = Shoping(
-              name: widget.proName,
-              price: widget.proPice,
-              detail: widget.detail,
-              color: selectedColor!,
-            );
-            selectedItems.add(shoping);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Compleated(
-                  totalPrice: double.parse(widget.proPice),
-                  status: false,
-                  selectedItems: selectedItems,
-                ),
-              ),
-            );
-          }else{
-             await showDialog(
-         context: context,
-         builder: (context) => AlertDialogYes(
-          title: 'แจ้งเตือน',
-          description: 'ไม่สามารถทำรายการได้ \n เพราะราคามีค่าเป็น 0.00 บาท',
-          pressYes: () {
-            Navigator.pop(context);
-          },
-        ),
-      );
-          }
-    
-      },
-      child: Text(
-        "สั่งซื้อ",
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color:kButtonColor, // ตัวหนังสือสีฟ้า
-        ),
-      ),
-    ),
-  ),
-),
-
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: size.width * 0.4,
+                      height: size.height * 0.08,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white, // พื้นหลังขาว
+                          side: BorderSide(
+                            color: kButtonColor,
+                            width: 2,
+                          ), // ขอบฟ้า
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (widget.proPice != "0.00") {
+                            final selectedItems = <Shoping>[];
+                            final shoping = Shoping(
+                              name: widget.proName,
+                              price: widget.proPice,
+                              detail: widget.detail,
+                              color: selectedColor!,
+                            );
+                            selectedItems.add(shoping);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Compleated(
+                                  totalPrice: double.parse(widget.proPice),
+                                  status: false,
+                                  selectedItems: selectedItems,
+                                ),
+                              ),
+                            );
+                          } else {
+                            await showDialog(
+                              context: context,
+                              builder: (context) => AlertDialogYes(
+                                title: 'แจ้งเตือน',
+                                description:
+                                    'ไม่สามารถทำรายการได้ \n เพราะราคามีค่าเป็น 0.00 บาท',
+                                pressYes: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            );
+                          }
+                        },
+                        child: Text(
+                          "สั่งซื้อ",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: kButtonColor, // ตัวหนังสือสีฟ้า
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
