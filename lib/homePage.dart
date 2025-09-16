@@ -500,8 +500,8 @@ class _HomePageState extends State<HomePage> {
                                                     },
                                                     child: Image.asset(
                                                       isFav
-                                                          ? "assets/icons/HertOn.png" // ❤️
-                                                          : "assets/icons/HertOff.png", // 🤍
+                                                          ? "assets/icons/HertOn.png" 
+                                                          : "assets/icons/HertOff.png", 
                                                       scale: 15,
                                                     ),
                                                   );
