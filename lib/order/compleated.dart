@@ -16,10 +16,14 @@ class Compleated extends StatefulWidget {
     required this.status,
     required this.selectedItems,
     this.totalPrice,
+    this.image,
+    required this.slipe_status,
   });
-  bool status;
+  bool status ;
   List<Shoping> selectedItems = []; // รับสินค้าที่ติ๊ก
   double? totalPrice;
+  String? image;
+  bool slipe_status;
   @override
   State<Compleated> createState() => _CompleatedState();
 }
@@ -140,10 +144,13 @@ class _CompleatedState extends State<Compleated> {
                     Column(
                       children: [
                         ListTile(
-                          leading: Image.asset(
+                          leading: 
+                       
+                          Image.asset(
                             "assets/icons/User.png",
                             scale: 15,
                           ),
+                         
                           title: Text("ชื่อผู้รับสินค้า"),
                           subtitle: Text(
                             "admin admin",
@@ -219,7 +226,7 @@ class _CompleatedState extends State<Compleated> {
                     ContainerHeader(
                       size: size,
                       text: 'รายการสินค้า',
-                      status: true,
+                      status: widget.slipe_status,
                     ),
                     widget.selectedItems.isEmpty
                         ? SizedBox.shrink()
@@ -240,9 +247,12 @@ class _CompleatedState extends State<Compleated> {
                                         padding: const EdgeInsets.only(
                                           left: 12,
                                         ),
-                                        child: Image.asset(
+                                        child: 
+                                         widget.selectedItems[index].image==null
+                                      ?  Image.asset(
                                           "assets/images/LOGO CMYK-01.png",
-                                        ),
+                                        )
+                                        :Image.network( widget.selectedItems[index].image!)
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),

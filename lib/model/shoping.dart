@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
 
 /// สำหรับเอาของใส่ตะกร้า
 class Shoping {
   String? productId;
+  String? image;
   final String name;
   final String price;
   final String detail;
@@ -10,7 +12,9 @@ class Shoping {
   int quantity;
   int? userId;
   List<Colorp?>? colors;
+  
   Shoping({
+    this.image,
     this.productId,
     required this.name,
     required this.price,

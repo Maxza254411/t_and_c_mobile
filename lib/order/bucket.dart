@@ -127,8 +127,26 @@ class _BucketState extends State<Bucket> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 2),
-                                child: Image.asset("assets/images/NoImage.jpg"),
+                                child: SizedBox(
+                                  width: size.width*0.2, // กำหนดความกว้าง
+                                  height: size.height*0.08, // กำหนดความสูง
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                      8,
+                                    ), // ถ้าอยากให้มุมโค้ง
+                                    child: product.image == null
+                                        ? Image.asset(
+                                            "assets/images/NoImage.jpg",
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.network(
+                                            product.image!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                  ),
+                                ),
                               ),
+
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Container(
@@ -233,7 +251,7 @@ class _BucketState extends State<Bucket> {
                                                 ),
                                               ),
                                             ),
-                                             SizedBox(width: 10),
+                                            SizedBox(width: 10),
                                             InkWell(
                                               onTap: () async {
                                                 final out = await showDialog<bool>(
@@ -316,8 +334,9 @@ class _BucketState extends State<Bucket> {
                                       builder: (context) => Compleated(
                                         totalPrice: totalPrice,
                                         status: false,
-                                        selectedItems:
-                                            selectedItems, // ส่งไปหน้า Compleated
+                                        selectedItems: selectedItems,
+                                        slipe_status:
+                                            false, // ส่งไปหน้า Compleated
                                       ),
                                     ),
                                   );

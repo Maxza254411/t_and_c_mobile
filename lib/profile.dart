@@ -143,11 +143,11 @@ class _ProfileState extends State<Profile> {
               title: 'email',
               description: '${email}',
             ),
-            BoxProfile(
-              size: size,
-              title: 'เบอร์มือถือ',
-              description: '000-xxx-xxxx',
-            ),
+            // BoxProfile(
+            //   size: size,
+            //   title: 'เบอร์มือถือ',
+            //   description: '000-xxx-xxxx',
+            // ),
             BoxProfile(
               size: size,
               title: 'วิธีการชำระเงินหลัก',

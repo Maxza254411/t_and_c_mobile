@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/data.dart';
+import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
+import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 
@@ -90,11 +93,13 @@ class _CatagoryState extends State<Catagory> {
       filteredProducts = List.from(allProducts);
     } else {
       filteredProducts = allProducts
-          .where((item) =>
-              item.product?.name_en
-                  ?.toLowerCase()
-                  .contains(keyword.toLowerCase()) ??
-              false)
+          .where(
+            (item) =>
+                item.product?.name_en?.toLowerCase().contains(
+                  keyword.toLowerCase(),
+                ) ??
+                false,
+          )
           .toList();
     }
     setState(() {});
@@ -125,8 +130,10 @@ class _CatagoryState extends State<Catagory> {
           icon: Icon(Icons.chevron_left, color: Colors.white),
         ),
         centerTitle: true,
-        title: Text(widget.title,
-            style: TextStyle(color: kbgf, fontWeight: FontWeight.bold)),
+        title: Text(
+          widget.title,
+          style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
+        ),
       ),
       body: Column(
         children: [
@@ -144,14 +151,11 @@ class _CatagoryState extends State<Catagory> {
                 controller: search,
                 style: TextStyle(fontSize: 22),
                 decoration: InputDecoration(
-                  prefixIcon: Image.asset(
-                    "assets/icons/Search.png",
-                    scale: 20,
-                  ),
+                  prefixIcon: Image.asset("assets/icons/Search.png", scale: 20),
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   hintText: "Search here ...",
-                  hintStyle:  TextStyle(
+                  hintStyle: TextStyle(
                     fontSize: 20,
                     fontFamily: 'IBMPlexSansThai',
                     color: kbgM,
@@ -219,10 +223,15 @@ class _CatagoryState extends State<Catagory> {
           // รูปสินค้า
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
               child: product.product?.image_url == null
                   ? Image.asset("assets/images/NoImage.jpg", fit: BoxFit.cover)
-                  : Image.network(product.product!.image_url!, fit: BoxFit.cover),
+                  : Image.network(
+                      product.product!.image_url!,
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
 
@@ -239,37 +248,82 @@ class _CatagoryState extends State<Catagory> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  formatNumber(product.product?.srp_inc_vat ?? "0"),
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      formatNumber(product.product?.srp_inc_vat ?? "0"),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+
+                    Consumer<FavoriteProvider>(
+                      builder: (context, favProvider, child) {
+                        final currentProduct = Shoping(
+                          productId: product.product?.id.toString(),
+                          name: product.product?.name_en ?? "",
+                          price: formatNumber(
+                            product.product?.srp_inc_vat ?? "0",
+                          ),
+                          detail: "",
+                          colors: productColors,
+                          color: '', // ยังไม่เลือกสี
+                        );
+
+                        final isFav = favProvider.isFavorite(currentProduct);
+
+                        return GestureDetector(
+                          onTap: () {
+                            favProvider.toggleFavorite(currentProduct);
+                          },
+                          child: Image.asset(
+                            isFav
+                                ? "assets/icons/HertOn.png"
+                                : "assets/icons/HertOff.png",
+                            scale: 15,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 8),
+            
+                SizedBox(height: 8),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kButtonColor,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => Detailpro(
+                            image: product.product?.image_url,
+                            productId: product.product?.id.toString() ,
                             proName: product.product?.name_en ?? "",
-                            proPice:
-                                formatNumber(product.product?.srp_inc_vat ?? "0"),
-                         detail: '', color:productColors, // ส่ง list สีทั้งหมด
+                            proPice: formatNumber(
+                              product.product?.srp_inc_vat ?? "0",
+                            ),
+                            detail: '',
+                            color: productColors, // ส่ง list สีทั้งหมด
                           ),
                         ),
-                        
                       );
                     },
                     child: Text(
                       "สั่งซื้อ",
                       style: TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.bold, color: kbgf),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: kbgf,
+                      ),
                     ),
                   ),
                 ),

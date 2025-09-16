@@ -13,15 +13,19 @@ import 'package:t_and_c_mobile/widget/dialog.dart';
 class Detailpro extends StatefulWidget {
   Detailpro({
     super.key,
+    this.productId,
     required this.proName,
     required this.proPice,
     required this.detail,
     this.color,
+    this.image,
   });
+  String? productId;
   String proName;
   String proPice;
   String detail;
   List<Colorp?>? color;
+  String? image;
 
   @override
   State<Detailpro> createState() => _DetailproState();
@@ -102,7 +106,11 @@ class _DetailproState extends State<Detailpro> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Center(child: Image.asset("assets/images/NoImage.jpg")),
+            Center(
+              child: widget.image != null
+                  ? Image.network(widget.image!)
+                  : Image.asset("assets/images/NoImage.jpg"),
+            ),
             SizedBox(height: 10),
             Row(
               children: [
@@ -135,30 +143,35 @@ class _DetailproState extends State<Detailpro> {
                     ),
                   ),
                 ),
-                Consumer<FavoriteProvider>(
-                  builder: (context, favProvider, child) {
-                    final currentProduct = Shoping(
-                      name: widget.proName,
-                      price: widget.proPice,
-                      detail: widget.detail,
-                      colors: widget.color, // list สีที่ส่งมา
-                      color: selectedColor ?? "",
-                    );
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Consumer<FavoriteProvider>(
+                    builder: (context, favProvider, child) {
+                      final currentProduct = Shoping(
+                        image: widget.image,
+                        productId: widget.productId,
+                        name: widget.proName,
+                        price: widget.proPice,
+                        detail: widget.detail,
+                        colors: widget.color, // list สีที่ส่งมา
+                        color: selectedColor ?? "",
+                      );
 
-                    final isFav = favProvider.isFavorite(currentProduct);
+                      final isFav = favProvider.isFavorite(currentProduct);
 
-                    return GestureDetector(
-                      onTap: () {
-                        favProvider.toggleFavorite(currentProduct);
-                      },
-                      child: Image.asset(
-                        isFav
-                            ? "assets/icons/HertOn.png" // ❤️
-                            : "assets/icons/HertOff.png", // 🤍
-                        scale: 10,
-                      ),
-                    );
-                  },
+                      return GestureDetector(
+                        onTap: () {
+                          favProvider.toggleFavorite(currentProduct);
+                        },
+                        child: Image.asset(
+                          isFav
+                              ? "assets/icons/HertOn.png" // ❤️
+                              : "assets/icons/HertOff.png", // 🤍
+                          scale: 10,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -209,6 +222,7 @@ class _DetailproState extends State<Detailpro> {
                         ),
                         onPressed: () {
                           final shoping = Shoping(
+                            image: widget.image,
                             name: widget.proName,
                             price: widget.proPice,
                             detail: widget.detail,
@@ -257,6 +271,7 @@ class _DetailproState extends State<Detailpro> {
                           if (widget.proPice != "0.00") {
                             final selectedItems = <Shoping>[];
                             final shoping = Shoping(
+                              image: widget.image,
                               name: widget.proName,
                               price: widget.proPice,
                               detail: widget.detail,
@@ -269,7 +284,7 @@ class _DetailproState extends State<Detailpro> {
                                 builder: (context) => Compleated(
                                   totalPrice: double.parse(widget.proPice),
                                   status: false,
-                                  selectedItems: selectedItems,
+                                  selectedItems: selectedItems, slipe_status: false,
                                 ),
                               ),
                             );
