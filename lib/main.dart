@@ -1,43 +1,40 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:t_and_c_mobile/fristPage.dart';
-import 'package:t_and_c_mobile/homePage.dart';
 import 'package:t_and_c_mobile/login.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 
 String? token;
-int? userId = 1;
+int? userId;
 late SharedPreferences prefs;
-Future main() async {
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.immersiveSticky,
-  );
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   prefs = await SharedPreferences.getInstance();
   token = prefs.getString('token');
   userId = prefs.getInt('userId');
-  runApp(MyApp());
+
+  runApp( MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // final String userId; // รับ userId
-  MyApp(  {super.key,});
+   MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ProductController()),
-        ChangeNotifierProvider(create: (_) => CartProvider(userId!)), 
+        if (userId != null)
+        ChangeNotifierProvider(create: (_) => CartProvider(userId!)),
         ChangeNotifierProvider(create: (_) => FavoriteProvider()),
       ],
       child: MaterialApp(
@@ -48,8 +45,6 @@ class MyApp extends StatelessWidget {
           fontFamily: 'IBMPlexSansThai',
         ),
         home: token == null ? Loginpage() : FirstPage(),
-        // Loginpage(),
-        // FirstPage(),
       ),
     );
   }

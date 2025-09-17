@@ -477,7 +477,9 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                                 detail: "",
                                                 colors: colors,
-                                                color: '', // ยังไม่เลือกสี
+                                                color: '', nameTh: selectedProduct
+                                                        .name_th ??
+                                                    "", // ยังไม่เลือกสี
                                               );
                     
                                               final isFav = favProvider
@@ -541,7 +543,9 @@ class _HomePageState extends State<HomePage> {
                                                         "",
                                                   ),
                                                   detail: '',
-                                                  color: colors,
+                                                  color: colors, proNameTh: selectedProduct
+                                                          ?.name_th ??
+                                                      "",
                                                 ),
                                               ),
                                             );

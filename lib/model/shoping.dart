@@ -6,6 +6,7 @@ class Shoping {
   String? productId;
   String? image;
   final String name;
+  final String nameTh;
   final String price;
   final String detail;
   final String color;
@@ -14,6 +15,7 @@ class Shoping {
   List<Colorp?>? colors;
   
   Shoping({
+    required this.nameTh,
     this.image,
     this.productId,
     required this.name,

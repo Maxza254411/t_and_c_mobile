@@ -269,7 +269,7 @@ class _CatagoryState extends State<Catagory> {
                           ),
                           detail: "",
                           colors: productColors,
-                          color: '', // ยังไม่เลือกสี
+                          color: '', nameTh: product.product?.name_th ?? "", 
                         );
 
                         final isFav = favProvider.isFavorite(currentProduct);
@@ -312,7 +312,7 @@ class _CatagoryState extends State<Catagory> {
                               product.product?.srp_inc_vat ?? "0",
                             ),
                             detail: '',
-                            color: productColors, // ส่ง list สีทั้งหมด
+                            color: productColors, proNameTh: product.product?.name_th, // ส่ง list สีทั้งหมด
                           ),
                         ),
                       );

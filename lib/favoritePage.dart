@@ -227,7 +227,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                               price: item.price,
                                               detail: "",
                                               colors: item.colors,
-                                              color: '',
+                                              color: '', nameTh: item.nameTh,
                                             );
                                             final isFav =
                                                 favProvider.isFavorite(currentProduct);
@@ -269,7 +269,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                                 proName: item.name,
                                                 proPice: item.price,
                                                 detail: '',
-                                                color: item.colors,
+                                                color: item.colors, proNameTh: item.nameTh,
                                               ),
                                             ),
                                           );
