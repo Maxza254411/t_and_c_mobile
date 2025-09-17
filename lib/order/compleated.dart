@@ -447,7 +447,7 @@ class _CompleatedState extends State<Compleated> {
                                   context: context,
                                   builder: (context) => SucesDialog(
                                     title: 'แจ้งเตือน',
-                                    description: 'สำเร็จ',
+                                    description: 'ชำระเงินสำเร็จ',
                                   ),
                                 );
 
