@@ -10,7 +10,7 @@ import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 
 String? token;
-int? userId;
+int? userId =1;
 late SharedPreferences prefs;
 
 Future<void> main() async {

@@ -6,6 +6,7 @@ import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
+import 'package:t_and_c_mobile/nontification.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
@@ -140,17 +141,25 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset("assets/icons/Notification.png", scale: 15),
-              ),
+              GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Nontification()),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset("assets/icons/Notification.png", scale: 15),
+            ),
+          ),
             ],
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Image.asset("assets/icons/Vector.png", scale: 15),
             ),
             title: Text(
-              "${first_name} ${last_name}",
+              "${first_name??""} ${last_name??""}",
               style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
             ),
           ),

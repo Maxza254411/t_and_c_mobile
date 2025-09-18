@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
+import 'package:t_and_c_mobile/nontification.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
@@ -92,9 +93,17 @@ class _FavoritePageState extends State<FavoritePage> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset("assets/icons/Notification.png", scale: 15),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Nontification()),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset("assets/icons/Notification.png", scale: 15),
+            ),
           ),
         ],
         title: Text(
@@ -130,8 +139,10 @@ class _FavoritePageState extends State<FavoritePage> {
                       controller: search,
                       style: TextStyle(fontSize: 22),
                       decoration: InputDecoration(
-                        prefixIcon: Image.asset("assets/icons/Search.png",
-                            scale: 20),
+                        prefixIcon: Image.asset(
+                          "assets/icons/Search.png",
+                          scale: 20,
+                        ),
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         hintText: "Search here ...",
@@ -227,14 +238,16 @@ class _FavoritePageState extends State<FavoritePage> {
                                               price: item.price,
                                               detail: "",
                                               colors: item.colors,
-                                              color: '', nameTh: item.nameTh,
+                                              color: '',
+                                              nameTh: item.nameTh,
                                             );
-                                            final isFav =
-                                                favProvider.isFavorite(currentProduct);
+                                            final isFav = favProvider
+                                                .isFavorite(currentProduct);
                                             return GestureDetector(
                                               onTap: () {
-                                                favProvider
-                                                    .toggleFavorite(currentProduct);
+                                                favProvider.toggleFavorite(
+                                                  currentProduct,
+                                                );
                                                 filterProducts(search.text);
                                               },
                                               child: Image.asset(
@@ -255,8 +268,9 @@ class _FavoritePageState extends State<FavoritePage> {
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: kButtonColor,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
                                         ),
                                         onPressed: () {
@@ -269,7 +283,8 @@ class _FavoritePageState extends State<FavoritePage> {
                                                 proName: item.name,
                                                 proPice: item.price,
                                                 detail: '',
-                                                color: item.colors, proNameTh: item.nameTh,
+                                                color: item.colors,
+                                                proNameTh: item.nameTh,
                                               ),
                                             ),
                                           );
