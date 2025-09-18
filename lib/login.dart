@@ -102,6 +102,7 @@ class _LoginpageState extends State<Loginpage> {
                       Text("Email"),
 
                       InputTextFormField(
+                        hintText:"Email address ",
                         controller: email,
                         size: size,
                         heights: size.height * 0.05,
@@ -114,6 +115,7 @@ class _LoginpageState extends State<Loginpage> {
                       Text("Password"),
 
                       RegisTextFormField(
+                        hintText: "Password ",
                         controller: password,
                         size: size,
                         isPassword: true,

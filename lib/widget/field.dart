@@ -57,7 +57,7 @@ class _RegisTextFormFieldState extends State<RegisTextFormField> {
             
         
              hintStyle: const TextStyle(
-                    fontSize: 15,
+                    fontSize: 20,
                     fontFamily: 'IBMPlexSansThai',
                     color: kbgM,
                   ),
@@ -135,7 +135,7 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
                   focusedBorder: InputBorder.none,
                   hintText: widget.hintText,
                   hintStyle: const TextStyle(
-                    fontSize: 15,
+                    fontSize: 20,
                     fontFamily: 'IBMPlexSansThai',
                     color: kbgM,
                   ),
