@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   String? namePro;
   String? first_name;
   String? last_name;
+  int?userId;
   List<ProductTyp?> uniqueProducts = [];
   final CarouselSliderController _controller = CarouselSliderController();
   List<Data> product = [];
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> getapi() async {
     try {
       // LoadingDialog.open(context);
-      await context.read<ProductController>().getproductlist();
+    await context.read<ProductController>().getproductlist();
       //  await context.read<ProductController>().getproduct();
       // final producs = await ProductApi.getproduct();
     final producs=  await ProductApi.getproductbyid(id: 1,page: 1);
@@ -78,6 +79,8 @@ class _HomePageState extends State<HomePage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     first_name = prefs.getString('first_name');
     last_name = prefs.getString('last_name');
+      userId = prefs.getInt('userId');
+
   }
 
   @override
@@ -92,6 +95,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+   
     final cart = Provider.of<CartProvider>(context);
     return Consumer<ProductController>(
       builder: (context, controller, child) {
@@ -142,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               GestureDetector(
-            onTap: () {
+              onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Nontification()),
@@ -213,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 10),
+                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: imgList.asMap().entries.map((entry) {
@@ -270,7 +274,7 @@ class _HomePageState extends State<HomePage> {
                               isExpanded: true,
                               dropdownColor: Colors.white,
                               decoration: InputDecoration(
-                                labelText: "เลือกสินค้า",
+                                labelText: "เลือกประเภทสินค้า",
                                 labelStyle: TextStyle(color: kbgM),
                                 filled: true,
                                 fillColor: Colors.white,
@@ -488,7 +492,8 @@ class _HomePageState extends State<HomePage> {
                                                 colors: colors,
                                                 color: '', nameTh: selectedProduct
                                                         .name_th ??
-                                                    "", // ยังไม่เลือกสี
+                                                    "",
+                                                    image:  selectedProduct.image_url
                                               );
                     
                                               final isFav = favProvider

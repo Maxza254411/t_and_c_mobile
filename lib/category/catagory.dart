@@ -262,6 +262,7 @@ class _CatagoryState extends State<Catagory> {
                     Consumer<FavoriteProvider>(
                       builder: (context, favProvider, child) {
                         final currentProduct = Shoping(
+                          image:  product.product?.image_url,
                           productId: product.product?.id.toString(),
                           name: product.product?.name_en ?? "",
                           price: formatNumber(

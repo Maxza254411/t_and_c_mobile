@@ -33,8 +33,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ProductController()),
-        if (userId != null)
-        ChangeNotifierProvider(create: (_) => CartProvider(userId!)),
+        // if (userId != null)
+        ChangeNotifierProvider(create: (_) => CartProvider(userId??1)),
         ChangeNotifierProvider(create: (_) => FavoriteProvider()),
       ],
       child: MaterialApp(
