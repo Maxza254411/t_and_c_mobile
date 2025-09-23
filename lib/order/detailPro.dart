@@ -1,7 +1,9 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
+import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
 import 'package:t_and_c_mobile/order/compleated.dart';
@@ -20,6 +22,7 @@ class Detailpro extends StatefulWidget {
     this.color,
     this.image,
     required this.proNameTh,
+    this.sameproduct,
   });
 
   String? productId;
@@ -27,6 +30,7 @@ class Detailpro extends StatefulWidget {
   String proPice;
   String detail;
   List<Colorp?>? color;
+  List<ProductTyp?>? sameproduct;
   String? image;
   String? proNameTh;
 
@@ -37,7 +41,8 @@ class Detailpro extends StatefulWidget {
 class _DetailproState extends State<Detailpro> {
   final GlobalKey _cartIconKey = GlobalKey(); // สำหรับ badge + animation
   final GlobalKey _btnKey = GlobalKey(); // สำหรับ animation
-
+  final CarouselSliderController _controller = CarouselSliderController();
+  int _currentIndex = 0;
   String? selectedColor;
 
   @override
@@ -45,6 +50,15 @@ class _DetailproState extends State<Detailpro> {
     super.initState();
     if (widget.color != null && widget.color!.isNotEmpty) {
       selectedColor = widget.color![0]?.name_en ?? "";
+    }
+  }
+
+  void _goToPage(int index) {
+    // ✅ เช็คก่อนว่า controller attach แล้วหรือยัง
+    if (_controller.ready) {
+      _controller.animateToPage(index);
+    } else {
+      debugPrint("CarouselSlider ยังไม่พร้อม");
     }
   }
 
@@ -156,7 +170,81 @@ class _DetailproState extends State<Detailpro> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Center(
+             widget.sameproduct!=null
+           ? Column(
+              children: [
+                CarouselSlider.builder(
+                  carouselController: _controller,
+                  itemCount: widget.sameproduct!.length,
+                  itemBuilder: (context, index, realIndex) {
+                    return 
+                    widget.sameproduct![index]?.image_url !=null
+                   ? Container(
+                      margin: const EdgeInsets.all(6.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        image: DecorationImage(
+                          image: 
+                               NetworkImage(
+                                  widget.sameproduct![index]!.image_url ?? "",
+                                ),
+                              
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                    :Container(
+                      margin: const EdgeInsets.all(6.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        image: DecorationImage(
+                          image: 
+                              AssetImage("assets/images/NoImage.jpg"),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+
+                  },
+                  options: CarouselOptions(
+                    height: size.height * 0.2,
+                    enlargeCenterPage: false,
+                    autoPlay: false,
+                    aspectRatio: 16 / 9,
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    scrollPhysics: const NeverScrollableScrollPhysics(),
+                    enableInfiniteScroll: false,
+                    autoPlayAnimationDuration: const Duration(
+                      milliseconds: 800,
+                    ),
+                    viewportFraction: 0.8,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                  ),
+                ),
+                // SizedBox(height: 10),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: widget.sameproduct!.asMap().entries.map((entry) {
+                //     return Container(
+                //       width: 12,
+                //       height: 12,
+                //       margin: const EdgeInsets.symmetric(horizontal: 4),
+                //       decoration: BoxDecoration(
+                //         shape: BoxShape.circle,
+                //         color: _currentIndex == entry.key
+                //             ? Colors.blueAccent
+                //             : Colors.grey,
+                //       ),
+                //     );
+                //   }).toList(),
+                // ),
+              ],
+            )
+           : Center(
               child: widget.image != null
                   ? Image.network(widget.image!)
                   : Image.asset("assets/images/NoImage.jpg"),
@@ -214,13 +302,13 @@ class _DetailproState extends State<Detailpro> {
             ),
 
             SizedBox(height: 5),
-           
+
             Padding(
-                padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                   SizedBox(
+                  SizedBox(
                     width: 80, // กำหนดความกว้างของ Label "Name-En"
                     child: Text(
                       "ราคา",
@@ -234,12 +322,13 @@ class _DetailproState extends State<Detailpro> {
                   Expanded(
                     child: Text(
                       "${widget.proPice} บาท",
-                      style: TextStyle(fontSize: 14,),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                   Consumer<FavoriteProvider>(
                     builder: (context, favProvider, child) {
                       final currentProduct = Shoping(
+                        sameproduct: widget.sameproduct,
                         image: widget.image,
                         productId: widget.productId,
                         name: widget.proName,
@@ -263,8 +352,8 @@ class _DetailproState extends State<Detailpro> {
                   ),
                 ],
               ),
-              ),
-             if (widget.color != null && widget.color!.isNotEmpty)
+            ),
+            if (widget.color != null && widget.color!.isNotEmpty)
               SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -272,7 +361,8 @@ class _DetailproState extends State<Detailpro> {
                     children: [
                       Wrap(
                         children: widget.color!.map((colorItem) {
-                          if (colorItem?.name_en == null || colorItem!.name_en!.isEmpty) {
+                          if (colorItem?.name_en == null ||
+                              colorItem!.name_en!.isEmpty) {
                             return SizedBox.shrink();
                           }
                           return Padding(
@@ -287,6 +377,22 @@ class _DetailproState extends State<Detailpro> {
                                   setState(() {
                                     selectedColor = val;
                                   });
+
+                                  // หา index ของสีที่เลือก
+                                  final index = widget.color!.indexWhere(
+                                    (c) => c?.name_en == val,
+                                  );
+
+                                  if (index != -1 &&
+                                      index < widget.sameproduct!.length) {
+                                    _controller.animateToPage(
+                                      index,
+                                      duration: const Duration(
+                                        milliseconds: 500,
+                                      ),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  }
                                 },
                               ),
                             ),
@@ -297,120 +403,232 @@ class _DetailproState extends State<Detailpro> {
                   ),
                 ),
               ),
-            SizedBox(height: size.height * 0.1),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // ปุ่มเพิ่มในตะกร้า
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    key: _btnKey,
-                    width: size.width * 0.45,
-                    height: size.height * 0.08,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kButtonColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: () {
-                        if (selectedColor == null || selectedColor!.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
-                          );
-                          return;
-                        }
-                        final shoping = Shoping(
-                          image: widget.image,
-                          name: widget.proName,
-                          price: widget.proPice,
-                          detail: widget.detail,
-                          color: selectedColor!,
-                          nameTh: widget.proNameTh ?? "",
-                        );
-                        Provider.of<CartProvider>(
-                          context,
-                          listen: false,
-                        ).addItem(shoping);
-                        _runAddToCartAnimation();
-                      },
-                      child: Text(
-                        "เพิ่มในตะกร้า",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: kbgf,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                // ปุ่มสั่งซื้อ
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: size.width * 0.4,
-                    height: size.height * 0.08,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        side: BorderSide(color: kButtonColor, width: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: () async {
-                        if (widget.proPice != "0.00") {
-                          final shoping = Shoping(
-                            image: widget.image,
-                            name: widget.proName,
-                            price: widget.proPice,
-                            detail: widget.detail,
-                            color: selectedColor ?? "",
-                            nameTh: widget.proNameTh ?? "",
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => Compleated(
-                                totalPrice: double.parse(widget.proPice),
-                                status: false,
-                                selectedItems: [shoping],
-                                slipe_status: false,
-                              ),
-                            ),
-                          );
-                        } else {
-                          await showDialog(
-                            context: context,
-                            builder: (context) => AlertDialogYes(
-                              title: 'แจ้งเตือน',
-                              description:
-                                  'ไม่สามารถทำรายการได้ \n เพราะราคามีค่าเป็น 0.00 บาท',
-                              pressYes: () => Navigator.pop(context),
-                            ),
-                          );
-                        }
-                      },
-                      child: Text(
-                        "สั่งซื้อ",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: kButtonColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 30),
+            // SizedBox(height: size.height * 0.1),
+     
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     // ปุ่มเพิ่มในตะกร้า
+            //     Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: SizedBox(
+            //         key: _btnKey,
+            //         width: size.width * 0.45,
+            //         height: size.height * 0.08,
+            //         child: ElevatedButton(
+            //           style: ElevatedButton.styleFrom(
+            //             backgroundColor: kButtonColor,
+            //             shape: RoundedRectangleBorder(
+            //               borderRadius: BorderRadius.circular(8),
+            //             ),
+            //           ),
+            //           onPressed: () {
+            //             if (selectedColor == null || selectedColor!.isEmpty) {
+            //               ScaffoldMessenger.of(context).showSnackBar(
+            //                 SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
+            //               );
+            //               return;
+            //             }
+            //             final shoping = Shoping(
+            //               image: widget.image,
+            //               name: widget.proName,
+            //               price: widget.proPice,
+            //               detail: widget.detail,
+            //               color: selectedColor!,
+            //               nameTh: widget.proNameTh ?? "",
+            //             );
+            //             Provider.of<CartProvider>(
+            //               context,
+            //               listen: false,
+            //             ).addItem(shoping);
+            //             _runAddToCartAnimation();
+            //           },
+            //           child: Text(
+            //             "เพิ่มในตะกร้า",
+            //             style: TextStyle(
+            //               fontSize: 16,
+            //               fontWeight: FontWeight.bold,
+            //               color: kbgf,
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //     // ปุ่มสั่งซื้อ
+            //     Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: SizedBox(
+            //         width: size.width * 0.4,
+            //         height: size.height * 0.08,
+            //         child: ElevatedButton(
+            //           style: ElevatedButton.styleFrom(
+            //             backgroundColor: Colors.white,
+            //             side: BorderSide(color: kButtonColor, width: 2),
+            //             shape: RoundedRectangleBorder(
+            //               borderRadius: BorderRadius.circular(8),
+            //             ),
+            //           ),
+            //           onPressed: () async {
+            //             if (widget.proPice != "0.00") {
+            //               final shoping = Shoping(
+            //                 image: widget.image,
+            //                 name: widget.proName,
+            //                 price: widget.proPice,
+            //                 detail: widget.detail,
+            //                 color: selectedColor ?? "",
+            //                 nameTh: widget.proNameTh ?? "",
+            //               );
+            //               Navigator.push(
+            //                 context,
+            //                 MaterialPageRoute(
+            //                   builder: (_) => Compleated(
+            //                     totalPrice: double.parse(widget.proPice),
+            //                     status: false,
+            //                     selectedItems: [shoping],
+            //                     slipe_status: false,
+            //                   ),
+            //                 ),
+            //               );
+            //             } else {
+            //               await showDialog(
+            //                 context: context,
+            //                 builder: (context) => AlertDialogYes(
+            //                   title: 'แจ้งเตือน',
+            //                   description:
+            //                       'ไม่สามารถทำรายการได้ \n เพราะราคามีค่าเป็น 0.00 บาท',
+            //                   pressYes: () => Navigator.pop(context),
+            //                 ),
+            //               );
+            //             }
+            //           },
+            //           child: Text(
+            //             "สั่งซื้อ",
+            //             style: TextStyle(
+            //               fontSize: 16,
+            //               fontWeight: FontWeight.bold,
+            //               color: kButtonColor,
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            // SizedBox(height: 30),
           ],
         ),
       ),
+       bottomNavigationBar: SafeArea(
+         child: Padding(
+             padding: const EdgeInsets.all(8.0),
+             child: Row(
+               mainAxisAlignment: MainAxisAlignment.center,
+               children: [
+          // ปุ่มเพิ่มในตะกร้า
+          Expanded(
+            child: SizedBox(
+              key: _btnKey,
+              height: 55,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kButtonColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () {
+                  if (selectedColor == null || selectedColor!.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
+                    );
+                    return;
+                  }
+                  final shoping = Shoping(
+                    image: widget.image,
+                    name: widget.proName,
+                    price: widget.proPice,
+                    detail: widget.detail,
+                    color: selectedColor!,
+                    nameTh: widget.proNameTh ?? "",
+                  );
+                  Provider.of<CartProvider>(context, listen: false)
+                      .addItem(shoping);
+                  _runAddToCartAnimation();
+                },
+                child: Text(
+                  "เพิ่มในตะกร้า",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: kbgf,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 10),
+          // ปุ่มสั่งซื้อ
+          Expanded(
+            child: SizedBox(
+              height: 55,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  side: BorderSide(color: kButtonColor, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () async {
+                  if (widget.proPice != "0.00") {
+                    final shoping = Shoping(
+                      image: widget.image,
+                      name: widget.proName,
+                      price: widget.proPice,
+                      detail: widget.detail,
+                      color: selectedColor ?? "",
+                      nameTh: widget.proNameTh ?? "",
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => Compleated(
+                          totalPrice: double.parse(widget.proPice),
+                          status: false,
+                          selectedItems: [shoping],
+                          slipe_status: false,
+                        ),
+                      ),
+                    );
+                  } else {
+                    await showDialog(
+                      context: context,
+                      builder: (context) => AlertDialogYes(
+                        title: 'แจ้งเตือน',
+                        description:
+                            'ไม่สามารถทำรายการได้ \n เพราะราคามีค่าเป็น 0.00 บาท',
+                        pressYes: () => Navigator.pop(context),
+                      ),
+                    );
+                  }
+                },
+                child: Text(
+                  "สั่งซื้อ",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: kButtonColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+               ],
+             ),
+           ),
+       ),
+
     );
+    
   }
 }

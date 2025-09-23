@@ -387,11 +387,11 @@ class _CompleatedState extends State<Compleated> {
                                 (index) => Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: BuildRadioOption(
-                                    title: pay[index]['pay']!, // ชื่อวิธีจ่าย
+                                    title: pay[index]['pay']!, 
                                     value:
-                                        pay[index]['value']!, // ค่า เช่น "cash" หรือ "promptpay"
+                                        pay[index]['value']!,
                                     groupValue:
-                                        selectedPay, // state ที่เก็บค่าที่เลือก
+                                        selectedPay, 
                                     onChanged: (val) {
                                       setState(() {
                                         selectedPay = val;

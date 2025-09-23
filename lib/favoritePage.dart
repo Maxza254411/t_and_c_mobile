@@ -278,6 +278,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => Detailpro(
+                                                sameproduct:item. sameproduct,
                                                 image: item.image,
                                                 productId: item.productId,
                                                 proName: item.name,

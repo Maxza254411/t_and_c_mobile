@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/constang.dart';
-import 'package:t_and_c_mobile/order/bucket.dart';
+
 class Nontification extends StatefulWidget {
   const Nontification({super.key});
 

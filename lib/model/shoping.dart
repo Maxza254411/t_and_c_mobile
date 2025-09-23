@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
+import 'package:t_and_c_mobile/model/productTyp.dart';
 
 /// สำหรับเอาของใส่ตะกร้า
 class Shoping {
@@ -13,6 +14,7 @@ class Shoping {
   int quantity;
   int? userId;
   List<Colorp?>? colors;
+  List<ProductTyp?>?sameproduct;
   
   Shoping({
     required this.nameTh,
@@ -25,5 +27,6 @@ class Shoping {
     this.colors,
     this.quantity = 1,
     this.userId,
+    this.sameproduct,
   });
 }

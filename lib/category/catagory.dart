@@ -203,6 +203,10 @@ class _CatagoryState extends State<Catagory> {
         .where((item) => item.product!.id == product.product!.id)
         .map((e) => e.color)
         .toList();
+    final sameproduct= allProducts
+        .where((item) => item.product!.id == product.product!.id)
+        .map((e) => e.product)
+        .toList();
 
     return Container(
       decoration: BoxDecoration(
@@ -306,6 +310,7 @@ class _CatagoryState extends State<Catagory> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => Detailpro(
+                            sameproduct: sameproduct,
                             image: product.product?.image_url,
                             productId: product.product?.id.toString() ,
                             proName: product.product?.name_en ?? "",

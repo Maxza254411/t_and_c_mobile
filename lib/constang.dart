@@ -17,8 +17,7 @@ final List<String> imgList = [
 ];
 
 List<Map<String, String>> pay = [
-  {"pay": "เงินสด", "value": "cash"},
-  {"pay": "พร้อมเพลย์", "value": "promptpay"},
+  {"pay": "จ่ายผ่", "value": "promptpay"},
   {"pay": "บัตรเครดิต", "value": "credit"},
 ];
 
