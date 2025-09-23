@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:t_and_c_mobile/category/brandPage.dart';
+import 'package:t_and_c_mobile/category/catagory.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
@@ -14,30 +14,26 @@ import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
-import 'package:t_and_c_mobile/category/catagory.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
-import 'package:t_and_c_mobile/widget/field.dart';
-import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class BrandPage extends StatefulWidget {
+  BrandPage({super.key, required this.title, required this.brandId});
+  String title;
+  int brandId;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<BrandPage> createState() => _BrandPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final TextEditingController search = TextEditingController();
+class _BrandPageState extends State<BrandPage> {
   int _currentIndex = 0;
   String? idPro;
   String? namePro;
-  String? first_name;
-  String? last_name;
-  int? userId;
-  List<ProductTyp?> uniqueProducts = [];
-  final CarouselSliderController _controller = CarouselSliderController();
   List<Data> product = [];
-  
+   List<ProductTyp?> uniqueProducts = [];
+  final CarouselSliderController _controller = CarouselSliderController();
+
+
   void _goToPage(int index) {
     // ✅ เช็คก่อนว่า controller attach แล้วหรือยัง
     if (_controller.ready) {
@@ -47,12 +43,15 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> getapi() async {
+   Future<void> getapi() async {
     try {
       // LoadingDialog.open(context);
-      // await context.read<ProductController>().getproductlist();
-      await context.read<ProductController>().listbrands();
-      final producs = await ProductApi.getproductbyid(id: 1, page: 1);
+      await context.read<ProductController>().getproductypBybrandId(brandid: widget.brandId);
+
+       final producs = await ProductApi.getProBandId(
+        brandid: widget.brandId, productTypid: 1,
+        page: 1, 
+      );
       product = producs;
       uniqueProducts = product.map((e) => e.product).toSet().toList();
 
@@ -73,114 +72,88 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> getpreferences() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    first_name = prefs.getString('first_name');
-    last_name = prefs.getString('last_name');
-    userId = prefs.getInt('userId');
-  }
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getpreferences();
       await getapi();
     });
   }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final cart = Provider.of<CartProvider>(context);
-    return Consumer<ProductController>(
-      builder: (context, controller, child) {
-        // final productTyp = controller.productTyp;
-        final brands=controller.brands;
-        return Scaffold(
-          backgroundColor: kbgH,
-          appBar: AppBar(
-            backgroundColor: kButtonColor,
-            actions: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Bucket()),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Image.asset("assets/icons/Buy.png", scale: 15),
 
-                      if (cart.items.isNotEmpty) // แสดง badge เมื่อมีสินค้า
-                        Positioned(
-                          right: -6,
-                          top: -6,
-                          child: Container(
-                            padding: EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
-                            ),
-                            child: Text(
-                              "${cart.items.length}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+    return Scaffold(
+      backgroundColor: kbgH,
+      appBar: AppBar(
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: kButtonColor,
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Bucket()),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Image.asset("assets/icons/Buy.png", scale: 15),
+
+                  if (cart.items.isNotEmpty) // แสดง badge เมื่อมีสินค้า
+                    Positioned(
+                      right: -6,
+                      top: -6,
+                      child: Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: Text(
+                          "${cart.items.length}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                    ],
-                  ),
-                ),
+                      ),
+                    ),
+                ],
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Nontification()),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    "assets/icons/Notification.png",
-                    scale: 15,
-                  ),
-                ),
-              ),
-            ],
-            leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset("assets/icons/Vector.png", scale: 15),
-            ),
-            title: Text(
-              "${first_name ?? ""} ${last_name ?? ""}",
-              style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
             ),
           ),
-          body: Column(
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Nontification()),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset("assets/icons/Notification.png", scale: 15),
+            ),
+          ),
+        ],
+
+        title: Text(
+          widget.title,
+          style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: Consumer<ProductController>(
+        builder: (context, controller, child) {
+           final productBandTyp =controller.productBandTyp;
+          return Column(
             children: [
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: InputTextFormField(
-              //     hintText: "Search here ...",
-              //     controller: search,
-              //     size: size,
-              //     heights: size.height * 0.05,
-              //     imagestatus: true,
-              //     images: "assets/icons/Search.png",
-              //     whatfield: false,
-              //     width: double.infinity,
-              //   ),
-              // ),
               Column(
                 children: [
                   CarouselSlider.builder(
@@ -242,159 +215,98 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-             
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    SizedBox(width: size.width * 0.02),
-                    Text(
-                      "แบร์นสินค้า",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: kButtonColor,
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: size.width * 0.78,
+                      ), // กำหนดความกว้าง
+                      child: DropdownButtonFormField<ProductTyp>(
+                        isExpanded: true,
+                        dropdownColor: Colors.white,
+                        decoration: InputDecoration(
+                          labelText: "เลือกประเภทสินค้า",
+                          labelStyle: TextStyle(color: kbgM),
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: kButtonColor),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: kButtonColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: kButtonColor,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        items: productBandTyp.map((product) {
+                          return DropdownMenuItem<ProductTyp>(
+                            value: product,
+                            child: Text(
+                              product.name_en ?? "",
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            print("ID: ${value.id}");
+                            print("Name: ${value.name_en}");
+                            idPro = value.id.toString();
+                            namePro = value.name_en ?? "";
+                          }
+                        },
                       ),
                     ),
-                    
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                Catagory( title: namePro ?? "", brandid:widget. brandId, productTypid:int.parse(idPro!) ,),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: size.width * 0.15,
+                        height: size.height * 0.05,
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+
+                          color: kButtonColor,
+                        ),
+                        child: Center(
+                          child: Text(
+                            "ค้นหา",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: kbgf,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
                Padding(
-                 padding: const EdgeInsets.all(8.0),
-                 child: SingleChildScrollView(
-                   scrollDirection: Axis.horizontal,
-                   child: Row(
-                     children: List.generate(
-                       brands.length, // จำนวนแบรนด์ (แก้ตามจริง)
-                       (index) => Padding(
-                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                         child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>BrandPage(title: brands[index].name ?? "", brandId:  brands[index].id,)));
-                          },
-                           child: Column(
-                             children: [
-                            
-                               CircleAvatar(
-                                 radius: 30, // ขนาดวงกลม
-                                 backgroundImage: AssetImage("assets/images/NoImage.jpg"),
-                                 // หรือถ้าเป็น Network รูปจาก API ใช้:
-                                 // backgroundImage: NetworkImage("https://picsum.photos/200"),
-                               ),
-                               SizedBox(height: 6),
-                               // ชื่อแบรนด์
-                               Text(
-                                 "${brands[index].name}",
-                                 style: TextStyle(fontSize: 12),
-                               ),
-                             ],
-                           ),
-                         ),
-                       ),
-                     ),
-                   ),
-                 ),
-               ),
-
-
-              // productTyp.isEmpty
-              //     ? SizedBox.shrink()
-              //     : Padding(
-              //         padding: const EdgeInsets.all(8.0),
-              //         child: Row(
-              //           children: [
-              //             ConstrainedBox(
-              //               constraints: BoxConstraints(
-              //                 maxWidth: size.width * 0.78,
-              //               ), // กำหนดความกว้าง
-              //               child: DropdownButtonFormField<ProductTyp>(
-              //                 isExpanded: true,
-              //                 dropdownColor: Colors.white,
-              //                 decoration: InputDecoration(
-              //                   labelText: "เลือกประเภทสินค้า",
-              //                   labelStyle: TextStyle(color: kbgM),
-              //                   filled: true,
-              //                   fillColor: Colors.white,
-              //                   contentPadding: EdgeInsets.symmetric(
-              //                     horizontal: 12,
-              //                     vertical: 8,
-              //                   ),
-              //                   border: OutlineInputBorder(
-              //                     borderRadius: BorderRadius.circular(12),
-              //                     borderSide: BorderSide(color: kButtonColor),
-              //                   ),
-              //                   enabledBorder: OutlineInputBorder(
-              //                     borderRadius: BorderRadius.circular(12),
-              //                     borderSide: BorderSide(color: kButtonColor),
-              //                   ),
-              //                   focusedBorder: OutlineInputBorder(
-              //                     borderRadius: BorderRadius.circular(12),
-              //                     borderSide: BorderSide(
-              //                       color: kButtonColor,
-              //                       width: 2,
-              //                     ),
-              //                   ),
-              //                 ),
-              //                 items: productTyp.map((product) {
-              //                   return DropdownMenuItem<ProductTyp>(
-              //                     value: product,
-              //                     child: Text(
-              //                       product.name_en ?? "",
-              //                       overflow: TextOverflow.ellipsis,
-              //                       maxLines: 1,
-              //                       style: TextStyle(fontSize: 14),
-              //                     ),
-              //                   );
-              //                 }).toList(),
-              //                 onChanged: (value) {
-              //                   if (value != null) {
-              //                     print("ID: ${value.id}");
-              //                     print("Name: ${value.name_en}");
-              //                     idPro = value.id.toString();
-              //                     namePro = value.name_en ?? "";
-              //                   }
-              //                 },
-              //               ),
-              //             ),
-              //             GestureDetector(
-              //               onTap: () {
-              //                 Navigator.push(
-              //                   context,
-              //                   MaterialPageRoute(
-              //                     builder: (context) => Catagory(
-              //                       id: idPro!,
-              //                       title: namePro ?? "",
-              //                     ),
-              //                   ),
-              //                 );
-              //               },
-              //               child: Container(
-              //                 width: size.width * 0.15,
-              //                 height: size.height * 0.05,
-              //                 margin: const EdgeInsets.symmetric(horizontal: 4),
-              //                 decoration: BoxDecoration(
-              //                   borderRadius: BorderRadius.circular(8),
-
-              //                   color: kButtonColor,
-              //                 ),
-              //                 child: Center(
-              //                   child: Text(
-              //                     "ค้นหา",
-              //                     style: TextStyle(
-              //                       fontSize: 12,
-              //                       fontWeight: FontWeight.bold,
-              //                       color: kbgf,
-              //                     ),
-              //                   ),
-              //                 ),
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-
-              Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
@@ -410,7 +322,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              uniqueProducts.isEmpty
+               uniqueProducts.isEmpty
                   ? Center(
                       child: CircularProgressIndicator(
                         color: kButtonColor,
@@ -420,7 +332,10 @@ class _HomePageState extends State<HomePage> {
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: GridView.builder(
-                          itemCount: 4,
+                          itemCount: 
+                          uniqueProducts.length<4
+                          ? 1
+                          : 4,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
@@ -628,9 +543,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
             ],
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

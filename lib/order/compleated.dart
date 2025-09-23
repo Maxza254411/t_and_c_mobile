@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/homepage.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/billpage.dart';
+import 'package:t_and_c_mobile/payment/paybank.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
@@ -19,7 +21,7 @@ class Compleated extends StatefulWidget {
     this.image,
     required this.slipe_status,
   });
-  bool status ;
+  bool status;
   List<Shoping> selectedItems = []; // รับสินค้าที่ติ๊ก
   double? totalPrice;
   String? image;
@@ -31,9 +33,15 @@ class Compleated extends StatefulWidget {
 class _CompleatedState extends State<Compleated> {
   final TextEditingController addes = TextEditingController();
   final TextEditingController talk = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    int totalQuantity = widget.selectedItems.fold(
+      0,
+      (previousValue, element) => previousValue + element.quantity,
+    );
+
     return Scaffold(
       backgroundColor: kbgH,
       appBar: AppBar(
@@ -144,13 +152,11 @@ class _CompleatedState extends State<Compleated> {
                     Column(
                       children: [
                         ListTile(
-                          leading: 
-                       
-                          Image.asset(
+                          leading: Image.asset(
                             "assets/icons/User.png",
                             scale: 15,
                           ),
-                         
+
                           title: Text("ชื่อผู้รับสินค้า"),
                           subtitle: Text(
                             "admin admin",
@@ -231,88 +237,117 @@ class _CompleatedState extends State<Compleated> {
                     widget.selectedItems.isEmpty
                         ? SizedBox.shrink()
                         : Column(
-                            children: List.generate(
-                              widget.selectedItems.length,
-                              (index) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Colors.white,
-                                  ),
-                                  height: size.height * 0.1,
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 12,
-                                        ),
-                                        child: 
-                                         widget.selectedItems[index].image==null
-                                      ?  Image.asset(
-                                          "assets/images/LOGO CMYK-01.png",
-                                        )
-                                        :Image.network( widget.selectedItems[index].image!)
+                            children: [
+                              Column(
+                                children: List.generate(
+                                  widget.selectedItems.length,
+                                  (index) => Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Colors.white,
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          width: 1,
-                                          height: size.height * 0.05,
-                                          color: kButtonColor,
-                                        ),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                      height: size.height * 0.1,
+                                      child: Row(
                                         children: [
-                                          Row(
-                                            children: [
-                                              SizedBox(
-                                                width: size.width * 0.4,
-                                                child: Text(
-                                                  widget
-                                                      .selectedItems![index]
-                                                      .name,
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: size.width * 0.1),
-                                              Text(
-                                                "X ${widget.selectedItems![index].quantity.toString()}",
-
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: kbgM,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 12,
+                                            ),
+                                            child:
                                                 widget
-                                                    .selectedItems![index]
-                                                    .price
-                                                    .toString(),
+                                                        .selectedItems[index]
+                                                        .image ==
+                                                    null
+                                                ? Image.asset(
+                                                    "assets/images/LOGO CMYK-01.png",
+                                                  )
+                                                : Image.network(
+                                                    widget
+                                                        .selectedItems[index]
+                                                        .image!,
+                                                  ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              width: 1,
+                                              height: size.height * 0.05,
+                                              color: kButtonColor,
+                                            ),
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  SizedBox(
+                                                    width: size.width * 0.4,
+                                                    child: Text(
+                                                      widget
+                                                          .selectedItems![index]
+                                                          .name,
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: size.width * 0.1,
+                                                  ),
+                                                  Text(
+                                                    "X ${widget.selectedItems![index].quantity.toString()}",
+
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: kbgM,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    widget
+                                                        .selectedItems![index]
+                                                        .price
+                                                        .toString(),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                              Divider(),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("ราคารวม"),
+                                    Text(
+                                      "${formatNumber(widget.totalPrice)} บาท",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                     widget.status == true
                         ? Padding(
@@ -353,143 +388,260 @@ class _CompleatedState extends State<Compleated> {
                 ),
               ),
             ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
-                  ),
-                  child: Column(
-                    children: [
-                      ContainerHeader(size: size, text: 'วิธีการชำระเงิน'),
-                      // แสดงวิธีจ่ายเงิน
-                      widget.status == true
-                          ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: BuildRadioOption(
-                                title: "เงินสด", // ชื่อวิธีจ่าย
-                                value:
-                                    pay[0]['value']!, // ค่า เช่น "cash" หรือ "promptpay"
-                                groupValue:
-                                    selectedPay, // state ที่เก็บค่าที่เลือก
-                                onChanged: (val) {
-                                  setState(() {
-                                    selectedPay = val;
-                                  });
-                                },
-                              ),
-                            )
-                          : Column(
-                              children: List.generate(
-                                pay.length,
-                                (index) => Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: BuildRadioOption(
-                                    title: pay[index]['pay']!, 
-                                    value:
-                                        pay[index]['value']!,
-                                    groupValue:
-                                        selectedPay, 
-                                    onChanged: (val) {
-                                      setState(() {
-                                        selectedPay = val;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                    ],
-                  ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  children: [
+                    ContainerHeader(size: size, text: 'วิธีการชำระเงิน'),
+                    // แสดงวิธีจ่ายเงิน
+                    // widget.status == true
+                    //     ? Padding(
+                    //         padding: const EdgeInsets.all(8.0),
+                    //         child: BuildRadioOption(
+                    //           title: "เงินสด", // ชื่อวิธีจ่าย
+                    //           value:
+                    //               pay[0]['value']!, // ค่า เช่น "cash" หรือ "promptpay"
+                    //           groupValue:
+                    //               selectedPay, // state ที่เก็บค่าที่เลือก
+                    //           onChanged: (val) {
+                    //             setState(() {
+                    //               selectedPay = val;
+                    //             });
+                    //           },
+                    //         ),
+                    //       )
+                    // :
+                    Column(
+                      children: List.generate(
+                        pay.length,
+                        (index) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: BuildRadioOption(
+                            title: pay[index]['pay']!,
+                            value: pay[index]['value']!,
+                            groupValue: selectedPay,
+                            onChanged: (val) {
+                              setState(() {
+                                selectedPay = val;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            widget.status == true
-                ? SizedBox.shrink()
-                : SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.white,
-                        ),
+            // Padding(
+            //   padding: EdgeInsets.all(8.0),
+            //   child: Container(
+            //     height:
+            //         size.height * 0.5, // เพิ่มความสูงหน่อยเพื่อให้มีที่วาง Tab
+            //     width: size.width * 1,
+            //     decoration: BoxDecoration(
+            //       color: Colors.white,
+            //       borderRadius: BorderRadius.circular(8),
+            //     ),
+            //     child: DefaultTabController(
+            //       length: 2, // จำนวนแท็บ
+            //       child: Column(
+            //         children: [
+            //           // --- แถบ TabBar ---
+            //           Padding(
+            //             padding: const EdgeInsets.all(8.0),
+            //             child: TabBar(
+            //               indicator: BoxDecoration(
+            //                 color: kButtonColor,
+            //                 borderRadius: BorderRadius.circular(8),
+            //               ),
+            //               indicatorPadding: EdgeInsets.symmetric(
+            //                 vertical: 10,
+            //               ), // << ปรับขนาด
+            //               labelColor: Colors.white,
+            //               unselectedLabelColor: Colors.black,
+            //               tabs: [
+            //                 Padding(
+            //                   padding: const EdgeInsets.all(8.0),
+            //                   child: Tab(text: "เลขบัญชี"),
+            //                 ),
+            //                 Padding(
+            //                   padding: const EdgeInsets.all(8.0),
+            //                   child: Tab(text: "พร้อมเพย์"),
+            //                 ),
+            //               ],
+            //             ),
+            //           ),
 
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("ราคารวม"),
-                                  Text(
-                                    "${formatNumber(widget.totalPrice)} บาท",
-                                  ),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () async {
-                                final cart = Provider.of<CartProvider>(
-                                  context,
-                                  listen: false,
-                                );
+            //           // --- เนื้อหาในแต่ละแท็บ ---
+            //           Expanded(
+            //             child: TabBarView(
+            //               children: [
+            //                 Center(
+            //                   child: Column(
+            //                     mainAxisAlignment: MainAxisAlignment.center,
+            //                     children: [
+            //                       // 🏦 ชื่อธนาคาร
+            //                       Text(
+            //                         "ธนาคารกสิกรไทย",
+            //                         style: TextStyle(
+            //                           fontSize: 18,
+            //                           fontWeight: FontWeight.bold,
+            //                         ),
+            //                       ),
 
-                                // ลบเฉพาะสินค้าที่เลือก
-                                cart.removeSelected(widget.selectedItems);
+            //                       const SizedBox(height: 12),
 
-                                final out = await showDialog(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (context) => SucesDialog(
-                                    title: 'แจ้งเตือน',
-                                    description: 'ชำระเงินสำเร็จ',
-                                  ),
-                                );
+            //                       // 🔢 เลขบัญชี
+            //                       Text(
+            //                         "123-456-789-0",
+            //                         style: TextStyle(
+            //                           fontSize: 24,
+            //                           fontWeight: FontWeight.bold,
+            //                           color: Colors.black87,
+            //                           letterSpacing: 2,
+            //                         ),
+            //                       ),
 
-                                if (out == true) {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => FirstPage(),
-                                    ),
-                                    (route) => false,
-                                  );
-                                }
-                              },
+            //                       const SizedBox(height: 20),
 
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: kButtonColor,
-                                  ),
-                                  height: size.height * 0.05,
-                                  width: double.infinity,
-                                  child: Center(
-                                    child: Text(
-                                      "ชำระเงิน",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: kbgf,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+            //                       // 📋 ปุ่มคัดลอก
+            //                       ElevatedButton.icon(
+            //                         onPressed: () {
+            //                           Clipboard.setData(
+            //                             ClipboardData(text: "1234567890"),
+            //                           );
+            //                           ScaffoldMessenger.of(
+            //                             context,
+            //                           ).showSnackBar(
+            //                             SnackBar(
+            //                               content: Text("คัดลอกเลขบัญชีแล้ว"),
+            //                             ),
+            //                           );
+            //                         },
+            //                         icon: Icon(Icons.copy),
+            //                         label: Text("คัดลอกเลขบัญชี"),
+            //                         style: ElevatedButton.styleFrom(
+            //                           backgroundColor: kButtonColor,
+            //                           foregroundColor: Colors.white,
+            //                           padding: EdgeInsets.symmetric(
+            //                             horizontal: 20,
+            //                             vertical: 12,
+            //                           ),
+            //                           shape: RoundedRectangleBorder(
+            //                             borderRadius: BorderRadius.circular(8),
+            //                           ),
+            //                         ),
+            //                       ),
+            //                     ],
+            //                   ),
+            //                 ),
+
+            //                 Center(child: Text("เนื้อหาของแท็บ 2")),
+            //               ],
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0), // ขยายขอบนอกนิดหน่อย
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.white,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ), // เพิ่ม padding ข้างใน
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // ให้ Container สูงตามเนื้อหา
+              children: [
+                // --- แถวราคารวม ---
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "สินค้ารวม ${totalQuantity} ชิ้น",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      " ฿ ${formatNumber(widget.totalPrice)} ",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: kButtonColor,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12), // เว้นระยะห่างก่อนปุ่ม
+                // --- ปุ่มชำระเงิน ---
+                GestureDetector(
+                  onTap: () async {
+                    // Navigator.push(context, MaterialPageRoute(builder: (context)=> Paybank()));
+                    final cart = Provider.of<CartProvider>(
+                      context,
+                      listen: false,
+                    );
+
+                    // ลบเฉพาะสินค้าที่เลือก
+                    cart.removeSelected(widget.selectedItems);
+
+                    final out = await showDialog(
+                      barrierDismissible: true,
+                      context: context,
+                      builder: (context) => SucesDialog(
+                        title: 'แจ้งเตือน',
+                        description: 'ชำระเงินสำเร็จ',
+                      ),
+                    );
+
+                    if (out == true) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => FirstPage()),
+                        (route) => false,
+                      );
+                    }
+                  },
+                  child: Container(
+                    height: size.height * 0.07, // สูงขึ้นหน่อย
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: kButtonColor,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "สั่งสินค้า",
+                        style: TextStyle(
+                          fontSize: 18, // ขยายฟอนต์
+                          fontWeight: FontWeight.bold,
+                          color: kbgf,
                         ),
                       ),
                     ),
                   ),
-          ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

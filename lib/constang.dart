@@ -17,7 +17,7 @@ final List<String> imgList = [
 ];
 
 List<Map<String, String>> pay = [
-  {"pay": "จ่ายผ่", "value": "promptpay"},
+  {"pay": "จ่ายผ่านธนาคาร", "value": "Bank"},
   {"pay": "บัตรเครดิต", "value": "credit"},
 ];
 
@@ -45,7 +45,7 @@ List<Map<String, String>> orderbill = [
   },
 ];
 
-String? selectedPay = "cash";
+String? selectedPay = "Bank";
 
 String formatNumber(dynamic value, {int decimal = 2}) {
   double number = 0;

@@ -9,10 +9,12 @@ import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 
 class Catagory extends StatefulWidget {
-  Catagory({super.key, required this.id, required this.title});
+  Catagory({super.key, required this.brandid, required this.title,required this.productTypid, });
 
-  final String id;
+  final int brandid;
   final String title;
+  final int productTypid;
+
 
   @override
   State<Catagory> createState() => _CatagoryState();
@@ -55,9 +57,10 @@ class _CatagoryState extends State<Catagory> {
 
       if (isLoadMore) setState(() => _isLoadingMore = true);
 
-      final newProducts = await ProductApi.getproductbyid(
-        id: int.parse(widget.id),
-        page: _page,
+      
+       final newProducts = await ProductApi.getProBandId(
+        brandid: widget.brandid, productTypid: widget.productTypid,
+        page: _page, 
       );
 
       if (newProducts.isEmpty) {
