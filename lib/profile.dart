@@ -193,9 +193,7 @@ class _ProfileState extends State<Profile> {
 
                       // ✅ ลบข้อมูลทั้งหมด
                       await prefs.clear();
-                      // หรือถ้าจะลบเฉพาะ key ที่ใช้ login เช่น token
-                      // await prefs.remove('token');
-                      // ✅ ย้ายไปหน้า Login
+                    
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Loginpage()), (route) => false);
                     }
                   },

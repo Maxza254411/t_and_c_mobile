@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/category/brandPage.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/model/brands.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
@@ -35,9 +36,12 @@ class _HomePageState extends State<HomePage> {
   String? last_name;
   int? userId;
   List<ProductTyp?> uniqueProducts = [];
+  List<Brands> allbands = []; //เก็บข้อมูลเเบร์นทั้งหมด
+  List<Brands> filteredBand = []; //กรองเเบร์น
+
   final CarouselSliderController _controller = CarouselSliderController();
   List<Data> product = [];
-  
+
   void _goToPage(int index) {
     // ✅ เช็คก่อนว่า controller attach แล้วหรือยัง
     if (_controller.ready) {
@@ -50,11 +54,11 @@ class _HomePageState extends State<HomePage> {
   Future<void> getapi() async {
     try {
       // LoadingDialog.open(context);
-      // await context.read<ProductController>().getproductlist();
-      await context.read<ProductController>().listbrands();
-      final producs = await ProductApi.getproductbyid(id: 1, page: 1);
-      product = producs;
-      uniqueProducts = product.map((e) => e.product).toSet().toList();
+      final listband = await ProductApi.listbrands();
+      allbands = listband;
+      // final producs = await ProductApi.getproductbyid(id: 1, page: 1);
+      // product = producs;
+      // uniqueProducts = product.map((e) => e.product).toSet().toList();
 
       // LoadingDialog.close(context);
     } on Exception catch (e) {
@@ -80,12 +84,26 @@ class _HomePageState extends State<HomePage> {
     userId = prefs.getInt('userId');
   }
 
+ void filterProducts(String keyword) {
+    if (keyword.isEmpty) {
+      filteredBand = List.from(allbands);
+    } else {
+      filteredBand = allbands.where((item) {
+        final name = item.name ?? "";
+        return name.toLowerCase().contains(keyword.toLowerCase());
+      }).toList();
+    }
+    setState(() {});
+  }
+
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getpreferences();
       await getapi();
+      filteredBand = List.from(allbands);
     });
   }
 
@@ -96,7 +114,7 @@ class _HomePageState extends State<HomePage> {
     return Consumer<ProductController>(
       builder: (context, controller, child) {
         // final productTyp = controller.productTyp;
-        final brands=controller.brands;
+        final brands = controller.brands;
         return Scaffold(
           backgroundColor: kbgH,
           appBar: AppBar(
@@ -115,7 +133,6 @@ class _HomePageState extends State<HomePage> {
                     clipBehavior: Clip.none,
                     children: [
                       Image.asset("assets/icons/Buy.png", scale: 15),
-
                       if (cart.items.isNotEmpty) // แสดง badge เมื่อมีสินค้า
                         Positioned(
                           right: -6,
@@ -168,19 +185,6 @@ class _HomePageState extends State<HomePage> {
           ),
           body: Column(
             children: [
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: InputTextFormField(
-              //     hintText: "Search here ...",
-              //     controller: search,
-              //     size: size,
-              //     heights: size.height * 0.05,
-              //     imagestatus: true,
-              //     images: "assets/icons/Search.png",
-              //     whatfield: false,
-              //     width: double.infinity,
-              //   ),
-              // ),
               Column(
                 children: [
                   CarouselSlider.builder(
@@ -242,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-             
+
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -256,47 +260,141 @@ class _HomePageState extends State<HomePage> {
                         color: kButtonColor,
                       ),
                     ),
-                    
                   ],
                 ),
               ),
-               Padding(
-                 padding: const EdgeInsets.all(8.0),
-                 child: SingleChildScrollView(
-                   scrollDirection: Axis.horizontal,
-                   child: Row(
-                     children: List.generate(
-                       brands.length, // จำนวนแบรนด์ (แก้ตามจริง)
-                       (index) => Padding(
-                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                         child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>BrandPage(title: brands[index].name ?? "", brandId:  brands[index].id,)));
-                          },
-                           child: Column(
-                             children: [
-                            
-                               CircleAvatar(
-                                 radius: 30, // ขนาดวงกลม
-                                 backgroundImage: AssetImage("assets/images/NoImage.jpg"),
-                                 // หรือถ้าเป็น Network รูปจาก API ใช้:
-                                 // backgroundImage: NetworkImage("https://picsum.photos/200"),
-                               ),
-                               SizedBox(height: 6),
-                               // ชื่อแบรนด์
-                               Text(
-                                 "${brands[index].name}",
-                                 style: TextStyle(fontSize: 12),
-                               ),
-                             ],
-                           ),
-                         ),
-                       ),
-                     ),
-                   ),
-                 ),
-               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: const Color.fromARGB(255, 241, 241, 241),
+                  ),
+                  width: double.infinity,
+                  height: size.height * 0.05,
+                  child: TextFormField(
+                    controller: search,
+                    style: TextStyle(fontSize: 22),
+                    decoration: InputDecoration(
+                      prefixIcon: Image.asset(
+                        "assets/icons/Search.png",
+                        scale: 20,
+                      ),
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      hintText: "Search Band ...",
+                      hintStyle: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'IBMPlexSansThai',
+                        color: kbgM,
+                      ),
+                    ),
+                    onChanged: filterProducts,
+                  ),
+                ),
+              ),
+              filteredBand.isEmpty
+              ?Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: size.height*0.1,),
+                  CircularProgressIndicator(
+                    color: kButtonColor,
+                  ),
+                ],
+              )
+             : Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GridView.builder(
+                    shrinkWrap: true,
 
+                    itemCount: filteredBand.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 0.8,
+                    ),
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BrandPage(
+                                title: filteredBand[index].name ?? "",
+                                brandId: filteredBand[index].id,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            // รูปสี่เหลี่ยมโค้งมน
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                "assets/images/NoImage.jpg",
+                                // ถ้าเป็นรูปจาก API ใช้ NetworkImage
+                                // Image.network(brands[index].image ?? "url สำรอง"),
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+
+                            Text(
+                              filteredBand[index].name ?? "",
+                              style: TextStyle(fontSize: 12),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+
+              //  Padding(
+              //    padding: const EdgeInsets.all(8.0),
+              //    child: SingleChildScrollView(
+              //      scrollDirection: Axis.horizontal,
+              //      child: Row(
+              //        children: List.generate(
+              //          brands.length, // จำนวนแบรนด์ (แก้ตามจริง)
+              //          (index) => Padding(
+              //            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              //            child: GestureDetector(
+              //             onTap: () {
+              //               Navigator.push(context, MaterialPageRoute(builder: (context)=>BrandPage(title: brands[index].name ?? "", brandId:  brands[index].id,)));
+              //             },
+              //              child: Column(
+              //                children: [
+
+              //                  CircleAvatar(
+              //                    radius: 30, // ขนาดวงกลม
+              //                    backgroundImage: AssetImage("assets/images/NoImage.jpg"),
+              //                    // หรือถ้าเป็น Network รูปจาก API ใช้:
+              //                    // backgroundImage: NetworkImage("https://picsum.photos/200"),
+              //                  ),
+              //                  SizedBox(height: 6),
+              //                  // ชื่อแบรนด์
+              //                  Text(
+              //                    "${brands[index].name}",
+              //                    style: TextStyle(fontSize: 12),
+              //                  ),
+              //                ],
+              //              ),
+              //            ),
+              //          ),
+              //        ),
+              //      ),
+              //    ),
+              //  ),
 
               // productTyp.isEmpty
               //     ? SizedBox.shrink()
@@ -394,239 +492,239 @@ class _HomePageState extends State<HomePage> {
               //         ),
               //       ),
 
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    SizedBox(width: size.width * 0.02),
-                    Text(
-                      "สินค้าแนะนำ",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: kButtonColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              uniqueProducts.isEmpty
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        color: kButtonColor,
-                      ), // แสดง loading
-                    )
-                  : Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: GridView.builder(
-                          itemCount: 4,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 12,
-                                mainAxisSpacing: 12,
-                                childAspectRatio: 0.75,
-                              ),
-                          itemBuilder: (context, index) {
-                            final selectedProduct =
-                                uniqueProducts[index]; // <-- นี่คือ selectedProduct
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: Row(
+              //     children: [
+              //       SizedBox(width: size.width * 0.02),
+              //       Text(
+              //         "สินค้าแนะนำ",
+              //         style: TextStyle(
+              //           fontSize: 14,
+              //           fontWeight: FontWeight.bold,
+              //           color: kButtonColor,
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // uniqueProducts.isEmpty
+              //     ? Center(
+              //         child: CircularProgressIndicator(
+              //           color: kButtonColor,
+              //         ), // แสดง loading
+              //       )
+              //     : Expanded(
+              //         child: Padding(
+              //           padding: const EdgeInsets.all(12.0),
+              //           child: GridView.builder(
+              //             itemCount: 4,
+              //             gridDelegate:
+              //                 SliverGridDelegateWithFixedCrossAxisCount(
+              //                   crossAxisCount: 2,
+              //                   crossAxisSpacing: 12,
+              //                   mainAxisSpacing: 12,
+              //                   childAspectRatio: 0.75,
+              //                 ),
+              //             itemBuilder: (context, index) {
+              //               final selectedProduct =
+              //                   uniqueProducts[index]; // <-- นี่คือ selectedProduct
 
-                            return Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 6,
-                                    spreadRadius: 2,
-                                    offset: Offset(2, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  // รูปสินค้า
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(16),
-                                      ),
-                                      child: selectedProduct?.image_url == null
-                                          ? Image.asset(
-                                              "assets/images/NoImage.jpg",
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Image.network(
-                                              selectedProduct!.image_url!,
-                                              fit: BoxFit.cover,
-                                            ),
-                                    ),
-                                  ),
+              //               return Container(
+              //                 decoration: BoxDecoration(
+              //                   color: Colors.white,
+              //                   borderRadius: BorderRadius.circular(16),
+              //                   boxShadow: [
+              //                     BoxShadow(
+              //                       color: Colors.black12,
+              //                       blurRadius: 6,
+              //                       spreadRadius: 2,
+              //                       offset: Offset(2, 4),
+              //                     ),
+              //                   ],
+              //                 ),
+              //                 child: Column(
+              //                   crossAxisAlignment: CrossAxisAlignment.stretch,
+              //                   children: [
+              //                     // รูปสินค้า
+              //                     Expanded(
+              //                       child: ClipRRect(
+              //                         borderRadius: const BorderRadius.vertical(
+              //                           top: Radius.circular(16),
+              //                         ),
+              //                         child: selectedProduct?.image_url == null
+              //                             ? Image.asset(
+              //                                 "assets/images/NoImage.jpg",
+              //                                 fit: BoxFit.cover,
+              //                               )
+              //                             : Image.network(
+              //                                 selectedProduct!.image_url!,
+              //                                 fit: BoxFit.cover,
+              //                               ),
+              //                       ),
+              //                     ),
 
-                                  // ข้อมูล
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          selectedProduct?.name_en ?? "",
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              formatNumber(
-                                                selectedProduct?.srp_inc_vat ??
-                                                    "0",
-                                              ),
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
+              //                     // ข้อมูล
+              //                     Padding(
+              //                       padding: const EdgeInsets.all(8.0),
+              //                       child: Column(
+              //                         crossAxisAlignment:
+              //                             CrossAxisAlignment.start,
+              //                         children: [
+              //                           Text(
+              //                             selectedProduct?.name_en ?? "",
+              //                             maxLines: 1,
+              //                             overflow: TextOverflow.ellipsis,
+              //                             style: const TextStyle(
+              //                               fontWeight: FontWeight.bold,
+              //                             ),
+              //                           ),
+              //                           SizedBox(height: 4),
+              //                           Row(
+              //                             mainAxisAlignment:
+              //                                 MainAxisAlignment.spaceBetween,
+              //                             children: [
+              //                               Text(
+              //                                 formatNumber(
+              //                                   selectedProduct?.srp_inc_vat ??
+              //                                       "0",
+              //                                 ),
+              //                                 style: const TextStyle(
+              //                                   fontSize: 14,
+              //                                   fontWeight: FontWeight.w600,
+              //                                 ),
+              //                               ),
 
-                                            Consumer<FavoriteProvider>(
-                                              builder: (context, favProvider, child) {
-                                                final colors = product
-                                                    .where(
-                                                      (e) =>
-                                                          e.product!.id ==
-                                                          selectedProduct!.id,
-                                                    )
-                                                    .map((e) => e.color)
-                                                    .toList();
+              //                               Consumer<FavoriteProvider>(
+              //                                 builder: (context, favProvider, child) {
+              //                                   final colors = product
+              //                                       .where(
+              //                                         (e) =>
+              //                                             e.product!.id ==
+              //                                             selectedProduct!.id,
+              //                                       )
+              //                                       .map((e) => e.color)
+              //                                       .toList();
 
-                                                final currentProduct = Shoping(
-                                                  productId: selectedProduct!.id
-                                                      .toString(),
-                                                  name:
-                                                      selectedProduct.name_en ??
-                                                      "",
-                                                  price: formatNumber(
-                                                    selectedProduct
-                                                            .srp_inc_vat ??
-                                                        "0",
-                                                  ),
-                                                  detail: "",
-                                                  colors: colors,
-                                                  color: '',
-                                                  nameTh:
-                                                      selectedProduct.name_th ??
-                                                      "",
-                                                  image:
-                                                      selectedProduct.image_url,
-                                                );
+              //                                   final currentProduct = Shoping(
+              //                                     productId: selectedProduct!.id
+              //                                         .toString(),
+              //                                     name:
+              //                                         selectedProduct.name_en ??
+              //                                         "",
+              //                                     price: formatNumber(
+              //                                       selectedProduct
+              //                                               .srp_inc_vat ??
+              //                                           "0",
+              //                                     ),
+              //                                     detail: "",
+              //                                     colors: colors,
+              //                                     color: '',
+              //                                     nameTh:
+              //                                         selectedProduct.name_th ??
+              //                                         "",
+              //                                     image:
+              //                                         selectedProduct.image_url,
+              //                                   );
 
-                                                final isFav = favProvider
-                                                    .isFavorite(currentProduct);
+              //                                   final isFav = favProvider
+              //                                       .isFavorite(currentProduct);
 
-                                                return GestureDetector(
-                                                  onTap: () {
-                                                    favProvider.toggleFavorite(
-                                                      currentProduct,
-                                                    );
-                                                  },
-                                                  child: Image.asset(
-                                                    isFav
-                                                        ? "assets/icons/HertOn.png"
-                                                        : "assets/icons/HertOff.png",
-                                                    scale: 15,
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 8),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: kButtonColor,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              // หา colors ของ product ที่กด
-                                              final colors = product
-                                                  .where(
-                                                    (e) =>
-                                                        e.product!.id ==
-                                                        selectedProduct!.id,
-                                                  )
-                                                  .map((e) => e.color)
-                                                  .toList();
-                                              final sameproduct = product
-                                                  .where(
-                                                    (e) =>
-                                                        e.product!.id ==
-                                                        selectedProduct!.id,
-                                                  )
-                                                  .map((e) => e.product)
-                                                  .toList();
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => Detailpro(
-                                                    sameproduct: sameproduct,
-                                                    image: selectedProduct
-                                                        ?.image_url,
-                                                    productId: selectedProduct!
-                                                        .id
-                                                        .toString(),
-                                                    proName:
-                                                        selectedProduct
-                                                            ?.name_en ??
-                                                        "",
-                                                    proPice: formatNumber(
-                                                      selectedProduct
-                                                              ?.srp_inc_vat ??
-                                                          "",
-                                                    ),
-                                                    detail: '',
-                                                    color: colors,
-                                                    proNameTh:
-                                                        selectedProduct
-                                                            ?.name_th ??
-                                                        "",
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            child: Text(
-                                              "สั่งซื้อ",
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: kbgf,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+              //                                   return GestureDetector(
+              //                                     onTap: () {
+              //                                       favProvider.toggleFavorite(
+              //                                         currentProduct,
+              //                                       );
+              //                                     },
+              //                                     child: Image.asset(
+              //                                       isFav
+              //                                           ? "assets/icons/HertOn.png"
+              //                                           : "assets/icons/HertOff.png",
+              //                                       scale: 15,
+              //                                     ),
+              //                                   );
+              //                                 },
+              //                               ),
+              //                             ],
+              //                           ),
+              //                           SizedBox(height: 8),
+              //                           SizedBox(
+              //                             width: double.infinity,
+              //                             child: ElevatedButton(
+              //                               style: ElevatedButton.styleFrom(
+              //                                 backgroundColor: kButtonColor,
+              //                                 shape: RoundedRectangleBorder(
+              //                                   borderRadius:
+              //                                       BorderRadius.circular(8),
+              //                                 ),
+              //                               ),
+              //                               onPressed: () {
+              //                                 // หา colors ของ product ที่กด
+              //                                 final colors = product
+              //                                     .where(
+              //                                       (e) =>
+              //                                           e.product!.id ==
+              //                                           selectedProduct!.id,
+              //                                     )
+              //                                     .map((e) => e.color)
+              //                                     .toList();
+              //                                 final sameproduct = product
+              //                                     .where(
+              //                                       (e) =>
+              //                                           e.product!.id ==
+              //                                           selectedProduct!.id,
+              //                                     )
+              //                                     .map((e) => e.product)
+              //                                     .toList();
+              //                                 Navigator.push(
+              //                                   context,
+              //                                   MaterialPageRoute(
+              //                                     builder: (context) => Detailpro(
+              //                                       sameproduct: sameproduct,
+              //                                       image: selectedProduct
+              //                                           ?.image_url,
+              //                                       productId: selectedProduct!
+              //                                           .id
+              //                                           .toString(),
+              //                                       proName:
+              //                                           selectedProduct
+              //                                               ?.name_en ??
+              //                                           "",
+              //                                       proPice: formatNumber(
+              //                                         selectedProduct
+              //                                                 ?.srp_inc_vat ??
+              //                                             "",
+              //                                       ),
+              //                                       detail: '',
+              //                                       color: colors,
+              //                                       proNameTh:
+              //                                           selectedProduct
+              //                                               ?.name_th ??
+              //                                           "",
+              //                                     ),
+              //                                   ),
+              //                                 );
+              //                               },
+              //                               child: Text(
+              //                                 "สั่งซื้อ",
+              //                                 style: TextStyle(
+              //                                   fontSize: 12,
+              //                                   fontWeight: FontWeight.bold,
+              //                                   color: kbgf,
+              //                                 ),
+              //                               ),
+              //                             ),
+              //                           ),
+              //                         ],
+              //                       ),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               );
+              //             },
+              //           ),
+              //         ),
+              //       ),
             ],
           ),
         );
