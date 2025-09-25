@@ -36,21 +36,36 @@ class _HistoryState extends State<History> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              height: size.height * 0.08,
-              width: double.infinity,
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(color: kbgf),
-              child: InputTextFormField(
-                hintText: "Search here ...",
-                controller: search,
-                size: size,
-                heights: size.height * 0.08,
-                imagestatus: true,
-                images: "assets/icons/Search.png",
-                whatfield: false,
-                width: double.infinity,
-              ),
+             Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: const Color.fromARGB(255, 241, 241, 241),
+                        border: Border.all(color: kButtonColor)
+                    ),
+                    width: double.infinity,
+                    height: size.height * 0.05,
+                    child: TextFormField(
+                      controller: search,
+                      style: TextStyle(fontSize: 22),
+                      decoration: InputDecoration(
+                        prefixIcon: Image.asset(
+                          "assets/icons/Search.png",
+                          scale: 20,
+                        ),
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        hintText: "Search here ...",
+                        hintStyle: TextStyle(
+                          fontSize: 20,
+                          fontFamily: 'IBMPlexSansThai',
+                          color: kbgM,
+                        ),
+                      ),
+                      // onChanged: filterProducts,
+                    ),
+                  ),
                 ),
                Column(
                  children: List.generate(

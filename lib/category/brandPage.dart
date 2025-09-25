@@ -30,7 +30,6 @@ class _BrandPageState extends State<BrandPage> {
   String? idPro;
   String? namePro;
   List<Data> product = [];
-   List<ProductTyp?> uniqueProducts = [];
   final CarouselSliderController _controller = CarouselSliderController();
 
 
@@ -43,7 +42,7 @@ class _BrandPageState extends State<BrandPage> {
     }
   }
 
-   Future<void> getapi() async {
+  Future<void> getapi() async {
     try {
       // LoadingDialog.open(context);
       await context.read<ProductController>().getproductypBybrandId(brandid: widget.brandId);
@@ -53,7 +52,8 @@ class _BrandPageState extends State<BrandPage> {
         page: 1, 
       );
       product = producs;
-      uniqueProducts = product.map((e) => e.product).toSet().toList();
+      
+      // uniqueProducts = product.map((e) => e.product).toSet().toList();
 
       // LoadingDialog.close(context);
     } on Exception catch (e) {
@@ -70,6 +70,16 @@ class _BrandPageState extends State<BrandPage> {
         ),
       );
     }
+  }
+
+  List<Data> get uniqueProducts {
+    final Map<int, Data> map = {};
+    for (var item in product) {
+      if (!map.containsKey(item.product!.id)) {
+        map[item.product!.id] = item;
+      }
+    }
+    return map.values.toList();
   }
 
   @override
@@ -405,13 +415,13 @@ class _BrandPageState extends State<BrandPage> {
                                       borderRadius: const BorderRadius.vertical(
                                         top: Radius.circular(16),
                                       ),
-                                      child: selectedProduct?.image_url == null
+                                      child: selectedProduct?.product?.image_url == null
                                           ? Image.asset(
                                               "assets/images/NoImage.jpg",
                                               fit: BoxFit.cover,
                                             )
                                           : Image.network(
-                                              selectedProduct!.image_url!,
+                                              selectedProduct!.product?.image_url??"",
                                               fit: BoxFit.cover,
                                             ),
                                     ),
@@ -425,7 +435,7 @@ class _BrandPageState extends State<BrandPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          selectedProduct?.name_en ?? "",
+                                          selectedProduct?.product?.name_en ?? "",
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
@@ -438,10 +448,10 @@ class _BrandPageState extends State<BrandPage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              formatNumber(
-                                                selectedProduct?.srp_inc_vat ??
+                                            "฿ ${ formatNumber(
+                                                selectedProduct?.product?.srp_inc_vat ??
                                                     "0",
-                                              ),
+                                              )}" ,
                                               style: const TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
@@ -460,24 +470,24 @@ class _BrandPageState extends State<BrandPage> {
                                                     .toList();
 
                                                 final currentProduct = Shoping(
+                                                  sku:selectedProduct.sku,
                                                   productId: selectedProduct!.id
                                                       .toString(),
                                                   name:
-                                                      selectedProduct.name_en ??
+                                                      selectedProduct.product?.name_en ??
                                                       "",
                                                   price: formatNumber(
-                                                    selectedProduct
-                                                            .srp_inc_vat ??
+                                                   selectedProduct?.product?.srp_inc_vat ??
                                                         "0",
                                                   ),
                                                   detail: "",
                                                   colors: colors,
                                                   color: '',
                                                   nameTh:
-                                                      selectedProduct.name_th ??
+                                                       selectedProduct.product?.name_th ??
                                                       "",
                                                   image:
-                                                      selectedProduct.image_url,
+                                                        selectedProduct!.product?.image_url,
                                                 );
 
                                                 final isFav = favProvider
@@ -533,25 +543,25 @@ class _BrandPageState extends State<BrandPage> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) => Detailpro(
+                                                    sku: selectedProduct.sku,
                                                     sameproduct: sameproduct,
-                                                    image: selectedProduct
-                                                        ?.image_url,
+                                                    image:   selectedProduct!.product?.image_url,
                                                     productId: selectedProduct!
                                                         .id
                                                         .toString(),
                                                     proName:
-                                                        selectedProduct
+                                                        selectedProduct.product
                                                             ?.name_en ??
                                                         "",
                                                     proPice: formatNumber(
-                                                      selectedProduct
+                                                      selectedProduct.product
                                                               ?.srp_inc_vat ??
                                                           "",
                                                     ),
                                                     detail: '',
                                                     color: colors,
                                                     proNameTh:
-                                                        selectedProduct
+                                                        selectedProduct.product
                                                             ?.name_th ??
                                                         "",
                                                   ),

@@ -147,6 +147,7 @@ class _CatagoryState extends State<Catagory> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: const Color.fromARGB(255, 241, 241, 241),
+                  border: Border.all(color: kButtonColor)
               ),
               width: double.infinity,
               height: size.height * 0.05,
@@ -170,7 +171,21 @@ class _CatagoryState extends State<Catagory> {
           ),
 
           // GridView
-          Expanded(
+          uniqueProducts.isEmpty
+          ?Column(
+            children: [
+               SizedBox(height: size.height*0.3,),
+              Text(
+                "ไม่พบสินค้า",
+                style: TextStyle(
+                  color: kbgM,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          )
+          :Expanded(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: GridView.builder(
@@ -259,7 +274,7 @@ class _CatagoryState extends State<Catagory> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      formatNumber(product.product?.srp_inc_vat ?? "0"),
+                         "฿ ${formatNumber(product.product?.srp_inc_vat ?? "0")}",
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -269,6 +284,7 @@ class _CatagoryState extends State<Catagory> {
                     Consumer<FavoriteProvider>(
                       builder: (context, favProvider, child) {
                         final currentProduct = Shoping(
+                          sku:product.sku ,
                           image:  product.product?.image_url,
                           productId: product.product?.id.toString(),
                           name: product.product?.name_en ?? "",

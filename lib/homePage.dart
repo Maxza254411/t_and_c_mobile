@@ -28,12 +28,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController search = TextEditingController();
   int _currentIndex = 0;
   String? idPro;
   String? namePro;
   String? first_name;
   String? last_name;
+  String?email;
   int? userId;
   List<ProductTyp?> uniqueProducts = [];
   List<Brands> allbands = []; //เก็บข้อมูลเเบร์นทั้งหมด
@@ -82,6 +84,7 @@ class _HomePageState extends State<HomePage> {
     first_name = prefs.getString('first_name');
     last_name = prefs.getString('last_name');
     userId = prefs.getInt('userId');
+      email  = prefs.getString('email');
   }
 
  void filterProducts(String keyword) {
@@ -117,6 +120,53 @@ class _HomePageState extends State<HomePage> {
         final brands = controller.brands;
         return Scaffold(
           backgroundColor: kbgH,
+          key: _scaffoldKey,
+          drawer: Drawer(
+            backgroundColor: Colors.white,
+           child: ListView(
+           padding: EdgeInsets.zero,
+           children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: kButtonColor),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: kbgf,
+                    radius: 30,
+                    backgroundImage: AssetImage("assets/icons/Vector.png"),
+                  ),
+                  SizedBox(height: 8),
+                  Text("${first_name ?? ""} ${last_name ?? ""}",
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  Text("${email}", style: TextStyle(color: Colors.white70)),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text('หน้าแรก'),
+              onTap: () => Navigator.pop(context),
+            ),
+            ListTile(
+              leading: Image.asset("assets/icons/BuyBack.png",scale: 20,),
+              title: Text('ตะกร้า'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => Bucket()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications),
+              title: Text('การแจ้งเตือน'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => Nontification()));
+              },
+            ),
+          ],
+        ),
+      ),
           appBar: AppBar(
             backgroundColor: kButtonColor,
             actions: [
@@ -174,9 +224,14 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ],
-            leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset("assets/icons/Vector.png", scale: 15),
+            leading: GestureDetector(
+              onTap: () {
+                     _scaffoldKey.currentState?.openDrawer();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset("assets/icons/Vector.png", scale: 15),
+              ),
             ),
             title: Text(
               "${first_name ?? ""} ${last_name ?? ""}",
@@ -269,10 +324,12 @@ class _HomePageState extends State<HomePage> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: const Color.fromARGB(255, 241, 241, 241),
+                    border: Border.all(color: kButtonColor)
                   ),
                   width: double.infinity,
                   height: size.height * 0.05,
                   child: TextFormField(
+                    
                     controller: search,
                     style: TextStyle(fontSize: 22),
                     decoration: InputDecoration(
@@ -335,10 +392,18 @@ class _HomePageState extends State<HomePage> {
                             // รูปสี่เหลี่ยมโค้งมน
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
-                              child: Image.asset(
+                              child: 
+                              filteredBand[index].image_url==null
+                             ? Image.asset(
                                 "assets/images/NoImage.jpg",
                                 // ถ้าเป็นรูปจาก API ใช้ NetworkImage
                                 // Image.network(brands[index].image ?? "url สำรอง"),
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              )
+                             : Image.network(
+                                "${filteredBand[index].image_url}",
                                 width: 80,
                                 height: 80,
                                 fit: BoxFit.cover,

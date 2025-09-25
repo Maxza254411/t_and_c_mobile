@@ -15,6 +15,7 @@ class Shoping {
   int? userId;
   List<Colorp?>? colors;
   List<ProductTyp?>?sameproduct;
+  String? sku;
   
   Shoping({
     required this.nameTh,
@@ -28,5 +29,6 @@ class Shoping {
     this.quantity = 1,
     this.userId,
     this.sameproduct,
+    this.sku,
   });
 }

@@ -132,6 +132,7 @@ class _FavoritePageState extends State<FavoritePage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: const Color.fromARGB(255, 241, 241, 241),
+                        border: Border.all(color: kButtonColor)
                     ),
                     width: double.infinity,
                     height: size.height * 0.05,
@@ -224,7 +225,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          item.price,
+                                          "฿ ${item.price}" ,
                                           style: const TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
@@ -233,6 +234,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                         Consumer<FavoriteProvider>(
                                           builder: (context, favProvider, child) {
                                             final currentProduct = Shoping(
+                                              sku: item.sku,
                                               productId: item.productId,
                                               name: item.name,
                                               price: item.price,
@@ -278,6 +280,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => Detailpro(
+                                                   sku:item.sku,
                                                 sameproduct:item. sameproduct,
                                                 image: item.image,
                                                 productId: item.productId,

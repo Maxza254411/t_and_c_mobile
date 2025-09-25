@@ -148,12 +148,12 @@ class _ProfileState extends State<Profile> {
             //   title: 'เบอร์มือถือ',
             //   description: '000-xxx-xxxx',
             // ),
-            BoxProfile(
-              size: size,
-              title: 'วิธีการชำระเงินหลัก',
-              description: 'เงินสด',
-              status: true,
-            ),
+            // BoxProfile(
+            //   size: size,
+            //   title: 'วิธีการชำระเงินหลัก',
+            //   description: 'เงินสด',
+            //   status: true,
+            // ),
 
             GestureDetector(
               onTap: () async {
