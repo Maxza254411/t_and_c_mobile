@@ -322,12 +322,48 @@ class _BrandPageState extends State<BrandPage> {
                   ],
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                            
+                  height: size.height*0.1,
+                                decoration: BoxDecoration(
+                                  color: kButtonColor,
+                                  borderRadius: BorderRadius.circular(16),
+                                
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                      CircleAvatar(
+                                   radius: 30, // ขนาดวงกลม
+                                   backgroundImage: AssetImage("assets/images/NoImage.jpg"),
+                                   // หรือถ้าเป็น Network รูปจาก API ใช้:
+                                   // backgroundImage: NetworkImage("https://picsum.photos/200"),
+                                 ),
+                                 SizedBox(width: size.width*0.05,),
+                                 Text(widget.title,style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),)
+                                  ],
+                                ),
+                ),
+              ),
+
+           
                uniqueProducts.isEmpty
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        color: kButtonColor,
-                      ), // แสดง loading
-                    )
+                  ? Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: size.height*0.1,),
+                  CircularProgressIndicator(
+                    color: kButtonColor,
+                  ),
+                ],
+              )
                   : Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),

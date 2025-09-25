@@ -322,6 +322,7 @@ class _CatagoryState extends State<Catagory> {
                             ),
                             detail: '',
                             color: productColors, proNameTh: product.product?.name_th, // ส่ง list สีทั้งหมด
+                            sku:product.sku ,
                           ),
                         ),
                       );

@@ -23,6 +23,7 @@ class Detailpro extends StatefulWidget {
     this.image,
     required this.proNameTh,
     this.sameproduct,
+    this.sku,
   });
 
   String? productId;
@@ -33,6 +34,7 @@ class Detailpro extends StatefulWidget {
   List<ProductTyp?>? sameproduct;
   String? image;
   String? proNameTh;
+  String?sku;
 
   @override
   State<Detailpro> createState() => _DetailproState();
@@ -257,7 +259,7 @@ class _DetailproState extends State<Detailpro> {
                   SizedBox(
                     width: 80, // กำหนดความกว้างของ Label "Name-En"
                     child: Text(
-                      "Name-En",
+                      "Name-En:",
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -282,7 +284,7 @@ class _DetailproState extends State<Detailpro> {
                   SizedBox(
                     width: 80, // กำหนดความกว้างของ Label "Name-En"
                     child: Text(
-                      "Name-TH",
+                      "Name-TH:",
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -293,6 +295,31 @@ class _DetailproState extends State<Detailpro> {
                   Expanded(
                     child: Text(
                       widget.proNameTh ?? "-",
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+             Padding(
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start, // ชิดด้านบน
+                children: [
+                  SizedBox(
+                    width: 80, // กำหนดความกว้างของ Label "Name-En"
+                    child: Text(
+                      "SKU:",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      widget.sku ?? "-",
                       style: TextStyle(fontSize: 14, color: Colors.black),
                     ),
                   ),
@@ -355,46 +382,50 @@ class _DetailproState extends State<Detailpro> {
             if (widget.color != null && widget.color!.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal, // 👉 ทำให้เลื่อนซ้ายขวาได้
-                  child: Row(
-                    children: widget.color!.map((colorItem) {
-                      if (colorItem?.name_en == null ||
-                          colorItem!.name_en!.isEmpty) {
-                        return const SizedBox.shrink();
-                      }
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: SizedBox(
-                          width: size.width * 0.4,
-                          child: BuildRadioOption(
-                            title: colorItem.name_en!,
-                            value: colorItem.name_en!,
-                            groupValue: selectedColor,
-                            onChanged: (val) {
-                              setState(() {
-                                selectedColor = val;
-                              });
-
-                              // หา index ของสีที่เลือก
-                              final index = widget.color!.indexWhere(
-                                (c) => c?.name_en == val,
-                              );
-
-                              if (index != -1 &&
-                                  index < widget.sameproduct!.length) {
-                                _controller.animateToPage(
-                                  index,
-                                  duration: const Duration(milliseconds: 500),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
+                child: Row(
+                  children: [
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal, 
+                      child: Row(
+                        children: widget.color!.map((colorItem) {
+                          if (colorItem?.name_en == null ||
+                              colorItem!.name_en!.isEmpty) {
+                            return  SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: SizedBox(
+                              width: size.width * 0.4,
+                              child: BuildRadioOption(
+                                title: colorItem.name_en!,
+                                value: colorItem.name_en!,
+                                groupValue: selectedColor,
+                                onChanged: (val) {
+                                  setState(() {
+                                    selectedColor = val;
+                                  });
+                    
+                                  // หา index ของสีที่เลือก
+                                  final index = widget.color!.indexWhere(
+                                    (c) => c?.name_en == val,
+                                  );
+                    
+                                  if (index != -1 &&
+                                      index < widget.sameproduct!.length) {
+                                    _controller.animateToPage(
+                                      index,
+                                      duration: const Duration(milliseconds: 500),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
                 ),
               ),
           ],
@@ -753,7 +784,7 @@ class _DetailproState extends State<Detailpro> {
                                                             widget.proNameTh ??
                                                             "",
                                                       );
-                                                      Navigator.pop(context);
+                                           
 
                                                       // รอให้ bottom sheet ปิดเสร็จแล้วค่อย push หน้าใหม่
                                                       await Future.delayed(

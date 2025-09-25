@@ -294,7 +294,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               filteredBand.isEmpty
-              ?Column(
+              ? Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
