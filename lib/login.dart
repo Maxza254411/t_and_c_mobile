@@ -63,7 +63,6 @@ class _LoginpageState extends State<Loginpage> {
   }
 
   Future<void> setupLineSDK() async {
-    // ใส่ Channel ID ของคุณ
     await LineSDK.instance.setup("2008197121");
     print("LINE SDK is ready");
   }
@@ -240,6 +239,10 @@ class _LoginpageState extends State<Loginpage> {
                                   await prefs.setString(
                                     "email",
                                     _login["user"]["email"],
+                                  );
+                                  await prefs.setString(
+                                    "tel_no",
+                                    _login["user"]["tel_no"],
                                   );
                                 }
 
