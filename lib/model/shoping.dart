@@ -4,7 +4,7 @@ import 'package:t_and_c_mobile/model/productTyp.dart';
 
 part 'shoping.g.dart';
 
-@JsonSerializable(explicitToJson: true) // <-- เพิ่มตรงนี้
+@JsonSerializable(explicitToJson: true)
 class Shoping {
   String? product_id;
   String? image;

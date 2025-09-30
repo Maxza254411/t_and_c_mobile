@@ -8,6 +8,8 @@ part of 'shoping.dart';
 
 Shoping _$ShopingFromJson(Map<String, dynamic> json) => Shoping(
   nameTh: json['nameTh'] as String,
+  warehouse_id: json['warehouse_id'] as String?,
+  product_sku_id: json['product_sku_id'] as String?,
   image: json['image'] as String?,
   product_id: json['product_id'] as String?,
   name: json['name'] as String,
@@ -28,6 +30,7 @@ Shoping _$ShopingFromJson(Map<String, dynamic> json) => Shoping(
       )
       .toList(),
   sku: json['sku'] as String?,
+  qty: json['qty'] as String?,
 );
 
 Map<String, dynamic> _$ShopingToJson(Shoping instance) => <String, dynamic>{
@@ -38,9 +41,12 @@ Map<String, dynamic> _$ShopingToJson(Shoping instance) => <String, dynamic>{
   'price': instance.price,
   'detail': instance.detail,
   'color': instance.color,
+  'product_sku_id': instance.product_sku_id,
+  'warehouse_id': instance.warehouse_id,
   'quantity': instance.quantity,
   'userId': instance.userId,
   'colors': instance.colors?.map((e) => e?.toJson()).toList(),
   'sameproduct': instance.sameproduct?.map((e) => e?.toJson()).toList(),
   'sku': instance.sku,
+  'qty': instance.qty,
 };
