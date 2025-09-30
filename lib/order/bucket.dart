@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -128,8 +130,8 @@ class _BucketState extends State<Bucket> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 2),
                                 child: SizedBox(
-                                  width: size.width*0.2, // กำหนดความกว้าง
-                                  height: size.height*0.08, // กำหนดความสูง
+                                  width: size.width * 0.2, // กำหนดความกว้าง
+                                  height: size.height * 0.08, // กำหนดความสูง
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(
                                       8,
@@ -327,7 +329,7 @@ class _BucketState extends State<Bucket> {
                                       selectedItems.add(cart.items[i]);
                                     }
                                   }
-
+                                  inspect(selectedItems);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

@@ -331,7 +331,7 @@ class _CatagoryState extends State<Catagory> {
                           builder: (context) => Detailpro(
                             sameproduct: sameproduct,
                             image: product.product?.image_url,
-                            productId: product.product?.id.toString() ,
+                            productId: product.product?.id.toString()??"" ,
                             proName: product.product?.name_en ?? "",
                             proPice: formatNumber(
                               product.product?.srp_inc_vat ?? "0",

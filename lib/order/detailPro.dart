@@ -15,7 +15,7 @@ import 'package:t_and_c_mobile/widget/dialog.dart';
 class Detailpro extends StatefulWidget {
   Detailpro({
     super.key,
-    this.productId,
+    required this.productId,
     required this.proName,
     required this.proPice,
     required this.detail,
@@ -26,7 +26,7 @@ class Detailpro extends StatefulWidget {
     this.sku,
   });
 
-  String? productId;
+  String productId;
   String proName;
   String proPice;
   String detail;
@@ -34,7 +34,7 @@ class Detailpro extends StatefulWidget {
   List<ProductTyp?>? sameproduct;
   String? image;
   String? proNameTh;
-  String?sku;
+  String? sku;
 
   @override
   State<Detailpro> createState() => _DetailproState();
@@ -301,7 +301,7 @@ class _DetailproState extends State<Detailpro> {
                 ],
               ),
             ),
-             Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start, // ชิดด้านบน
@@ -354,7 +354,7 @@ class _DetailproState extends State<Detailpro> {
                   Consumer<FavoriteProvider>(
                     builder: (context, favProvider, child) {
                       final currentProduct = Shoping(
-                        sku:widget.sku,
+                        sku: widget.sku,
                         sameproduct: widget.sameproduct,
                         image: widget.image,
                         product_id: widget.productId,
@@ -386,15 +386,17 @@ class _DetailproState extends State<Detailpro> {
                 child: Row(
                   children: [
                     SingleChildScrollView(
-                      scrollDirection: Axis.horizontal, 
+                      scrollDirection: Axis.horizontal,
                       child: Row(
                         children: widget.color!.map((colorItem) {
                           if (colorItem?.name_en == null ||
                               colorItem!.name_en!.isEmpty) {
-                            return  SizedBox.shrink();
+                            return SizedBox.shrink();
                           }
                           return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                            ),
                             child: SizedBox(
                               width: size.width * 0.4,
                               child: BuildRadioOption(
@@ -405,17 +407,19 @@ class _DetailproState extends State<Detailpro> {
                                   setState(() {
                                     selectedColor = val;
                                   });
-                    
+
                                   // หา index ของสีที่เลือก
                                   final index = widget.color!.indexWhere(
                                     (c) => c?.name_en == val,
                                   );
-                    
+
                                   if (index != -1 &&
                                       index < widget.sameproduct!.length) {
                                     _controller.animateToPage(
                                       index,
-                                      duration: const Duration(milliseconds: 500),
+                                      duration: const Duration(
+                                        milliseconds: 500,
+                                      ),
                                       curve: Curves.easeInOut,
                                     );
                                   }
@@ -458,7 +462,8 @@ class _DetailproState extends State<Detailpro> {
                         return;
                       }
                       final shoping = Shoping(
-                           sku:widget.sku,
+                        product_id: widget.productId,
+                        sku: widget.sku,
                         image: widget.image,
                         name: widget.proName,
                         price: widget.proPice,
@@ -775,6 +780,7 @@ class _DetailproState extends State<Detailpro> {
                                                     if (widget.proPice !=
                                                         "0.00") {
                                                       final shoping = Shoping(
+                                                        product_id: widget.productId,
                                                         quantity: quantity,
                                                         image: widget.image,
                                                         name: widget.proName,
@@ -786,7 +792,6 @@ class _DetailproState extends State<Detailpro> {
                                                             widget.proNameTh ??
                                                             "",
                                                       );
-                                           
 
                                                       // รอให้ bottom sheet ปิดเสร็จแล้วค่อย push หน้าใหม่
                                                       await Future.delayed(

@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +9,7 @@ import 'package:t_and_c_mobile/model/brands.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/distributors.dart';
 import 'package:t_and_c_mobile/model/order.dart';
+import 'package:t_and_c_mobile/model/product.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/widget/apiException.dart';
 
@@ -174,47 +176,55 @@ class ProductApi {
   }
 
   static Future<Order> createOrder({
-    required String distributor_id,
-    required String qo_date,
-    required String total_qty,
-    required String total_cost_ex_vat,
-    required String total_vat_amount,
-    required String qo_total_cost_inc_vatdate,
-    required String grand_total,
-    required String products,
-    required String address_id,
-    required String slip_image,
-    required String payment_method,
-  }) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    final url = Uri.https(publicUrl, '/api/quotation');
-    final response = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: convert.jsonEncode({
-        "distributor_id": "1",
-        "qo_date": "1999-01-01",
-        "total_qty": "1",
-        "total_cost_ex_vat": "1",
-        "total_vat_amount": "1",
-        "total_cost_inc_vat": "1",
-        "grand_total": "1",
-        "products": products,
-        "address_id": "1",
-        "slip_image": "",
-        "payment_method": "cash",
-      }),
-    );
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = convert.jsonDecode(response.body);
-      return Order.fromJson(data);
-    } else {
-      final data = convert.jsonDecode(response.body);
-      throw Exception(data['message']);
-    }
+  required String distributor_id,
+  required String qo_date,
+  required String total_qty,
+  required String total_cost_ex_vat,
+  required String total_vat_amount,
+  required String total_cost_inc_vat,
+  required String grand_total,
+  required List<Product> products,
+  required String address_id,
+  required File slip_image, // path ของไฟล์
+  required String payment_method,
+}) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token');
+  final url = Uri.https(publicUrl, '/api/quotation');
+
+  var request = http.MultipartRequest('POST', url);
+  request.headers['Authorization'] = 'Bearer $token';
+
+
+  request.fields['distributor_id'] = distributor_id;
+  request.fields['qo_date'] = "1999-01-01";
+  request.fields['total_qty'] = total_qty;
+  request.fields['total_cost_ex_vat'] = total_cost_ex_vat;
+  request.fields['total_vat_amount'] = total_vat_amount;
+  request.fields['total_cost_inc_vat'] = total_cost_inc_vat;
+  request.fields['grand_total'] = grand_total;
+  request.fields['address_id'] = address_id;
+  request.fields['payment_method'] = payment_method;
+  request.fields['products'] =
+      convert.jsonEncode(products.map((p) => p.toJson()).toList());
+if (slip_image != null) {
+  request.files.add(await http.MultipartFile.fromPath(
+    'slip_image',
+    slip_image.path,  // ต้องเป็น path จริง ๆ ของไฟล์
+  ));
+}
+
+  // ส่ง request
+  var streamedResponse = await request.send();
+  var response = await http.Response.fromStream(streamedResponse);
+
+  if (response.statusCode == 200 || response.statusCode == 201) {
+    final data = convert.jsonDecode(response.body);
+    return Order.fromJson(data);
+  } else {
+    final data = convert.jsonDecode(response.body);
+    throw Exception(data['message']);
   }
+}
+
 }

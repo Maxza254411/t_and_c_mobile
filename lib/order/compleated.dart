@@ -12,6 +12,7 @@ import 'package:t_and_c_mobile/addressPage.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/homepage.dart';
+import 'package:t_and_c_mobile/model/product.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/billpage.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
@@ -776,76 +777,92 @@ class _CompleatedState extends State<Compleated> {
                     // --- ปุ่มชำระเงิน ---
                     GestureDetector(
                       onTap: () async {
-                        if (_image == null) {
-                          await showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (context) => AlertDialogYes(
-                              title: 'แจ้งเตือน',
-                              description: 'กรุณาอัพโหลดสลิป',
-                              pressYes: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          );
-                        } else {
-                          try {
-                            await ProductApi.createOrder(
-                              distributor_id: '1',
-                              qo_date: '1',
-                              total_qty: '1',
-                              total_cost_ex_vat: '1',
-                              total_vat_amount: '1',
-                              qo_total_cost_inc_vatdate: '1',
-                              grand_total: '1',
-                              products: convert.jsonEncode(
-                                widget.selectedItems,
-                              ),
-                              address_id: '1',
-                              slip_image: '',
-                              payment_method: 'cash',
-                            );
+                        // print(_image!.path);
+                        // if (_image == null) {
+                        //   await showDialog(
+                        //     barrierDismissible: false,
+                        //     context: context,
+                        //     builder: (context) => AlertDialogYes(
+                        //       title: 'แจ้งเตือน',
+                        //       description: 'กรุณาอัพโหลดสลิป',
+                        //       pressYes: () {
+                        //         Navigator.pop(context);
+                        //       },
+                        //     ),
+                        //   );
+                        // } else {
+                        //   try {
+                        //     List<Product> productModel = [];
+                        //     for (
+                        //       var i = 0;
+                        //       i < widget.selectedItems.length;
+                        //       i++
+                        //     ) {
+                        //       final item = widget.selectedItems[i];
 
-                            // final cart = Provider.of<CartProvider>(
-                            //   context,
-                            //   listen: false,
-                            // );
+                        //       productModel.add(
+                        //         Product(
+                        //           "1",// item.product_id ?? "", // product_id
+                        //           "2", // product_sku_id
+                        //          "1" ,// item.price, // price
+                        //           "1", // warehouse_id (สมมติใส่ค่า default)
+                        //           item.quantity.toString(), // qty
+                        //         ),
+                        //       );
+                        //     }
+                        //     await ProductApi.createOrder(
+                        //       distributor_id: '1',
+                        //       qo_date: '1',
+                        //       total_qty: '1',
+                        //       total_cost_ex_vat: '1',
+                        //       total_vat_amount: '1',
+                        //       grand_total: '1',
+                        //       products: productModel,
+                        //       address_id: '1',
+                        //       slip_image: _image!,
+                        //       payment_method: 'cash', total_cost_inc_vat: '1',
+                        //     );
 
-                            // // ลบเฉพาะสินค้าที่เลือก
-                            // cart.removeSelected(widget.selectedItems);
+                        //     // final cart = Provider.of<CartProvider>(
+                        //     //   context,
+                        //     //   listen: false,
+                        //     // );
 
-                            // final out = await showDialog(
-                            //   barrierDismissible: true,
-                            //   context: context,
-                            //   builder: (context) => SucesDialog(
-                            //     title: 'แจ้งเตือน',
-                            //     description: 'ชำระเงินสำเร็จ',
-                            //   ),
-                            // );
+                        //     // // ลบเฉพาะสินค้าที่เลือก
+                        //     // cart.removeSelected(widget.selectedItems);
 
-                            // if (out == true) {
-                            //   Navigator.pushAndRemoveUntil(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => FirstPage(),
-                            //     ),
-                            //     (route) => false,
-                            //   );
-                            // }
-                          } on Exception catch (e) {
-                            if (!mounted) return;
-                            await showDialog(
-                              context: context,
-                              builder: (context) => AlertDialogYes(
-                                title: 'แจ้งเตือน',
-                                description: '$e',
-                                pressYes: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            );
-                          }
-                        }
+                        //     // final out = await showDialog(
+                        //     //   barrierDismissible: true,
+                        //     //   context: context,
+                        //     //   builder: (context) => SucesDialog(
+                        //     //     title: 'แจ้งเตือน',
+                        //     //     description: 'ชำระเงินสำเร็จ',
+                        //     //   ),
+                        //     // );
+
+                        //     // if (out == true) {
+                        //     //   Navigator.pushAndRemoveUntil(
+                        //     //     context,
+                        //     //     MaterialPageRoute(
+                        //     //       builder: (context) => FirstPage(),
+                        //     //     ),
+                        //     //     (route) => false,
+                        //     //   );
+                        //     // }
+                        //   } on Exception catch (e) {
+                        //     if (!mounted) return;
+                        //     await showDialog(
+                        //       context: context,
+                        //       builder: (context) => AlertDialogYes(
+                        //         title: 'แจ้งเตือน',
+                        //         description: '$e',
+                        //         pressYes: () {
+                        //           Navigator.pop(context);
+                        //         },
+                        //       ),
+                        //     );
+                        //   }
+                        // }
                       },
                       child: Container(
                         height: size.height * 0.07, // สูงขึ้นหน่อย
