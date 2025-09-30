@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+// import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 class PromptPayTab extends StatefulWidget {
   const PromptPayTab({super.key});

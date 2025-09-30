@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
+import 'package:t_and_c_mobile/register.dart';
 import 'package:t_and_c_mobile/serviceLogin/loginApi.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/field.dart';
@@ -60,6 +62,44 @@ class _LoginpageState extends State<Loginpage> {
     return true; // ✅ ผ่าน
   }
 
+  Future<void> setupLineSDK() async {
+    // ใส่ Channel ID ของคุณ
+    await LineSDK.instance.setup("2008197121");
+    print("LINE SDK is ready");
+  }
+
+  Future<void> loginWithLine() async {
+    try {
+      // Login และขอ scope profile + openid (email ต้องขออนุมัติ)
+      final result = await LineSDK.instance.login(
+        scopes: ["profile", "openid"],
+      );
+
+      // ดึงข้อมูลผู้ใช้
+      final user = result.userProfile;
+      final accessToken = result.accessToken.value;
+
+      print("Login Success!");
+      print("Display Name: ${user?.displayName}");
+      print("User ID: ${user?.userId}");
+      print("Profile Picture: ${user?.pictureUrl}");
+      print("Access Token: $accessToken");
+
+      // TODO: เอา accessToken ไปเรียก API หรือเก็บไว้ใน app ตามต้องการ
+    } catch (e) {
+      print("Login failed: $e");
+    }
+  }
+
+  Future<void> logoutLine() async {
+    try {
+      await LineSDK.instance.logout();
+      print("Logout success");
+    } catch (e) {
+      print("Logout failed: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -102,7 +142,7 @@ class _LoginpageState extends State<Loginpage> {
                       Text("Email"),
 
                       InputTextFormField(
-                        hintText:"Email address ",
+                        hintText: "Email address ",
                         controller: email,
                         size: size,
                         heights: size.height * 0.05,
@@ -125,19 +165,23 @@ class _LoginpageState extends State<Loginpage> {
                       ),
                       SizedBox(height: size.height * 0.01),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Checkbox(
-                            activeColor: kButtonColor,
-                            value: _isChecked,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _isChecked = value ?? false;
-                              });
-                            },
+                          Row(
+                            children: [
+                              Checkbox(
+                                activeColor: kButtonColor,
+                                value: _isChecked,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    _isChecked = value ?? false;
+                                  });
+                                },
+                              ),
+                              Text('Remember me'),
+                            ],
                           ),
-                          Text('Remember me'),
-                          SizedBox(width: size.width * 0.1),
+
                           GestureDetector(
                             onTap: () {},
                             child: Text(
@@ -147,99 +191,165 @@ class _LoginpageState extends State<Loginpage> {
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () async {
-                    if (validateEmail(context, email.text)) {
-                      if (password.text == '' || email.text == '') {
-                        await showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (context) => AlertDialogYes(
-                            title: 'แจ้งเตือน',
-                            description: 'กรูณากรอกข้อมูล',
-                            pressYes: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        );
-                      } else {
-                        try {
-                          LoadingDialog.open(context);
-                          final _login = await LoginApi.login(
-                            email.text,
-                            password.text,
-                          );
-                          if (_login["token"] != null) {
-                            final prefs = await SharedPreferences.getInstance();
-                            await prefs.setString("token", _login["token"]);
-                            await prefs.setInt("userId", _login["user"]["id"]);
-                            await prefs.setString(
-                              "first_name",
-                              _login["user"]["first_name"],
-                            );
-                            await prefs.setString(
-                              "last_name",
-                              _login["user"]["last_name"],
-                            );
-                              await prefs.setString(
-                              "staff_code",
-                              _login["user"]["staff_code"],
-                            );
-                               await prefs.setString(
-                              "email",
-                              _login["user"]["email"],
-                            );
-                           
-                          }
-                  
 
-                          LoadingDialog.close(context);
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => FirstPage()), (route) => false);
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => FirstPage(),
-                          //   ),
-                          // );
-                        } on Exception catch (e) {
-                          if (!mounted) return;
-                          LoadingDialog.close(context);
-                          await showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (context) => AlertDialogYes(
-                              title: 'แจ้งเตือน',
-                              description: '$e',
-                              pressYes: () {
-                                Navigator.pop(context);
-                              },
+                      GestureDetector(
+                        onTap: () async {
+                          if (validateEmail(context, email.text)) {
+                            if (password.text == '' || email.text == '') {
+                              await showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (context) => AlertDialogYes(
+                                  title: 'แจ้งเตือน',
+                                  description: 'กรูณากรอกข้อมูล',
+                                  pressYes: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              );
+                            } else {
+                              try {
+                                LoadingDialog.open(context);
+                                final _login = await LoginApi.login(
+                                  email.text,
+                                  password.text,
+                                );
+                                if (_login["token"] != null) {
+                                  final prefs =
+                                      await SharedPreferences.getInstance();
+                                  await prefs.setString(
+                                    "token",
+                                    _login["token"],
+                                  );
+                                  await prefs.setInt(
+                                    "userId",
+                                    _login["user"]["id"],
+                                  );
+                                  await prefs.setString(
+                                    "first_name",
+                                    _login["user"]["first_name"],
+                                  );
+                                  await prefs.setString(
+                                    "last_name",
+                                    _login["user"]["last_name"],
+                                  );
+                                  await prefs.setString(
+                                    "staff_code",
+                                    _login["user"]["staff_code"],
+                                  );
+                                  await prefs.setString(
+                                    "email",
+                                    _login["user"]["email"],
+                                  );
+                                }
+
+                                LoadingDialog.close(context);
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FirstPage(),
+                                  ),
+                                  (route) => false,
+                                );
+                              } on Exception catch (e) {
+                                if (!mounted) return;
+                                LoadingDialog.close(context);
+                                await showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (context) => AlertDialogYes(
+                                    title: 'แจ้งเตือน',
+                                    description: '$e',
+                                    pressYes: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                );
+                              }
+                            }
+                          }
+                        },
+
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: ktextColr,
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          );
-                        }
-                      }
-                    }
-                   },
-                   child: Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: ktextColr,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    width: size.width * 0.9,
-                    child: Center(
-                      child: Text(
-                        "Login",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                          color: Colors.white,
+                            width: size.width * 0.7,
+                            height: size.height * 0.06,
+                            child: Center(
+                              child: Text(
+                                "Login",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      SizedBox(height: size.height * 0.02),
+                      Center(child: Text("---------- หรือ ----------")),
+                      SizedBox(height: size.height * 0.02),
+                      Center(
+                        child: GestureDetector(
+                          onTap: () async {
+                            await loginWithLine();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: kline,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            width: size.width * 0.7,
+                            height: size.height * 0.06,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  "assets/icons/LINE_Brand_icon 2 1.png",
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  "เข้าสู่ระบบผ่าน Line",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.02),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("ยังไม่มีบัญชีผู้ใช้? "),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Register(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "สมัครสมาชิก",
+                              style: TextStyle(color: kButtonColor),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],

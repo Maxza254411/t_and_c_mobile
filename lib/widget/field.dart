@@ -11,7 +11,7 @@ class RegisTextFormField extends StatefulWidget {
     this.hintText,
     required this.heights,
     this.fontsize,
-      required this.width,
+    required this.width,
   });
 
   final Size size;
@@ -19,8 +19,8 @@ class RegisTextFormField extends StatefulWidget {
   final bool isPassword;
   String? hintText;
   double heights;
-   double? fontsize;
-   double? width;
+  double? fontsize;
+  double? width;
 
   @override
   State<RegisTextFormField> createState() => _RegisTextFormFieldState();
@@ -30,50 +30,46 @@ class _RegisTextFormFieldState extends State<RegisTextFormField> {
   late bool _show = true;
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: const Color.fromARGB(255, 241, 241, 241),
-              
-            ),
-              width: widget.width,
-            height: widget.heights,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 10),
-        child: TextFormField(
-          
-          controller: widget.controller,
-          onTap: () async {
-            await SystemChrome.setEnabledSystemUIMode(
-              SystemUiMode.immersiveSticky,
-            );
-          },
-              style: TextStyle(fontSize: widget.fontsize ?? 22),
-          obscureText: widget.isPassword ? _show : false,
-          decoration: InputDecoration(
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            hintText: widget.hintText,
-            
-        
-             hintStyle: const TextStyle(
-                    fontSize: 18,
-                    fontFamily: 'IBMPlexSansThai',
-                    color: kbgM,
-                  ),
-            suffixIcon: widget.isPassword
-                ? GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _show = !_show;
-                      });
-                    },
-                    child: _show
-                        ? Image.asset('assets/icons/Eye.png', scale: 20)
-                        : Image.asset('assets/icons/EyeSlash.png', scale: 20),
-                  )
-                : null,
-          ),
+    return TextFormField(
+      controller: widget.controller,
+      onTap: () async {
+        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      },
+      style: TextStyle(fontSize: widget.fontsize ?? 22),
+      obscureText: widget.isPassword ? _show : false,
+      decoration: InputDecoration(
+        filled: true, 
+        fillColor: const Color.fromARGB(255, 241, 241, 241), 
+        hintText: widget.hintText,
+
+        hintStyle: const TextStyle(
+          fontSize: 18,
+          fontFamily: 'IBMPlexSansThai',
+          color: kbgM,
+        ),
+        suffixIcon: widget.isPassword
+            ? GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _show = !_show;
+                  });
+                },
+                child: _show
+                    ? Image.asset('assets/icons/Eye.png', scale: 20)
+                    : Image.asset('assets/icons/EyeSlash.png', scale: 20),
+              )
+            : null,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.grey.shade400),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.grey.shade400),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: kButtonColor, width: 2),
         ),
       ),
     );
@@ -94,6 +90,7 @@ class InputTextFormField extends StatefulWidget {
     required this.whatfield,
     this.maxLines,
     this.fontsize,
+    this.labelText,
   });
 
   final Size size;
@@ -107,6 +104,7 @@ class InputTextFormField extends StatefulWidget {
   double? fontsize;
   int? maxLines;
   String? Function(String?)? validator;
+  String? labelText;
 
   @override
   State<InputTextFormField> createState() => _InputTextFormFieldState();
@@ -116,56 +114,66 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
   @override
   Widget build(BuildContext context) {
     return widget.whatfield == true
-        ? Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: const Color.fromARGB(255, 241, 241, 241),
-            ),
-            width: widget.width,
-            height: widget.heights,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: TextFormField(
-                maxLines: widget.maxLines,
-                controller: widget.controller,
-                validator: widget.validator,
-                style: TextStyle(fontSize: widget.fontsize ?? 22),
-                decoration: InputDecoration(
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  hintText: widget.hintText,
-                  hintStyle: const TextStyle(
-                    fontSize: 18,
-                    fontFamily: 'IBMPlexSansThai',
-                    color: kbgM,
-                  ),
-                ),
+        ? TextFormField(
+            maxLines: widget.maxLines,
+            controller: widget.controller,
+            validator: widget.validator,
+            style: TextStyle(fontSize: widget.fontsize ?? 22),
+            decoration: InputDecoration(
+              filled: true, // ทำให้พื้นหลังสีตาม fillColor
+              fillColor: const Color.fromARGB(255, 241, 241, 241), // สีพื้นหลัง
+              hintText: widget.hintText,
+              labelText: widget.labelText,
+              hintStyle: const TextStyle(
+                fontSize: 18,
+                fontFamily: 'IBMPlexSansThai',
+                color: kbgM,
+              ),
+              labelStyle: const TextStyle(
+                fontSize: 16,
+                fontFamily: 'IBMPlexSansThai',
+                color: Colors.grey,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: kButtonColor, width: 2),
               ),
             ),
           )
-        : Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: const Color.fromARGB(255, 241, 241, 241),
-            ),
-            width: double.infinity,
-            height: widget.heights,
-            child: TextFormField(
-              controller: widget.controller,
-              validator: widget.validator,
-              style: const TextStyle(fontSize: 22),
-              decoration: InputDecoration(
-                prefixIcon: widget.imagestatus == true
-                    ? Image.asset(widget.images!, scale: 20)
-                    : SizedBox.shrink(),
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                hintText: widget.hintText,
-                hintStyle: const TextStyle(
-                  fontSize: 18,
-                  fontFamily: 'IBMPlexSansThai',
-                  color: kbgM,
-                ),
+        : TextFormField(
+            controller: widget.controller,
+            validator: widget.validator,
+            style: const TextStyle(fontSize: 22),
+            decoration: InputDecoration(
+              prefixIcon: widget.imagestatus == true
+                  ? Image.asset(widget.images!, scale: 20)
+                  : SizedBox.shrink(),
+
+              hintText: widget.hintText,
+              hintStyle: const TextStyle(
+                fontSize: 18,
+                fontFamily: 'IBMPlexSansThai',
+                color: kbgM,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: kButtonColor, width: 2),
               ),
             ),
           );

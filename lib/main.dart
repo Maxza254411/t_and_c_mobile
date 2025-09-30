@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +18,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+   await LineSDK.instance.setup("2008197121");
+   print("LINE SDK is ready");
 
   prefs = await SharedPreferences.getInstance();
   token = prefs.getString('token');

@@ -2,8 +2,12 @@ PODS:
   - Flutter (1.0.0)
   - flutter_file_dialog (0.0.1):
     - Flutter
-  - image_gallery_saver (2.0.2):
+  - flutter_line_sdk (2.6.1):
     - Flutter
+    - LineSDKSwift (~> 5.13)
+  - LineSDKSwift (5.13.0):
+    - LineSDKSwift/Core (= 5.13.0)
+  - LineSDKSwift/Core (5.13.0)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -11,23 +15,28 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_file_dialog (from `.symlinks/plugins/flutter_file_dialog/ios`)
-  - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
+  - flutter_line_sdk (from `.symlinks/plugins/flutter_line_sdk/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+
+SPEC REPOS:
+  trunk:
+    - LineSDKSwift
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   flutter_file_dialog:
     :path: ".symlinks/plugins/flutter_file_dialog/ios"
-  image_gallery_saver:
-    :path: ".symlinks/plugins/image_gallery_saver/ios"
+  flutter_line_sdk:
+    :path: ".symlinks/plugins/flutter_line_sdk/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_file_dialog: ca8d7fbd1772d4f0c2777b4ab20a7787ef4e7dd8
-  image_gallery_saver: 14711d79da40581063e8842a11acf1969d781ed7
+  flutter_line_sdk: 8068338894403b2beeb6db3aeff7a5be92a8fe1c
+  LineSDKSwift: 6dbcd24677d19dce2cee10e433f9d040b9c11cb9
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
 
 PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
