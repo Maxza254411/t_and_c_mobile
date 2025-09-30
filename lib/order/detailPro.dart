@@ -357,7 +357,7 @@ class _DetailproState extends State<Detailpro> {
                         sku:widget.sku,
                         sameproduct: widget.sameproduct,
                         image: widget.image,
-                        productId: widget.productId,
+                        product_id: widget.productId,
                         name: widget.proName,
                         price: widget.proPice,
                         detail: widget.detail,

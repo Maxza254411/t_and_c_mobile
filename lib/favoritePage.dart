@@ -235,7 +235,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                           builder: (context, favProvider, child) {
                                             final currentProduct = Shoping(
                                               sku: item.sku,
-                                              productId: item.productId,
+                                              product_id: item.product_id,
                                               name: item.name,
                                               price: item.price,
                                               detail: "",
@@ -283,7 +283,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                                    sku:item.sku,
                                                 sameproduct:item. sameproduct,
                                                 image: item.image,
-                                                productId: item.productId,
+                                                productId: item.product_id,
                                                 proName: item.name,
                                                 proPice: item.price,
                                                 detail: '',

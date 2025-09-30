@@ -286,7 +286,7 @@ class _CatagoryState extends State<Catagory> {
                         final currentProduct = Shoping(
                           sku:product.sku ,
                           image:  product.product?.image_url,
-                          productId: product.product?.id.toString(),
+                          product_id: product.product?.id.toString(),
                           name: product.product?.name_en ?? "",
                           price: formatNumber(
                             product.product?.srp_inc_vat ?? "0",

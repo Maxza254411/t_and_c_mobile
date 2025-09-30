@@ -1,3 +1,4 @@
+import 'dart:convert' as convert;
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:t_and_c_mobile/homepage.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/billpage.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
+import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
@@ -88,6 +90,7 @@ class _CompleatedState extends State<Compleated> {
       );
     }
   }
+
   Future<void> _captureAndSave() async {
     try {
       final Uint8List? imageBytes = await _controller.capture();
@@ -109,9 +112,9 @@ class _CompleatedState extends State<Compleated> {
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("เกิดข้อผิดพลาด: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("เกิดข้อผิดพลาด: $e")));
     }
   }
 
@@ -571,7 +574,7 @@ class _CompleatedState extends State<Compleated> {
                                       width: size.width * 0.4,
                                       child: ElevatedButton.icon(
                                         onPressed: () {
-                                         _captureAndSave();
+                                          _captureAndSave();
                                         },
                                         icon: Icon(Icons.copy),
                                         label: Text("บันทึกรูปภาพ"),
@@ -786,30 +789,60 @@ class _CompleatedState extends State<Compleated> {
                             ),
                           );
                         } else {
-                          final cart = Provider.of<CartProvider>(
-                            context,
-                            listen: false,
-                          );
-
-                          // ลบเฉพาะสินค้าที่เลือก
-                          cart.removeSelected(widget.selectedItems);
-
-                          final out = await showDialog(
-                            barrierDismissible: true,
-                            context: context,
-                            builder: (context) => SucesDialog(
-                              title: 'แจ้งเตือน',
-                              description: 'ชำระเงินสำเร็จ',
-                            ),
-                          );
-
-                          if (out == true) {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FirstPage(),
+                          try {
+                            await ProductApi.createOrder(
+                              distributor_id: '1',
+                              qo_date: '1',
+                              total_qty: '1',
+                              total_cost_ex_vat: '1',
+                              total_vat_amount: '1',
+                              qo_total_cost_inc_vatdate: '1',
+                              grand_total: '1',
+                              products: convert.jsonEncode(
+                                widget.selectedItems,
                               ),
-                              (route) => false,
+                              address_id: '1',
+                              slip_image: '',
+                              payment_method: 'cash',
+                            );
+
+                            // final cart = Provider.of<CartProvider>(
+                            //   context,
+                            //   listen: false,
+                            // );
+
+                            // // ลบเฉพาะสินค้าที่เลือก
+                            // cart.removeSelected(widget.selectedItems);
+
+                            // final out = await showDialog(
+                            //   barrierDismissible: true,
+                            //   context: context,
+                            //   builder: (context) => SucesDialog(
+                            //     title: 'แจ้งเตือน',
+                            //     description: 'ชำระเงินสำเร็จ',
+                            //   ),
+                            // );
+
+                            // if (out == true) {
+                            //   Navigator.pushAndRemoveUntil(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => FirstPage(),
+                            //     ),
+                            //     (route) => false,
+                            //   );
+                            // }
+                          } on Exception catch (e) {
+                            if (!mounted) return;
+                            await showDialog(
+                              context: context,
+                              builder: (context) => AlertDialogYes(
+                                title: 'แจ้งเตือน',
+                                description: '$e',
+                                pressYes: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
                             );
                           }
                         }
@@ -842,6 +875,7 @@ class _CompleatedState extends State<Compleated> {
       },
     );
   }
+
   //  _captureScrean()async{
   //  final image=  await _controller.capture();
   //  }

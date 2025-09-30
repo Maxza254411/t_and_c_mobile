@@ -7,8 +7,7 @@ const kbgM = Color(0xFFE939393);
 const ktextColr = Color(0xFFED2324);
 const kbgH = Color(0xFFEE7E7E7);
 const kbgc = Color(0xFFE9FFF8);
-const kline =Color(0xFFE6CE131);
-
+const kline = Color(0xFFE6CE131);
 
 const String publicUrl = 'dev-erp.tnc-thailand.com';
 
@@ -19,8 +18,9 @@ final List<String> imgList = [
 ];
 
 List<Map<String, String>> pay = [
-  {"pay": "จ่ายผ่านบัญชี", "value": "Bank"},
-  {"pay": "จ่ายผ่านพร้อมเพลย์", "value": "Qr"},
+  {"pay": "จ่ายผ่านบัญชี", "value": "cash"},
+  {"pay": "จ่ายผ่านพร้อมเพลย์", "value": "qrcode"},
+  {"pay": "จ่ายผ่านเครดิต", "value": "credit"},
 ];
 
 List<Map<String, String>> orderbill = [
@@ -47,7 +47,7 @@ List<Map<String, String>> orderbill = [
   },
 ];
 
-String? selectedPay = "Bank";
+String? selectedPay = "cash";
 
 String formatNumber(dynamic value, {int decimal = 2}) {
   double number = 0;

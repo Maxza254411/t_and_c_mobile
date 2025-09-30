@@ -7,10 +7,10 @@ class FavoriteProvider with ChangeNotifier {
   List<Shoping> get favorites => _favorites;
 
   void toggleFavorite(Shoping item) {
-    final isExist = _favorites.any((fav) => fav.productId == item.productId);
+    final isExist = _favorites.any((fav) => fav.product_id == item.product_id);
 
     if (isExist) {
-      _favorites.removeWhere((fav) => fav.productId == item.productId);
+      _favorites.removeWhere((fav) => fav.product_id == item.product_id);
     } else {
       _favorites.add(item);
     }
@@ -18,7 +18,7 @@ class FavoriteProvider with ChangeNotifier {
   }
 
   bool isFavorite(Shoping item) {
-    return _favorites.any((fav) => fav.productId == item.productId);
+    return _favorites.any((fav) => fav.product_id == item.product_id);
   }
 }
 
