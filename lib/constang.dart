@@ -19,8 +19,8 @@ final List<String> imgList = [
 ];
 
 List<Map<String, String>> pay = [
-  {"pay": "จ่ายผ่านธนาคาร", "value": "Bank"},
-  {"pay": "บัตรเครดิต", "value": "credit"},
+  {"pay": "จ่ายผ่านบัญชี", "value": "Bank"},
+  {"pay": "จ่ายผ่าน Qr", "value": "Qr"},
 ];
 
 List<Map<String, String>> orderbill = [

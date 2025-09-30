@@ -347,7 +347,7 @@ class _DetailproState extends State<Detailpro> {
                   ),
                   Expanded(
                     child: Text(
-                      "${widget.proPice} บาท",
+                      "฿ ${widget.proPice}",
                       style: TextStyle(fontSize: 14),
                     ),
                   ),
@@ -633,7 +633,7 @@ class _DetailproState extends State<Detailpro> {
                                                             children: [
                                                               // แสดงราคาฟอร์แมต
                                                               Text(
-                                                                "${widget.proPice} บาท",
+                                                                "฿ ${widget.proPice}",
                                                               ),
                                                             ],
                                                           ),

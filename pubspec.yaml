@@ -48,6 +48,7 @@ dependencies:
   flutter_file_dialog: ^3.0.2 
   change_app_package_name: ^1.5.0
   flutter_line_sdk: ^2.6.1
+  image_picker: ^1.0.7
 
 
 

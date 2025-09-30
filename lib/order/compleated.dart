@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/homepage.dart';
@@ -33,6 +37,36 @@ class Compleated extends StatefulWidget {
 class _CompleatedState extends State<Compleated> {
   final TextEditingController addes = TextEditingController();
   final TextEditingController talk = TextEditingController();
+  String? first_name;
+  String? last_name;
+  File? _image;
+
+  Future<void> getpreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    first_name = prefs.getString('first_name');
+    last_name = prefs.getString('last_name');
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+    ); // หรือ camera
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await getpreferences();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +95,7 @@ class _CompleatedState extends State<Compleated> {
         ],
         centerTitle: true,
         title: Text(
-          "สั้งซื้อสินค้า",
+          "สั่งซื้อสินค้า",
           style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
         ),
       ),
@@ -159,12 +193,11 @@ class _CompleatedState extends State<Compleated> {
 
                           title: Text("ชื่อผู้รับสินค้า"),
                           subtitle: Text(
-                            "admin admin",
+                            "${first_name ?? ""} ${last_name ?? ""}",
                             style: TextStyle(color: kButtonColor),
                           ),
                         ),
                         Divider(),
-
                         ListTile(
                           leading: Image.asset(
                             "assets/icons/PhoneCall.png",
@@ -349,41 +382,6 @@ class _CompleatedState extends State<Compleated> {
                               ),
                             ],
                           ),
-                    widget.status == true
-                        ? Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.white,
-                              ),
-
-                              child: Column(
-                                children: [
-                                  Divider(color: kButtonColor),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text("ราคารวม"),
-                                        Text(
-                                          "0.00 บาท",
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: kButtonColor,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        : SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -398,24 +396,6 @@ class _CompleatedState extends State<Compleated> {
                 child: Column(
                   children: [
                     ContainerHeader(size: size, text: 'วิธีการชำระเงิน'),
-                    // แสดงวิธีจ่ายเงิน
-                    // widget.status == true
-                    //     ? Padding(
-                    //         padding: const EdgeInsets.all(8.0),
-                    //         child: BuildRadioOption(
-                    //           title: "เงินสด", // ชื่อวิธีจ่าย
-                    //           value:
-                    //               pay[0]['value']!, // ค่า เช่น "cash" หรือ "promptpay"
-                    //           groupValue:
-                    //               selectedPay, // state ที่เก็บค่าที่เลือก
-                    //           onChanged: (val) {
-                    //             setState(() {
-                    //               selectedPay = val;
-                    //             });
-                    //           },
-                    //         ),
-                    //       )
-                    // :
                     Column(
                       children: List.generate(
                         pay.length,
@@ -438,119 +418,103 @@ class _CompleatedState extends State<Compleated> {
                 ),
               ),
             ),
-            // Padding(
-            //   padding: EdgeInsets.all(8.0),
-            //   child: Container(
-            //     height:
-            //         size.height * 0.5, // เพิ่มความสูงหน่อยเพื่อให้มีที่วาง Tab
-            //     width: size.width * 1,
-            //     decoration: BoxDecoration(
-            //       color: Colors.white,
-            //       borderRadius: BorderRadius.circular(8),
-            //     ),
-            //     child: DefaultTabController(
-            //       length: 2, // จำนวนแท็บ
-            //       child: Column(
-            //         children: [
-            //           // --- แถบ TabBar ---
-            //           Padding(
-            //             padding: const EdgeInsets.all(8.0),
-            //             child: TabBar(
-            //               indicator: BoxDecoration(
-            //                 color: kButtonColor,
-            //                 borderRadius: BorderRadius.circular(8),
-            //               ),
-            //               indicatorPadding: EdgeInsets.symmetric(
-            //                 vertical: 10,
-            //               ), // << ปรับขนาด
-            //               labelColor: Colors.white,
-            //               unselectedLabelColor: Colors.black,
-            //               tabs: [
-            //                 Padding(
-            //                   padding: const EdgeInsets.all(8.0),
-            //                   child: Tab(text: "เลขบัญชี"),
-            //                 ),
-            //                 Padding(
-            //                   padding: const EdgeInsets.all(8.0),
-            //                   child: Tab(text: "พร้อมเพย์"),
-            //                 ),
-            //               ],
-            //             ),
-            //           ),
-
-            //           // --- เนื้อหาในแต่ละแท็บ ---
-            //           Expanded(
-            //             child: TabBarView(
-            //               children: [
-            //                 Center(
-            //                   child: Column(
-            //                     mainAxisAlignment: MainAxisAlignment.center,
-            //                     children: [
-            //                       // 🏦 ชื่อธนาคาร
-            //                       Text(
-            //                         "ธนาคารกสิกรไทย",
-            //                         style: TextStyle(
-            //                           fontSize: 18,
-            //                           fontWeight: FontWeight.bold,
-            //                         ),
-            //                       ),
-
-            //                       const SizedBox(height: 12),
-
-            //                       // 🔢 เลขบัญชี
-            //                       Text(
-            //                         "123-456-789-0",
-            //                         style: TextStyle(
-            //                           fontSize: 24,
-            //                           fontWeight: FontWeight.bold,
-            //                           color: Colors.black87,
-            //                           letterSpacing: 2,
-            //                         ),
-            //                       ),
-
-            //                       const SizedBox(height: 20),
-
-            //                       // 📋 ปุ่มคัดลอก
-            //                       ElevatedButton.icon(
-            //                         onPressed: () {
-            //                           Clipboard.setData(
-            //                             ClipboardData(text: "1234567890"),
-            //                           );
-            //                           ScaffoldMessenger.of(
-            //                             context,
-            //                           ).showSnackBar(
-            //                             SnackBar(
-            //                               content: Text("คัดลอกเลขบัญชีแล้ว"),
-            //                             ),
-            //                           );
-            //                         },
-            //                         icon: Icon(Icons.copy),
-            //                         label: Text("คัดลอกเลขบัญชี"),
-            //                         style: ElevatedButton.styleFrom(
-            //                           backgroundColor: kButtonColor,
-            //                           foregroundColor: Colors.white,
-            //                           padding: EdgeInsets.symmetric(
-            //                             horizontal: 20,
-            //                             vertical: 12,
-            //                           ),
-            //                           shape: RoundedRectangleBorder(
-            //                             borderRadius: BorderRadius.circular(8),
-            //                           ),
-            //                         ),
-            //                       ),
-            //                     ],
-            //                   ),
-            //                 ),
-
-            //                 Center(child: Text("เนื้อหาของแท็บ 2")),
-            //               ],
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Container(
+                height:
+                    size.height * 0.5, // เพิ่มความสูงหน่อยเพื่อให้มีที่วาง Tab
+                width: size.width * 1,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: size.height*0.08,),
+                        // 🏦 ชื่อธนาคาร
+                        Text(
+                          "ธนาคารกสิกรไทย",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                                        
+                        const SizedBox(height: 12),
+                                        
+                        // 🔢 เลขบัญชี
+                        Text(
+                          "123-456-789-0",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                                        
+                        SizedBox(height: 20),
+                                        
+                        // 📋 ปุ่มคัดลอก
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: "1234567890"));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("คัดลอกเลขบัญชีแล้ว")),
+                            );
+                          },
+                          icon: Icon(Icons.copy),
+                          label: Text("คัดลอกเลขบัญชี"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: kButtonColor,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                                         
+                      ],
+                    ),
+                         if (_image != null)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
+                              _image!,
+                              height: 150,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ElevatedButton.icon(
+                        onPressed: _pickImage,
+                        icon: const Icon(Icons.upload_file),
+                        label: const Text("อัพโหลดรูปภาพ"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

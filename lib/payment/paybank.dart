@@ -146,7 +146,8 @@ class _PaybankState extends State<Paybank> {
                 ),
               ),
             ),
-      ],),
+      ],
+      ),
     );
   }
 }

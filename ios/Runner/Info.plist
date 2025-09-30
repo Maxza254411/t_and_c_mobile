@@ -3,6 +3,10 @@
   "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+     <key>NSPhotoLibraryUsageDescription</key>
+     <string>App ต้องการเข้าถึงรูปภาพเพื่ออัพโหลด</string>
+     <key>NSCameraUsageDescription</key>
+     <string>App ต้องการใช้กล้องเพื่อถ่ายรูป</string>
     <!-- General App Info -->
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
