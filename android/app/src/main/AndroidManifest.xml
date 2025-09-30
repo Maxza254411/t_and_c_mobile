@@ -9,6 +9,7 @@
 
     <application
         android:label="TNC Partner"
+        android:requestLegacyExternalStorage="true"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
 

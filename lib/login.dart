@@ -240,10 +240,14 @@ class _LoginpageState extends State<Loginpage> {
                                     "email",
                                     _login["user"]["email"],
                                   );
+                                  if ( _login["user"]["tel_no"]!=null) {                                    
                                   await prefs.setString(
                                     "tel_no",
                                     _login["user"]["tel_no"],
                                   );
+                                  }else{
+                                    print("เบอร์โทรเป็น null");
+                                  }
                                 }
 
                                 LoadingDialog.close(context);

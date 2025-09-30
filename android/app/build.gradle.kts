@@ -6,8 +6,9 @@ plugins {
 }
 
 android {
+    
     namespace = "com.app.tnc"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

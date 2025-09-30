@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/addressPage.dart';
 import 'package:t_and_c_mobile/constang.dart';
@@ -43,6 +46,7 @@ class _CompleatedState extends State<Compleated> {
   File? _image;
   String? selectedAddress;
   String? tel_no;
+  final _controller = ScreenshotController();
 
   Future<void> getpreferences() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -81,6 +85,32 @@ class _CompleatedState extends State<Compleated> {
             Navigator.pop(context);
           },
         ),
+      );
+    }
+  }
+  Future<void> _captureAndSave() async {
+    try {
+      final Uint8List? imageBytes = await _controller.capture();
+      if (imageBytes != null) {
+        final result = await ImageGallerySaverPlus.saveImage(
+          imageBytes,
+          quality: 100,
+          name: "qr_code_promptpay",
+        );
+
+        if (result['isSuccess'] == true) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("บันทึกรูปภาพเรียบร้อยแล้ว")),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("บันทึกรูปภาพไม่สำเร็จ")),
+          );
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("เกิดข้อผิดพลาด: $e")),
       );
     }
   }
@@ -270,7 +300,7 @@ class _CompleatedState extends State<Compleated> {
                               ),
                               title: Text("เบอร์โทรผู้รับสินค้า"),
                               subtitle: Text(
-                                "${tel_no}",
+                                tel_no ?? "-",
                                 style: TextStyle(color: kButtonColor),
                               ),
                             ),
@@ -509,25 +539,54 @@ class _CompleatedState extends State<Compleated> {
                                       size: size,
                                       text: 'จ่ายผ่านพร้อมเพลย์',
                                     ),
-                                          Text(
+                                    Text(
                                       "บัญชีพร้อมเพลย์ ธนาคาร",
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-
-                            
-
                                     // 🏦 ชื่อธนาคาร
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.asset(
-                                          "assets/images/LHVGYY_qrcode.png",
-                                          height: 150,
-                                          fit: BoxFit.cover,
+                                    Screenshot(
+                                      controller: _controller,
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Image.asset(
+                                                "assets/images/LHVGYY_qrcode.png",
+                                                height: 150,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    SizedBox(
+                                      width: size.width * 0.4,
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                         _captureAndSave();
+                                        },
+                                        icon: Icon(Icons.copy),
+                                        label: Text("บันทึกรูปภาพ"),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: kButtonColor,
+                                          foregroundColor: Colors.white,
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 12,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -540,7 +599,7 @@ class _CompleatedState extends State<Compleated> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     // 🏦 ชื่อธนาคาร
-                                      ContainerHeader(
+                                    ContainerHeader(
                                       size: size,
                                       text: 'จ่ายผ่านบัญชี',
                                     ),
@@ -783,6 +842,27 @@ class _CompleatedState extends State<Compleated> {
       },
     );
   }
+  //  _captureScrean()async{
+  //  final image=  await _controller.capture();
+  //  }
+  // buildImage()=> Padding(
+  // padding: const EdgeInsets.all(8.0),
+  // child: ClipRRect(
+  // borderRadius: BorderRadius.circular(8),
+  // child: Image.asset(
+  //  "assets/images/LHVGYY_qrcode.png",
+  // height: 150,
+  // fit: BoxFit.cover,
+  // ),
+  // ),
+  // );
+  // Future<String>saveScreenshot(Uint8List bytes)async{
+  //   await [Permission.storage].request();
+  //   final time = DateTime.now();
+  //   final name ='Screenshot_$time';
+  //   final result = await ImageGallerySaver.saveImage(bytes,name: name);
+  //   return result['filePath'];
+  // }
 }
 
 class ContainerHeader extends StatelessWidget {
