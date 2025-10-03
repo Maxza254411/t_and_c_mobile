@@ -52,6 +52,7 @@ class _CompleatedState extends State<Compleated> {
   File? _image;
   String? selectedAddress;
   int? distributor_id;
+  int? address_id;
   String? tel_no;
   final _controller = ScreenshotController();
   String? company_name;
@@ -264,13 +265,14 @@ class _CompleatedState extends State<Compleated> {
                                           );
                                           distributor_id = value.id;
                                           company_name =
-                                          value.company_name ?? "";
+                                              value.company_name ?? "";
                                           final addresslist =
                                               await ProductApi.getAddressbyid(
                                                 distributor_id: distributor_id!,
                                               );
+                                          addresslists = addresslist;
 
-                                          
+                                          setState(() {});
                                         }
                                       },
                                     ),
@@ -294,7 +296,7 @@ class _CompleatedState extends State<Compleated> {
                                           ),
                                         ),
                                         SizedBox(height: 10),
-                                        distributors.isEmpty
+                                        addresslists.isEmpty
                                             ? SizedBox.shrink()
                                             : GestureDetector(
                                                 onTap: () async {
@@ -304,17 +306,19 @@ class _CompleatedState extends State<Compleated> {
                                                         MaterialPageRoute(
                                                           builder: (context) =>
                                                               AddressPage(
-                                                                distributors:
-                                                                    distributors,
+                                                                address:
+                                                                    addresslists,
                                                               ),
                                                         ),
                                                       );
-                                                  setState(() {
-                                                    selectedAddress =
-                                                        out["address"];
-                                                    distributor_id =
-                                                        out["distributor_id"];
-                                                  });
+                                                  if (out != null) {
+                                                    setState(() {
+                                                      address_id =
+                                                          out["addressid"];
+                                                      selectedAddress =
+                                                          out["full_th_address"];
+                                                    });
+                                                  }
                                                 },
                                                 child: Container(
                                                   padding: EdgeInsets.all(8.0),

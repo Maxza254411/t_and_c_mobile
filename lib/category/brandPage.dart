@@ -32,7 +32,6 @@ class _BrandPageState extends State<BrandPage> {
   List<Data> product = [];
   final CarouselSliderController _controller = CarouselSliderController();
 
-
   void _goToPage(int index) {
     // ✅ เช็คก่อนว่า controller attach แล้วหรือยัง
     if (_controller.ready) {
@@ -45,14 +44,17 @@ class _BrandPageState extends State<BrandPage> {
   Future<void> getapi() async {
     try {
       // LoadingDialog.open(context);
-      await context.read<ProductController>().getproductypBybrandId(brandid: widget.brandId);
+      await context.read<ProductController>().getproductypBybrandId(
+        brandid: widget.brandId,
+      );
 
-       final producs = await ProductApi.getProBandId(
-        brandid: widget.brandId, productTypid: 1,
-        page: 1, 
+      final producs = await ProductApi.getProBandId(
+        brandid: widget.brandId,
+        productTypid: 1,
+        page: 1,
       );
       product = producs;
-      
+
       // uniqueProducts = product.map((e) => e.product).toSet().toList();
 
       // LoadingDialog.close(context);
@@ -89,6 +91,7 @@ class _BrandPageState extends State<BrandPage> {
       await getapi();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -161,7 +164,7 @@ class _BrandPageState extends State<BrandPage> {
       ),
       body: Consumer<ProductController>(
         builder: (context, controller, child) {
-           final productBandTyp =controller.productBandTyp;
+          final productBandTyp = controller.productBandTyp;
           return Column(
             children: [
               Column(
@@ -283,12 +286,27 @@ class _BrandPageState extends State<BrandPage> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async {
+                        if (idPro == null) {
+                          await showDialog(
+                            context: context,
+                            builder: (context) => AlertDialogYes(
+                              title: 'แจ้งเตือน',
+                              description: 'กรุณาเลือกประเภทสินค้า',
+                              pressYes: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          );
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                Catagory( title: namePro ?? "", brandid:widget.brandId, productTypid:int.parse(idPro!),),
+                            builder: (context) => Catagory(
+                              title: namePro ?? "",
+                              brandid: widget.brandId,
+                              productTypid: int.parse(idPro!),
+                            ),
                           ),
                         );
                       },
@@ -316,7 +334,7 @@ class _BrandPageState extends State<BrandPage> {
                   ],
                 ),
               ),
-               Padding(
+              Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
@@ -335,53 +353,50 @@ class _BrandPageState extends State<BrandPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                            
-                  height: size.height*0.1,
-                                decoration: BoxDecoration(
-                                  color: kButtonColor,
-                                  borderRadius: BorderRadius.circular(16),
-                                
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                      CircleAvatar(
-                                   radius: 30, // ขนาดวงกลม
-                                   backgroundImage: AssetImage("assets/images/NoImage.jpg"),
-                                   // หรือถ้าเป็น Network รูปจาก API ใช้:
-                                   // backgroundImage: NetworkImage("https://picsum.photos/200"),
-                                 ),
-                                 SizedBox(width: size.width*0.05,),
-                                 Text(widget.title,style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),)
-                                  ],
-                                ),
+                  height: size.height * 0.1,
+                  decoration: BoxDecoration(
+                    color: kButtonColor,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 30, // ขนาดวงกลม
+                        backgroundImage: AssetImage(
+                          "assets/images/NoImage.jpg",
+                        ),
+                        // หรือถ้าเป็น Network รูปจาก API ใช้:
+                        // backgroundImage: NetworkImage("https://picsum.photos/200"),
+                      ),
+                      SizedBox(width: size.width * 0.05),
+                      Text(
+                        widget.title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
-           
-               uniqueProducts.isEmpty
+              uniqueProducts.isEmpty
                   ? Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: size.height*0.1,),
-                  CircularProgressIndicator(
-                    color: kButtonColor,
-                  ),
-                ],
-              )
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: size.height * 0.1),
+                        CircularProgressIndicator(color: kButtonColor),
+                      ],
+                    )
                   : Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: GridView.builder(
-                          itemCount: 
-                          uniqueProducts.length<4
-                          ? 1
-                          : 4,
+                          itemCount: uniqueProducts.length < 4 ? 1 : 4,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
@@ -415,13 +430,18 @@ class _BrandPageState extends State<BrandPage> {
                                       borderRadius: const BorderRadius.vertical(
                                         top: Radius.circular(16),
                                       ),
-                                      child: selectedProduct?.product?.image_url == null
+                                      child:
+                                          selectedProduct?.product?.image_url ==
+                                              null
                                           ? Image.asset(
                                               "assets/images/NoImage.jpg",
                                               fit: BoxFit.cover,
                                             )
                                           : Image.network(
-                                              selectedProduct!.product?.image_url??"",
+                                              selectedProduct!
+                                                      .product
+                                                      ?.image_url ??
+                                                  "",
                                               fit: BoxFit.cover,
                                             ),
                                     ),
@@ -435,7 +455,8 @@ class _BrandPageState extends State<BrandPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          selectedProduct?.product?.name_en ?? "",
+                                          selectedProduct?.product?.name_en ??
+                                              "",
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
@@ -448,10 +469,7 @@ class _BrandPageState extends State<BrandPage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                            "฿ ${ formatNumber(
-                                                selectedProduct?.product?.srp_inc_vat ??
-                                                    "0",
-                                              )}" ,
+                                              "฿ ${formatNumber(selectedProduct?.product?.srp_inc_vat ?? "0")}",
                                               style: const TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
@@ -470,24 +488,36 @@ class _BrandPageState extends State<BrandPage> {
                                                     .toList();
 
                                                 final currentProduct = Shoping(
-                                                  sku:selectedProduct.sku,
-                                                  product_id: selectedProduct!.id
+                                                  sku: selectedProduct.sku,
+                                                  product_id: selectedProduct!
+                                                      .id
                                                       .toString(),
                                                   name:
-                                                      selectedProduct.product?.name_en ??
+                                                      selectedProduct
+                                                          .product
+                                                          ?.name_en ??
                                                       "",
                                                   price: formatNumber(
-                                                   selectedProduct?.product?.srp_inc_vat ??
+                                                    selectedProduct
+                                                            ?.product
+                                                            ?.srp_inc_vat ??
                                                         "0",
                                                   ),
                                                   detail: "",
                                                   colors: colors,
                                                   color: '',
                                                   nameTh:
-                                                       selectedProduct.product?.name_th ??
+                                                      selectedProduct
+                                                          .product
+                                                          ?.name_th ??
                                                       "",
-                                                  image:
-                                                        selectedProduct!.product?.image_url, warehouse_skus: selectedProduct.warehouse_skus??[],
+                                                  image: selectedProduct!
+                                                      .product
+                                                      ?.image_url,
+                                                  warehouse_skus:
+                                                      selectedProduct
+                                                          .warehouse_skus ??
+                                                      [],
                                                 );
 
                                                 final isFav = favProvider
@@ -545,25 +575,34 @@ class _BrandPageState extends State<BrandPage> {
                                                   builder: (context) => Detailpro(
                                                     sku: selectedProduct.sku,
                                                     sameproduct: sameproduct,
-                                                    image:   selectedProduct!.product?.image_url,
+                                                    image: selectedProduct!
+                                                        .product
+                                                        ?.image_url,
                                                     productId: selectedProduct!
                                                         .id
                                                         .toString(),
                                                     proName:
-                                                        selectedProduct.product
+                                                        selectedProduct
+                                                            .product
                                                             ?.name_en ??
                                                         "",
                                                     proPice: formatNumber(
-                                                      selectedProduct.product
+                                                      selectedProduct
+                                                              .product
                                                               ?.srp_inc_vat ??
                                                           "",
                                                     ),
                                                     detail: '',
                                                     color: colors,
                                                     proNameTh:
-                                                        selectedProduct.product
+                                                        selectedProduct
+                                                            .product
                                                             ?.name_th ??
-                                                        "", warehouse_skus: selectedProduct.warehouse_skus??[],
+                                                        "",
+                                                    warehouse_skus:
+                                                        selectedProduct
+                                                            .warehouse_skus ??
+                                                        [],
                                                   ),
                                                 ),
                                               );

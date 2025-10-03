@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/constang.dart';
-import 'package:t_and_c_mobile/model/distributors.dart';
+import 'package:t_and_c_mobile/model/address.dart';
+
 
 class AddressPage extends StatefulWidget {
-  AddressPage({super.key, required this.distributors});
-  List<Distributors> distributors = [];
+  AddressPage({super.key, required this.address});
+  List<Address> address = [];
 
   @override
   State<AddressPage> createState() => _AddressPageState();
@@ -38,9 +39,9 @@ class _AddressPageState extends State<AddressPage> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: widget.distributors.length,
+              itemCount: widget.address.length,
               itemBuilder: (context, index) {
-                final distributor = widget.distributors[index];
+                final address = widget.address[index];
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
                   padding: const EdgeInsets.all(12),
@@ -53,7 +54,7 @@ class _AddressPageState extends State<AddressPage> {
                     children: [
                       Expanded(
                         child: Text(
-                          distributor.address ?? '',
+                          address.full_th_address ?? '',
                           style: const TextStyle(fontSize: 16),
                         ),
                       ),
@@ -84,10 +85,10 @@ class _AddressPageState extends State<AddressPage> {
                     : () {
                         // ✅ ส่ง object ทั้งตัวกลับ
                         Navigator.pop(context, {
-                          "address":
-                              widget.distributors[selectedAddress!].address,
-                          "distributor_id":
-                              widget.distributors[selectedAddress!].id,
+                          "addressid":
+                              widget.address[selectedAddress!].id,
+                          "full_th_address":
+                              widget.address[selectedAddress!].full_th_address,
                         });
                       },
                 style: ElevatedButton.styleFrom(backgroundColor: kButtonColor),

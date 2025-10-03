@@ -102,17 +102,17 @@ class _OrderdetailState extends State<Orderdetail> {
                                   ? SizedBox.shrink()
                                   : GestureDetector(
                                       onTap: () async {
-                                        final out = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => AddressPage(
-                                              distributors: distributors,
-                                            ),
-                                          ),
-                                        );
-                                        setState(() {
-                                          selectedAddress = out;
-                                        });
+                                        // final out = await Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //     builder: (context) => AddressPage(
+                                        //       distributors: distributors,
+                                        //     ),
+                                        //   ),
+                                        // );
+                                        // setState(() {
+                                        //   selectedAddress = out;
+                                        // });
                                       },
                                       child: Container(
                                         padding: EdgeInsets.all(8.0),
