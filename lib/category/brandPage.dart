@@ -288,7 +288,7 @@ class _BrandPageState extends State<BrandPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                Catagory( title: namePro ?? "", brandid:widget. brandId, productTypid:int.parse(idPro!) ,),
+                                Catagory( title: namePro ?? "", brandid:widget.brandId, productTypid:int.parse(idPro!),),
                           ),
                         );
                       },
@@ -487,7 +487,7 @@ class _BrandPageState extends State<BrandPage> {
                                                        selectedProduct.product?.name_th ??
                                                       "",
                                                   image:
-                                                        selectedProduct!.product?.image_url,
+                                                        selectedProduct!.product?.image_url, warehouse_skus: selectedProduct.warehouse_skus??[],
                                                 );
 
                                                 final isFav = favProvider
@@ -563,7 +563,7 @@ class _BrandPageState extends State<BrandPage> {
                                                     proNameTh:
                                                         selectedProduct.product
                                                             ?.name_th ??
-                                                        "",
+                                                        "", warehouse_skus: selectedProduct.warehouse_skus??[],
                                                   ),
                                                 ),
                                               );

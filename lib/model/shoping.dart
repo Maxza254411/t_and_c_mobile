@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
+import 'package:t_and_c_mobile/model/warehouse.dart';
 
 part 'shoping.g.dart';
 
@@ -21,6 +22,7 @@ class Shoping {
   List<ProductTyp?>? sameproduct;
   String? sku;
   String?qty;
+final List<Warehouse>warehouse_skus;
 
   Shoping({
     required this.nameTh,
@@ -37,7 +39,8 @@ class Shoping {
     this.userId,
     this.sameproduct,
     this.sku,
-    this.qty
+    this.qty,
+    required this.warehouse_skus,
   });
 
   factory Shoping.fromJson(Map<String, dynamic> json) => _$ShopingFromJson(json);

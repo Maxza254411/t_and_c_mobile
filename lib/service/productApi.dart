@@ -1,10 +1,10 @@
 import 'dart:convert' as convert;
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/model/address.dart';
 import 'package:t_and_c_mobile/model/brands.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/distributors.dart';
@@ -16,70 +16,6 @@ import 'package:t_and_c_mobile/widget/apiException.dart';
 class ProductApi {
   const ProductApi();
 
-  //ประเภทสินค้า
-  // static Future<List<ProductTyp>> getproductlist() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final token = prefs.getString('token');
-  //   var headers = {
-  //     'Authorization': 'Bearer $token',
-  //     'Content-Type': 'application/json',
-  //   };
-  //   final url = Uri.https(publicUrl, '/api/product-types');
-  //   final response = await http.get(url, headers: headers);
-  //   if (response.statusCode == 200 || response.statusCode == 201) {
-  //     final data = convert.jsonDecode(response.body);
-  //     // final data = convert.jsonDecode(response.body);
-  //     final list = data["data"] as List;
-  //     return list.map((e) => ProductTyp.fromJson(e)).toList();
-  //   } else {
-  //     final data = convert.jsonDecode(response.body);
-  //     throw ApiException(data['message']);
-  //   }
-  // }
-
-  // โปรดัคบาย ID
-  // static Future<List<Data>> getproductbyid({required int id, int? page}) async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final token = prefs.getString('token');
-  //   var headers = {
-  //     'Authorization': 'Bearer $token',
-  //     'Content-Type': 'application/json',
-  //   };
-
-  //   final url = Uri.https(publicUrl, '/api/product-types/$id/products', {
-  //     "page": page?.toString() ?? "1",
-  //   });
-  //   final response = await http.get(url, headers: headers);
-  //   if (response.statusCode == 200 || response.statusCode == 201) {
-  //     final data = convert.jsonDecode(response.body);
-  //     final list = data["data"] as List;
-  //     return list.map((e) => Data.fromJson(e)).toList();
-  //   } else {
-  //     final data = convert.jsonDecode(response.body);
-  //     throw ApiException(data['message']);
-  //   }
-  // }
-
-  // เส้นโปรดัค
-  // static Future<List<Data>> getproduct() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final token = prefs.getString('token');
-  //   var headers = {
-  //     'Authorization': 'Bearer $token',
-  //     'Content-Type': 'application/json',
-  //   };
-  //   final url = Uri.https(publicUrl, '/api/products');
-  //   final response = await http.get(url, headers: headers);
-  //   if (response.statusCode == 200 || response.statusCode == 201) {
-  //     final data = convert.jsonDecode(response.body);
-  //     // final data = convert.jsonDecode(response.body);
-  //     final list = data["data"] as List;
-  //     return list.map((e) => Data.fromJson(e)).toList();
-  //   } else {
-  //     final data = convert.jsonDecode(response.body);
-  //     throw ApiException(data['message']);
-  //   }
-  // }
 
   //เส้น banner
   static Future<List<Brands>> listbrands() async {
@@ -130,7 +66,7 @@ class ProductApi {
     required int brandid,
     int? page,
     required int productTypid,
-  }) async {
+   }) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     var headers = {
@@ -154,7 +90,7 @@ class ProductApi {
     }
   }
 
-  //เส้น ที่อยู่
+  //เส้น ที่อยู่ลูกค้า
   static Future<List<Distributors>> getlistdistributors() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -174,8 +110,30 @@ class ProductApi {
       throw ApiException(data['message']);
     }
   }
+    // Addressby ID
+  static Future<List<Address>> getAddressbyid({
+    required int distributor_id,
+   }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
 
-  // สร้าง Order ยังไม่เสร็จ
+    final url = Uri.https(publicUrl, '/api/distributors/$distributor_id/shipping-address');
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = convert.jsonDecode(response.body);
+      final list = data["data"] as List;
+      return list.map((e) => Address.fromJson(e)).toList();
+    } else {
+      final data = convert.jsonDecode(response.body);
+      throw ApiException(data['message']);
+    }
+  }
+
+  // สร้าง Order 
   static Future<Order> createOrder({
     required String distributor_id,
     required String qo_date,
@@ -188,7 +146,7 @@ class ProductApi {
     required String address_id,
     required File slip_image, // path ของไฟล์
     required String payment_method,
-  }) async {
+   }) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     final url = Uri.https(publicUrl, '/api/quotation');
@@ -251,4 +209,5 @@ class ProductApi {
       throw ApiException(data['message']);
     }
   }
+
 }

@@ -45,7 +45,7 @@ class _AddressPageState extends State<AddressPage> {
                   margin: const EdgeInsets.only(bottom: 12),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    border: Border.all(color:kButtonColor, width: 2),
+                    border: Border.all(color: kButtonColor, width: 2),
                     borderRadius: BorderRadius.circular(8),
                     color: Colors.white,
                   ),
@@ -65,7 +65,7 @@ class _AddressPageState extends State<AddressPage> {
                             selectedAddress = value;
                           });
                         },
-                        activeColor:kButtonColor,
+                        activeColor: kButtonColor,
                       ),
                     ],
                   ),
@@ -76,20 +76,19 @@ class _AddressPageState extends State<AddressPage> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: SizedBox(
-               height: size.height * 0.05, // ความสูง
-        width: size.width * 1, // ความ
+              height: size.height * 0.05, // ความสูง
+              width: size.width * 1, // ความ
               child: ElevatedButton(
                 onPressed: selectedAddress == null
                     ? null
                     : () {
                         // ✅ ส่ง object ทั้งตัวกลับ
-                        Navigator.pop(
-                          context,
-                          widget.distributors[selectedAddress!].address,
-                        );
-
-                        // หรือถ้าจะส่งแค่ address
-                        // Navigator.pop(context, widget.distributors[selectedAddress!].address);
+                        Navigator.pop(context, {
+                          "address":
+                              widget.distributors[selectedAddress!].address,
+                          "distributor_id":
+                              widget.distributors[selectedAddress!].id,
+                        });
                       },
                 style: ElevatedButton.styleFrom(backgroundColor: kButtonColor),
                 child: const Text(

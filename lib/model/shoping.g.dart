@@ -31,6 +31,9 @@ Shoping _$ShopingFromJson(Map<String, dynamic> json) => Shoping(
       .toList(),
   sku: json['sku'] as String?,
   qty: json['qty'] as String?,
+  warehouse_skus: (json['warehouse_skus'] as List<dynamic>)
+      .map((e) => Warehouse.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$ShopingToJson(Shoping instance) => <String, dynamic>{
@@ -49,4 +52,5 @@ Map<String, dynamic> _$ShopingToJson(Shoping instance) => <String, dynamic>{
   'sameproduct': instance.sameproduct?.map((e) => e?.toJson()).toList(),
   'sku': instance.sku,
   'qty': instance.qty,
+  'warehouse_skus': instance.warehouse_skus.map((e) => e.toJson()).toList(),
 };

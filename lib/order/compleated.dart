@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,8 @@ import 'package:t_and_c_mobile/addressPage.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/homepage.dart';
+import 'package:t_and_c_mobile/model/address.dart';
+import 'package:t_and_c_mobile/model/distributors.dart';
 import 'package:t_and_c_mobile/model/product.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/billpage.dart';
@@ -48,8 +51,11 @@ class _CompleatedState extends State<Compleated> {
   String? last_name;
   File? _image;
   String? selectedAddress;
+  int? distributor_id;
   String? tel_no;
   final _controller = ScreenshotController();
+  String? company_name;
+  List<Address> addresslists = [];
 
   Future<void> getpreferences() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -181,53 +187,167 @@ class _CompleatedState extends State<Compleated> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text(
-                                "ที่ต้องจัดส่ง",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              distributors.isEmpty
-                                  ? SizedBox.shrink()
-                                  : GestureDetector(
-                                      onTap: () async {
-                                        final out = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => AddressPage(
-                                              distributors: distributors,
-                                            ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "เลือกลูกค้า",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 10),
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: size.width * 0.78,
+                                    ), // กำหนดความกว้าง
+                                    child: DropdownButtonFormField<Distributors>(
+                                      isExpanded: true,
+                                      dropdownColor: Colors.white,
+                                      decoration: InputDecoration(
+                                        labelText: "เลือลูกค้า",
+                                        labelStyle: TextStyle(color: kbgM),
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 8,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
                                           ),
-                                        );
-                                        setState(() {
-                                          selectedAddress = out;
-                                        });
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(8.0),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
+                                          borderSide: BorderSide(
+                                            color: kButtonColor,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: kButtonColor,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          borderSide: BorderSide(
                                             color: kButtonColor,
                                             width: 2,
                                           ),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
+                                        ),
+                                      ),
+                                      items: distributors.map((distributor) {
+                                        return DropdownMenuItem<Distributors>(
+                                          value: distributor,
+                                          child: Text(
+                                            distributor.company_name ??
+                                                "", // ✅ ใช้ distributor
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (value) async {
+                                        if (value != null) {
+                                          print("ID: ${value.id}");
+                                          print(
+                                            "Company Name: ${value.company_name}",
+                                          );
+                                          distributor_id = value.id;
+                                          company_name =
+                                          value.company_name ?? "";
+                                          final addresslist =
+                                              await ProductApi.getAddressbyid(
+                                                distributor_id: distributor_id!,
+                                              );
+
+                                          
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                ],
+                              ),
+                              addresslists.isEmpty
+                                  ? SizedBox.shrink()
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "ที่ต้องจัดส่ง",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        child: selectedAddress == null
-                                            ? Text(
-                                                distributors[0].address ?? "",
-                                                style: TextStyle(fontSize: 16),
-                                              )
-                                            : Text(
-                                                "$selectedAddress",
-                                                style: TextStyle(fontSize: 16),
+                                        SizedBox(height: 10),
+                                        distributors.isEmpty
+                                            ? SizedBox.shrink()
+                                            : GestureDetector(
+                                                onTap: () async {
+                                                  final out =
+                                                      await Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              AddressPage(
+                                                                distributors:
+                                                                    distributors,
+                                                              ),
+                                                        ),
+                                                      );
+                                                  setState(() {
+                                                    selectedAddress =
+                                                        out["address"];
+                                                    distributor_id =
+                                                        out["distributor_id"];
+                                                  });
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color: kButtonColor,
+                                                      width: 2,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                  ),
+                                                  child: selectedAddress == null
+                                                      ? Text(
+                                                          distributors[0]
+                                                                  .address ??
+                                                              "",
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                          ),
+                                                        )
+                                                      : Text(
+                                                          "$selectedAddress",
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                ),
                                               ),
-                                      ),
+                                        SizedBox(height: 10),
+                                      ],
                                     ),
-                              SizedBox(height: 10),
                               Text(
                                 "รายละเอียดที่อยู่จัดส่ง",
                                 style: TextStyle(
@@ -777,7 +897,6 @@ class _CompleatedState extends State<Compleated> {
                     // --- ปุ่มชำระเงิน ---
                     GestureDetector(
                       onTap: () async {
-                        print(_image!.path);
                         if (_image == null) {
                           await showDialog(
                             barrierDismissible: false,
@@ -791,76 +910,93 @@ class _CompleatedState extends State<Compleated> {
                             ),
                           );
                         } else {
-                          try {
-                            List<Product> productModel = [];
-                            for (
-                              var i = 0;
-                              i < widget.selectedItems.length;
-                              i++
-                            ) {
-                              final item = widget.selectedItems[i];
+                          final out = await showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) => AlertDialogYesNo(
+                              title: 'แจ้งเตือน',
+                              description:
+                                  'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? distributors[0].address ?? ""}" \n หรือไม่',
+                            ),
+                          );
 
-                              productModel.add(
-                                Product(
-                                  "1",// item.product_id ?? "", // product_id
-                                  "2", // product_sku_id
-                                 "1" ,// item.price, // price
-                                  "1", // warehouse_id (สมมติใส่ค่า default)
-                                  item.quantity.toString(), // qty
-                                ),
+                          if (out == true) {
+                            try {
+                              List<Product> productModel = [];
+                              for (
+                                var i = 0;
+                                i < widget.selectedItems.length;
+                                i++
+                              ) {
+                                final item = widget.selectedItems[i];
+
+                                productModel.add(
+                                  Product(
+                                    item.product_id ?? "",
+                                    item.warehouse_skus[0].product_sku_id
+                                        .toString(), // product_sku_id
+                                    item.price, // item.price, // price
+                                    item.warehouse_skus[0].warehouse_id
+                                        .toString(), // warehouse_id (สมมติใส่ค่า default)
+                                    item.quantity.toString(), // qty
+                                  ),
+                                );
+                              }
+                              await ProductApi.createOrder(
+                                distributor_id: distributor_id == null
+                                    ? distributors[0].id.toString()
+                                    : distributor_id.toString(),
+                                qo_date: formatDate(DateTime.now()),
+                                total_qty: totalQuantity.toString(),
+                                total_cost_ex_vat: '1',
+                                total_vat_amount: '1',
+                                grand_total: widget.totalPrice.toString(),
+                                products: productModel,
+                                address_id: '1',
+                                slip_image: _image!,
+                                payment_method: 'cash',
+                                total_cost_inc_vat: '1',
                               );
-                            }
-                            await ProductApi.createOrder(
-                              distributor_id: '1',
-                              qo_date: '1',
-                              total_qty: '1',
-                              total_cost_ex_vat: '1',
-                              total_vat_amount: '1',
-                              grand_total: '1',
-                              products: productModel,
-                              address_id: '1',
-                              slip_image: _image!,
-                              payment_method: 'cash', total_cost_inc_vat: '1',
-                            );
 
-                            final cart = Provider.of<CartProvider>(
-                              context,
-                              listen: false,
-                            );
-
-                            // ลบเฉพาะสินค้าที่เลือก
-                            cart.removeSelected(widget.selectedItems);
-
-                            final out = await showDialog(
-                              barrierDismissible: true,
-                              context: context,
-                              builder: (context) => SucesDialog(
-                                title: 'แจ้งเตือน',
-                                description: 'ชำระเงินสำเร็จ',
-                              ),
-                            );
-
-                            if (out == true) {
-                              Navigator.pushAndRemoveUntil(
+                              final cart = Provider.of<CartProvider>(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => FirstPage(),
+                                listen: false,
+                              );
+
+                              // ลบเฉพาะสินค้าที่เลือก
+                              cart.removeSelected(widget.selectedItems);
+
+                              final out = await showDialog(
+                                barrierDismissible: true,
+                                context: context,
+                                builder: (context) => SucesDialog(
+                                  title: 'แจ้งเตือน',
+                                  description: 'ชำระเงินสำเร็จ',
                                 ),
-                                (route) => false,
+                              );
+
+                              if (out == true) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FirstPage(),
+                                  ),
+                                  (route) => false,
+                                );
+                              }
+                            } on Exception catch (e) {
+                              if (!mounted) return;
+                              await showDialog(
+                                context: context,
+                                builder: (context) => AlertDialogYes(
+                                  title: 'แจ้งเตือน',
+                                  description: '$e',
+                                  pressYes: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
                               );
                             }
-                          } on Exception catch (e) {
-                            if (!mounted) return;
-                            await showDialog(
-                              context: context,
-                              builder: (context) => AlertDialogYes(
-                                title: 'แจ้งเตือน',
-                                description: '$e',
-                                pressYes: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            );
                           }
                         }
                       },

@@ -3,17 +3,18 @@ import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
+import 'package:t_and_c_mobile/model/warehouse.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 
 class Catagory extends StatefulWidget {
-  Catagory({super.key, required this.brandid, required this.title,required this.productTypid, });
-
+  Catagory({super.key, required this.brandid, required this.title,required this.productTypid,});
   final int brandid;
   final String title;
   final int productTypid;
+  
 
 
   @override
@@ -29,6 +30,7 @@ class _CatagoryState extends State<Catagory> {
   bool _hasMore = true;
   List<Data> allProducts = []; // เก็บข้อมูลทั้งหมด
   List<Data> filteredProducts = []; // เก็บข้อมูลกรองแล้ว
+  List<Warehouse>listwarehouse=[];
 
   @override
   void initState() {
@@ -56,8 +58,6 @@ class _CatagoryState extends State<Catagory> {
       if (_isLoadingMore || !_hasMore) return;
 
       if (isLoadMore) setState(() => _isLoadingMore = true);
-
-      
        final newProducts = await ProductApi.getProBandId(
         brandid: widget.brandid, productTypid: widget.productTypid,
         page: _page, 
@@ -284,6 +284,7 @@ class _CatagoryState extends State<Catagory> {
                     Consumer<FavoriteProvider>(
                       builder: (context, favProvider, child) {
                         final currentProduct = Shoping(
+                          warehouse_skus:product.warehouse_skus??[],
                           sku:product.sku ,
                           image:  product.product?.image_url,
                           product_id: product.product?.id.toString(),
@@ -338,7 +339,7 @@ class _CatagoryState extends State<Catagory> {
                             ),
                             detail: '',
                             color: productColors, proNameTh: product.product?.name_th, // ส่ง list สีทั้งหมด
-                            sku:product.sku ,
+                            sku:product.sku, warehouse_skus: product.warehouse_skus??[] ,
                           ),
                         ),
                       );

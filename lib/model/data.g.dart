@@ -18,6 +18,9 @@ Data _$DataFromJson(Map<String, dynamic> json) =>
         json['product'] == null
             ? null
             : ProductTyp.fromJson(json['product'] as Map<String, dynamic>),
+        (json['warehouse_skus'] as List<dynamic>?)
+            ?.map((e) => Warehouse.fromJson(e as Map<String, dynamic>))
+            .toList(),
       )
       ..color = json['color'] == null
           ? null
@@ -33,4 +36,5 @@ Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
   'cardType': instance.cardType,
   'product': instance.product,
   'color': instance.color,
+  'warehouse_skus': instance.warehouse_skus,
 };

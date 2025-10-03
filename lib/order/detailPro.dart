@@ -5,6 +5,7 @@ import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
+import 'package:t_and_c_mobile/model/warehouse.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
 import 'package:t_and_c_mobile/order/compleated.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
@@ -24,6 +25,7 @@ class Detailpro extends StatefulWidget {
     required this.proNameTh,
     this.sameproduct,
     this.sku,
+    required this.warehouse_skus,
   });
 
   String productId;
@@ -35,6 +37,7 @@ class Detailpro extends StatefulWidget {
   String? image;
   String? proNameTh;
   String? sku;
+  List<Warehouse> warehouse_skus = [];
 
   @override
   State<Detailpro> createState() => _DetailproState();
@@ -328,6 +331,45 @@ class _DetailproState extends State<Detailpro> {
             ),
 
             SizedBox(height: 5),
+           
+           Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start, // ชิดด้านบน
+                    children: [
+                      SizedBox(
+                        width: 80, // กำหนดความกว้างของ Label "Name-En"
+                        child: Text(
+                          "ในคลัง:",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                       widget.warehouse_skus.isNotEmpty
+                     ? Expanded(
+                        child: Text(
+                         "${widget.warehouse_skus[0].available.toString()} ชิ้น" ,
+                          style: TextStyle(fontSize: 14, color: Colors.black),
+                        ),
+                      )
+                      :Expanded(
+                        child: Text(
+                         "สินค้าหมด" ,
+                          style: TextStyle(fontSize: 14, color: Colors.black),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 5),
+              ],
+            ),
+        
 
             Padding(
               padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
@@ -364,6 +406,7 @@ class _DetailproState extends State<Detailpro> {
                         colors: widget.color,
                         color: selectedColor ?? "",
                         nameTh: widget.proNameTh ?? "",
+                        warehouse_skus: widget.warehouse_skus,
                       );
                       final isFav = favProvider.isFavorite(currentProduct);
                       return GestureDetector(
@@ -455,6 +498,11 @@ class _DetailproState extends State<Detailpro> {
                       ),
                     ),
                     onPressed: () {
+                      if ( widget.warehouse_skus.isEmpty) {
+                         ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
+                        );
+                      } else {                       
                       if (selectedColor == null || selectedColor!.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
@@ -470,12 +518,14 @@ class _DetailproState extends State<Detailpro> {
                         detail: widget.detail,
                         color: selectedColor!,
                         nameTh: widget.proNameTh ?? "",
+                        warehouse_skus: widget.warehouse_skus,
                       );
                       Provider.of<CartProvider>(
                         context,
                         listen: false,
                       ).addItem(shoping);
                       _runAddToCartAnimation();
+                      }
                     },
                     child: Text(
                       "เพิ่มในตะกร้า",
@@ -780,7 +830,8 @@ class _DetailproState extends State<Detailpro> {
                                                     if (widget.proPice !=
                                                         "0.00") {
                                                       final shoping = Shoping(
-                                                        product_id: widget.productId,
+                                                        product_id:
+                                                            widget.productId,
                                                         quantity: quantity,
                                                         image: widget.image,
                                                         name: widget.proName,
@@ -791,6 +842,8 @@ class _DetailproState extends State<Detailpro> {
                                                         nameTh:
                                                             widget.proNameTh ??
                                                             "",
+                                                        warehouse_skus: widget
+                                                            .warehouse_skus,
                                                       );
 
                                                       // รอให้ bottom sheet ปิดเสร็จแล้วค่อย push หน้าใหม่
