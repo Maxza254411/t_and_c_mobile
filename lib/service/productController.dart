@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/model/brands.dart';
 import 'package:t_and_c_mobile/model/distributors.dart';
+import 'package:t_and_c_mobile/model/order.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 
@@ -14,6 +15,7 @@ class ProductController extends ChangeNotifier {
   List<Brands>brands=[];
   List<ProductTyp>productBandTyp=[];
   List<Distributors>distributors=[];
+  List<Order>orderlist=[];
 
   // getproductlist() async {
   //   productTyp.clear();
@@ -43,6 +45,11 @@ class ProductController extends ChangeNotifier {
    getlistdistributors() async {
     distributors.clear();
     distributors = await ProductApi.getlistdistributors();
+    notifyListeners();
+  }
+    getOrderList() async {
+    orderlist.clear();
+    orderlist = await ProductApi.getOrderList();
     notifyListeners();
   }
 }

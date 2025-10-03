@@ -7,13 +7,13 @@ part of 'order.dart';
 // **************************************************************************
 
 Order _$OrderFromJson(Map<String, dynamic> json) => Order(
-  (json['id'] as num).toInt(),
+  (json['id'] as num?)?.toInt(),
   json['qo_code'] as String?,
-  json['distributor_id'] as String?,
+  (json['distributor_id'] as num?)?.toInt(),
   json['image_url'] as String?,
   json['qo_date'] as String?,
   json['status'] as String?,
-  json['address_id'] as String?,
+  (json['address_id'] as num?)?.toInt(),
   json['total_po_unit'] as String?,
   json['total_po_cost_ex_vat'] as String?,
   json['total_po_vat_amount'] as String?,
@@ -25,6 +25,13 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
   json['status_name'] as String?,
   json['status_badge'] as String?,
   json['stage'] as String?,
+  json['payment_method'] as String?,
+  json['distributor'] == null
+      ? null
+      : Distributors.fromJson(json['distributor'] as Map<String, dynamic>),
+  (json['items'] as List<dynamic>?)
+      ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
@@ -46,4 +53,7 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
   'status_name': instance.status_name,
   'status_badge': instance.status_badge,
   'stage': instance.stage,
+  'payment_method': instance.payment_method,
+  'distributor': instance.distributor,
+  'items': instance.items,
 };

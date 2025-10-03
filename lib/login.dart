@@ -163,34 +163,7 @@ class _LoginpageState extends State<Loginpage> {
                         width: double.infinity,
                       ),
                       SizedBox(height: size.height * 0.01),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Checkbox(
-                                activeColor: kButtonColor,
-                                value: _isChecked,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    _isChecked = value ?? false;
-                                  });
-                                },
-                              ),
-                              Text('Remember me'),
-                            ],
-                          ),
-
-                          GestureDetector(
-                            onTap: () {},
-                            child: Text(
-                              'Forgot Password ?',
-                              style: TextStyle(color: kButtonColor),
-                            ),
-                          ),
-                        ],
-                      ),
-
+                      
                       GestureDetector(
                         onTap: () async {
                           if (validateEmail(context, email.text)) {
@@ -284,7 +257,7 @@ class _LoginpageState extends State<Loginpage> {
                               color: ktextColr,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            width: size.width * 0.7,
+                            // width: size.width * 0.7,
                             height: size.height * 0.06,
                             child: Center(
                               child: Text(
@@ -313,7 +286,7 @@ class _LoginpageState extends State<Loginpage> {
                               color: kline,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            width: size.width * 0.7,
+                            // width: size.width * 0.7,
                             height: size.height * 0.06,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -336,26 +309,26 @@ class _LoginpageState extends State<Loginpage> {
                         ),
                       ),
                       SizedBox(height: size.height * 0.02),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("ยังไม่มีบัญชีผู้ใช้? "),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Register(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              "สมัครสมาชิก",
-                              style: TextStyle(color: kButtonColor),
-                            ),
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: [
+                      //     Text("ยังไม่มีบัญชีผู้ใช้? "),
+                      //     GestureDetector(
+                      //       onTap: () {
+                      //         Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //             builder: (context) => Register(),
+                      //           ),
+                      //         );
+                      //       },
+                      //       child: Text(
+                      //         "สมัครสมาชิก",
+                      //         style: TextStyle(color: kButtonColor),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),

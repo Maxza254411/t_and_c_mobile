@@ -1,130 +1,39 @@
-import 'dart:convert' as convert;
-import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/addressPage.dart';
 import 'package:t_and_c_mobile/constang.dart';
-import 'package:t_and_c_mobile/fristPage.dart';
-import 'package:t_and_c_mobile/homepage.dart';
-import 'package:t_and_c_mobile/model/product.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
-import 'package:t_and_c_mobile/order/billpage.dart';
-import 'package:t_and_c_mobile/povider/cartProvider.dart';
-import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
-import 'package:t_and_c_mobile/widget/dialog.dart';
-import 'package:t_and_c_mobile/widget/field.dart';
-import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
-class Compleated extends StatefulWidget {
-  Compleated({
+
+class Orderdetail extends StatefulWidget {
+  Orderdetail({
     super.key,
-    required this.status,
-    required this.selectedItems,
-    this.totalPrice,
-    this.image,
-    required this.slipe_status,
   });
-  bool status;
+
   List<Shoping> selectedItems = []; // รับสินค้าที่ติ๊ก
-  double? totalPrice;
-  String? image;
-  bool slipe_status;
+
   @override
-  State<Compleated> createState() => _CompleatedState();
+  State<Orderdetail> createState() => _OrderdetailState();
 }
 
-class _CompleatedState extends State<Compleated> {
-  final TextEditingController addes = TextEditingController();
-  final TextEditingController talk = TextEditingController();
-  String? first_name;
-  String? last_name;
-  File? _image;
+class _OrderdetailState extends State<Orderdetail> {
+
   String? selectedAddress;
   String? tel_no;
   final _controller = ScreenshotController();
 
-  Future<void> getpreferences() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    first_name = prefs.getString('first_name');
-    last_name = prefs.getString('last_name');
-    tel_no = prefs.getString('tel_no');
-  }
-
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-    ); // หรือ camera
-
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-    }
-  }
-
-  Future<void> getapi() async {
-    try {
-      LoadingDialog.open(context);
-      await context.read<ProductController>().getlistdistributors();
-      LoadingDialog.close(context);
-    } on Exception catch (e) {
-      LoadingDialog.close(context);
-      if (!mounted) return;
-      await showDialog(
-        context: context,
-        builder: (context) => AlertDialogYes(
-          title: 'แจ้งเตือน',
-          description: '$e',
-          pressYes: () {
-            Navigator.pop(context);
-          },
-        ),
-      );
-    }
-  }
-
-  Future<void> _captureAndSave() async {
-    try {
-      final Uint8List? imageBytes = await _controller.capture();
-      if (imageBytes != null) {
-        final result = await ImageGallerySaverPlus.saveImage(
-          imageBytes,
-          quality: 100,
-          name: "qr_code_promptpay",
-        );
-
-        if (result['isSuccess'] == true) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("บันทึกรูปภาพเรียบร้อยแล้ว")),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("บันทึกรูปภาพไม่สำเร็จ")),
-          );
-        }
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("เกิดข้อผิดพลาด: $e")));
-    }
-  }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getpreferences();
-      await getapi();
+
+  
     });
   }
 
@@ -235,8 +144,8 @@ class _CompleatedState extends State<Compleated> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              widget.status == true
-                                  ? Container(
+                      
+                                   Container(
                                       height: size.height * 0.1,
                                       width: size.width * 1,
                                       decoration: BoxDecoration(
@@ -254,16 +163,7 @@ class _CompleatedState extends State<Compleated> {
                                         child: Text("เอาวางไว้ชั่น 2"),
                                       ),
                                     )
-                                  : InputTextFormField(
-                                      fontsize: 16,
-                                      controller: addes,
-                                      size: size,
-                                      heights: size.height * 0.1,
-                                      imagestatus: false,
-                                      whatfield: true,
-                                      hintText: "เช่น ห้องเลขที่/ซอย",
-                                      width: size.width * 1,
-                                    ),
+                              
                             ],
                           ),
                         ),
@@ -282,72 +182,72 @@ class _CompleatedState extends State<Compleated> {
                     child: Column(
                       children: [
                         ContainerHeader(size: size, text: 'ชื่อลูกค้า'),
-                        Column(
-                          children: [
-                            ListTile(
-                              leading: Image.asset(
-                                "assets/icons/User.png",
-                                scale: 15,
-                              ),
+                        // Column(
+                        //   children: [
+                        //     ListTile(
+                        //       leading: Image.asset(
+                        //         "assets/icons/User.png",
+                        //         scale: 15,
+                        //       ),
 
-                              title: Text("ชื่อผู้รับสินค้า"),
-                              subtitle: Text(
-                                "${first_name ?? ""} ${last_name ?? ""}",
-                                style: TextStyle(color: kButtonColor),
-                              ),
-                            ),
-                            Divider(),
-                            ListTile(
-                              leading: Image.asset(
-                                "assets/icons/PhoneCall.png",
-                                scale: 15,
-                              ),
-                              title: Text("เบอร์โทรผู้รับสินค้า"),
-                              subtitle: Text(
-                                tel_no ?? "-",
-                                style: TextStyle(color: kButtonColor),
-                              ),
-                            ),
-                            Divider(),
+                        //       title: Text("ชื่อผู้รับสินค้า"),
+                        //       subtitle: Text(
+                        //         "${first_name ?? ""} ${last_name ?? ""}",
+                        //         style: TextStyle(color: kButtonColor),
+                        //       ),
+                        //     ),
+                        //     Divider(),
+                        //     ListTile(
+                        //       leading: Image.asset(
+                        //         "assets/icons/PhoneCall.png",
+                        //         scale: 15,
+                        //       ),
+                        //       title: Text("เบอร์โทรผู้รับสินค้า"),
+                        //       subtitle: Text(
+                        //         tel_no ?? "-",
+                        //         style: TextStyle(color: kButtonColor),
+                        //       ),
+                        //     ),
+                        //     Divider(),
 
-                            ListTile(
-                              leading: Image.asset(
-                                "assets/icons/ChatCircleDots.png",
-                                scale: 15,
-                              ),
-                              title: Text("ข้อความถึงหนักงาน"),
-                              subtitle: widget.status == true
-                                  ? Container(
-                                      height: size.height * 0.05,
-                                      width: size.width * 1,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: const Color.fromARGB(
-                                          255,
-                                          241,
-                                          241,
-                                          241,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("ถึงแล้วโทรมานะครับ"),
-                                      ),
-                                    )
-                                  : InputTextFormField(
-                                      maxLines: 1,
-                                      fontsize: 16,
-                                      controller: talk,
-                                      size: size,
-                                      heights: size.height * 0.05,
-                                      imagestatus: false,
-                                      whatfield: true,
-                                      hintText: "พิมพ์ข้อความ",
-                                      width: size.width * 1,
-                                    ),
-                            ),
-                          ],
-                        ),
+                        //     ListTile(
+                        //       leading: Image.asset(
+                        //         "assets/icons/ChatCircleDots.png",
+                        //         scale: 15,
+                        //       ),
+                        //       title: Text("ข้อความถึงหนักงาน"),
+                        //       subtitle: widget.status == true
+                        //           ? Container(
+                        //               height: size.height * 0.05,
+                        //               width: size.width * 1,
+                        //               decoration: BoxDecoration(
+                        //                 borderRadius: BorderRadius.circular(8),
+                        //                 color: const Color.fromARGB(
+                        //                   255,
+                        //                   241,
+                        //                   241,
+                        //                   241,
+                        //                 ),
+                        //               ),
+                        //               child: Padding(
+                        //                 padding: const EdgeInsets.all(8.0),
+                        //                 child: Text("ถึงแล้วโทรมานะครับ"),
+                        //               ),
+                        //             )
+                        //           : InputTextFormField(
+                        //               maxLines: 1,
+                        //               fontsize: 16,
+                        //               controller: talk,
+                        //               size: size,
+                        //               heights: size.height * 0.05,
+                        //               imagestatus: false,
+                        //               whatfield: true,
+                        //               hintText: "พิมพ์ข้อความ",
+                        //               width: size.width * 1,
+                        //             ),
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
@@ -361,11 +261,11 @@ class _CompleatedState extends State<Compleated> {
                     ),
                     child: Column(
                       children: [
-                        ContainerHeader(
-                          size: size,
-                          text: 'รายการสินค้า',
-                          status: widget.slipe_status,
-                        ),
+                        // ContainerHeader(
+                        //   size: size,
+                        //   text: 'รายการสินค้า',
+                        //   status: widget.slipe_status,
+                        // ),
                         widget.selectedItems.isEmpty
                             ? SizedBox.shrink()
                             : Column(
@@ -478,7 +378,7 @@ class _CompleatedState extends State<Compleated> {
                                       children: [
                                         Text("ราคารวม"),
                                         Text(
-                                          "${formatNumber(widget.totalPrice)} บาท",
+                                          " บาท",
                                         ),
                                       ],
                                     ),
@@ -571,29 +471,7 @@ class _CompleatedState extends State<Compleated> {
                                       ),
                                     ),
 
-                                    SizedBox(
-                                      width: size.width * 0.4,
-                                      child: ElevatedButton.icon(
-                                        onPressed: () {
-                                          _captureAndSave();
-                                        },
-                                        icon: Icon(Icons.copy),
-                                        label: Text("บันทึกรูปภาพ"),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: kButtonColor,
-                                          foregroundColor: Colors.white,
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 12,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                   
                                   ],
                                 ),
                               )
@@ -674,66 +552,7 @@ class _CompleatedState extends State<Compleated> {
                   ),
                 ),
 
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    // เพิ่มความสูงหน่อยเพื่อให้มีที่วาง Tab
-                    width: size.width * 1,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      children: [
-                        _image != null
-                            ? Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.file(
-                                    _image!,
-                                    height: 150,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.asset(
-                                    "assets/images/NoImage.jpg",
-                                    height: 150,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: size.width * 0.4,
-                            child: ElevatedButton.icon(
-                              onPressed: _pickImage,
-                              icon: const Icon(Icons.upload_file),
-                              label: const Text("อัพโหลดสลิป"),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 12,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+               
               ],
             ),
           ),
@@ -753,116 +572,31 @@ class _CompleatedState extends State<Compleated> {
                   mainAxisSize: MainAxisSize.min, // ให้ Container สูงตามเนื้อหา
                   children: [
                     // --- แถวราคารวม ---
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "สินค้ารวม ${totalQuantity} ชิ้น",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Text(
-                          " ฿ ${formatNumber(widget.totalPrice)} ",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: kButtonColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Text(
+                    //       "สินค้ารวม ${totalQuantity} ชิ้น",
+                    //       style: TextStyle(
+                    //         fontSize: 16,
+                    //         fontWeight: FontWeight.w500,
+                    //       ),
+                    //     ),
+                    //     Text(
+                    //       " ฿ ${formatNumber(widget.totalPrice)} ",
+                    //       style: TextStyle(
+                    //         fontSize: 18,
+                    //         fontWeight: FontWeight.bold,
+                    //         color: kButtonColor,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                     const SizedBox(height: 12), // เว้นระยะห่างก่อนปุ่ม
                     // --- ปุ่มชำระเงิน ---
                     GestureDetector(
                       onTap: () async {
-                        print(_image!.path);
-                        if (_image == null) {
-                          await showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (context) => AlertDialogYes(
-                              title: 'แจ้งเตือน',
-                              description: 'กรุณาอัพโหลดสลิป',
-                              pressYes: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          );
-                        } else {
-                          try {
-                            List<Product> productModel = [];
-                            for (
-                              var i = 0;
-                              i < widget.selectedItems.length;
-                              i++
-                            ) {
-                              final item = widget.selectedItems[i];
-
-                              productModel.add(
-                                Product(
-                                  "1",// item.product_id ?? "", // product_id
-                                  "2", // product_sku_id
-                                 "1" ,// item.price, // price
-                                  "1", // warehouse_id (สมมติใส่ค่า default)
-                                  item.quantity.toString(), // qty
-                                ),
-                              );
-                            }
-                            await ProductApi.createOrder(
-                              distributor_id: '1',
-                              qo_date: '1',
-                              total_qty: '1',
-                              total_cost_ex_vat: '1',
-                              total_vat_amount: '1',
-                              grand_total: '1',
-                              products: productModel,
-                              address_id: '1',
-                              slip_image: _image!,
-                              payment_method: 'cash', total_cost_inc_vat: '1',
-                            );
-
-                            final cart = Provider.of<CartProvider>(
-                              context,
-                              listen: false,
-                            );
-
-                            // ลบเฉพาะสินค้าที่เลือก
-                            cart.removeSelected(widget.selectedItems);
-
-                            final out = await showDialog(
-                              barrierDismissible: true,
-                              context: context,
-                              builder: (context) => SucesDialog(
-                                title: 'แจ้งเตือน',
-                                description: 'ชำระเงินสำเร็จ',
-                              ),
-                            );
-
-                            if (out == true) {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FirstPage(),
-                                ),
-                                (route) => false,
-                              );
-                            }
-                          } on Exception catch (e) {
-                            if (!mounted) return;
-                            await showDialog(
-                              context: context,
-                              builder: (context) => AlertDialogYes(
-                                title: 'แจ้งเตือน',
-                                description: '$e',
-                                pressYes: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            );
-                          }
-                        }
+                      
                       },
                       child: Container(
                         height: size.height * 0.07, // สูงขึ้นหน่อย

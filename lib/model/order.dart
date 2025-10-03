@@ -1,16 +1,18 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:t_and_c_mobile/model/distributors.dart';
+import 'package:t_and_c_mobile/model/item.dart';
 
 part 'order.g.dart';
 
 @JsonSerializable()
 class Order {
-  int id;
+  int? id;
   String? qo_code;
-  String? distributor_id;
+  int? distributor_id;
   String? image_url;
   String? qo_date;
   String? status;
-  String? address_id;
+  int? address_id;
   String? total_po_unit;
   String? total_po_cost_ex_vat;
   String? total_po_vat_amount;
@@ -22,6 +24,11 @@ class Order {
   String? status_name;
   String? status_badge;
   String? stage;
+  String? payment_method;
+  Distributors? distributor;
+  List<Item>?items;
+
+
 
   Order(
     this.id,
@@ -42,6 +49,8 @@ class Order {
     this.status_name,
     this.status_badge,
     this.stage,
+    this.payment_method, this.distributor,
+    this.items,
   );
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
