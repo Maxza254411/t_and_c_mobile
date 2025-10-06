@@ -28,6 +28,7 @@ Item _$ItemFromJson(Map<String, dynamic> json) => Item(
   json['product_sku'] == null
       ? null
       : Data.fromJson(json['product_sku'] as Map<String, dynamic>),
+  json['path_image'] as String?,
 );
 
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
@@ -46,6 +47,7 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
   'po_unit': instance.po_unit,
   'total_po_cost_ex_vat': instance.total_po_cost_ex_vat,
   'total_po_cost_inc_vat': instance.total_po_cost_inc_vat,
+  'path_image': instance.path_image,
   'product': instance.product,
   'product_sku': instance.product_sku,
 };

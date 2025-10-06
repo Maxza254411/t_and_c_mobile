@@ -57,6 +57,8 @@ class _CompleatedState extends State<Compleated> {
   final _controller = ScreenshotController();
   String? company_name;
   List<Address> addresslists = [];
+  double vatRate = 0.07;
+  double priceBeforeVat = 0.00;
 
   Future<void> getpreferences() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -99,6 +101,10 @@ class _CompleatedState extends State<Compleated> {
     }
   }
 
+  Future<void> calculateVat() async {
+    priceBeforeVat = widget.totalPrice! / (1 + vatRate);
+  }
+
   Future<void> _captureAndSave() async {
     try {
       final Uint8List? imageBytes = await _controller.capture();
@@ -132,6 +138,7 @@ class _CompleatedState extends State<Compleated> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getpreferences();
       await getapi();
+     await calculateVat();
     });
   }
 
@@ -271,6 +278,12 @@ class _CompleatedState extends State<Compleated> {
                                                 distributor_id: distributor_id!,
                                               );
                                           addresslists = addresslist;
+                                          if (addresslists.isNotEmpty) {
+                                            address_id = addresslists[0].id;
+                                            print(
+                                              "address_id คือ ${address_id}",
+                                            );
+                                          }
 
                                           setState(() {});
                                         }
@@ -281,7 +294,40 @@ class _CompleatedState extends State<Compleated> {
                                 ],
                               ),
                               addresslists.isEmpty
-                                  ? SizedBox.shrink()
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "ที่ต้องจัดส่ง",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+
+                                        Container(
+                                          padding: EdgeInsets.all(8.0),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: kButtonColor,
+                                              width: 2,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            "ไม่พบที่อยู่",
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                      ],
+                                    )
                                   : Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -296,9 +342,8 @@ class _CompleatedState extends State<Compleated> {
                                           ),
                                         ),
                                         SizedBox(height: 10),
-                                        addresslists.isEmpty
-                                            ? SizedBox.shrink()
-                                            : GestureDetector(
+                                     
+                                            GestureDetector(
                                                 onTap: () async {
                                                   final out =
                                                       await Navigator.push(
@@ -317,6 +362,9 @@ class _CompleatedState extends State<Compleated> {
                                                           out["addressid"];
                                                       selectedAddress =
                                                           out["full_th_address"];
+                                                      print(
+                                                        "address_id คือ ${address_id}",
+                                                      );
                                                     });
                                                   }
                                                 },
@@ -334,8 +382,8 @@ class _CompleatedState extends State<Compleated> {
                                                   ),
                                                   child: selectedAddress == null
                                                       ? Text(
-                                                          distributors[0]
-                                                                  .address ??
+                                                          addresslists[0]
+                                                                  .full_th_address ??
                                                               "",
                                                           style: TextStyle(
                                                             fontSize: 16,
@@ -622,7 +670,7 @@ class _CompleatedState extends State<Compleated> {
                     ),
                     child: Column(
                       children: [
-                        ContainerHeader(size: size, text: 'วิธีการชำระเงิน'),
+                      ContainerHeader(size: size, text: 'วิธีการชำระเงิน'),
                         Column(
                           children: List.generate(
                             pay.length,
@@ -657,7 +705,7 @@ class _CompleatedState extends State<Compleated> {
                     ),
                     child: Column(
                       children: [
-                        selectedPay == "Qr"
+                        selectedPay == "qrcode"
                             ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -881,6 +929,46 @@ class _CompleatedState extends State<Compleated> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
+                          "ราคาก่อน vat",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          " ฿ ${formatNumber(priceBeforeVat)} ",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: kButtonColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "ราคารวม vat",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          " ฿ ${formatNumber(widget.totalPrice)} ",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: kButtonColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
                           "สินค้ารวม ${totalQuantity} ชิ้น",
                           style: TextStyle(
                             fontSize: 16,
@@ -901,6 +989,20 @@ class _CompleatedState extends State<Compleated> {
                     // --- ปุ่มชำระเงิน ---
                     GestureDetector(
                       onTap: () async {
+                        if (addresslists.isEmpty) {
+                           await showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) => AlertDialogYes(
+                              title: 'แจ้งเตือน',
+                              description: 'กรุณาเลือกที่อยู่',
+                              pressYes: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          );
+                        } else {
+                          
                         if (_image == null) {
                           await showDialog(
                             barrierDismissible: false,
@@ -920,7 +1022,7 @@ class _CompleatedState extends State<Compleated> {
                             builder: (context) => AlertDialogYesNo(
                               title: 'แจ้งเตือน',
                               description:
-                                  'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? distributors[0].address ?? ""}" \n หรือไม่',
+                                  'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
                             ),
                           );
 
@@ -947,19 +1049,17 @@ class _CompleatedState extends State<Compleated> {
                                 );
                               }
                               await ProductApi.createOrder(
-                                distributor_id: distributor_id == null
-                                    ? distributors[0].id.toString()
-                                    : distributor_id.toString(),
+                                distributor_id: distributor_id.toString(),
                                 qo_date: formatDate(DateTime.now()),
                                 total_qty: totalQuantity.toString(),
-                                total_cost_ex_vat: '1',
-                                total_vat_amount: '1',
+                                total_cost_ex_vat: priceBeforeVat.toString(),
+                                total_vat_amount: widget.totalPrice.toString(),
                                 grand_total: widget.totalPrice.toString(),
                                 products: productModel,
-                                address_id: '1',
+                                address_id: address_id.toString(),
                                 slip_image: _image!,
-                                payment_method: 'cash',
-                                total_cost_inc_vat: '1',
+                                payment_method: '$selectedPay',
+                                total_cost_inc_vat: widget.totalPrice.toString(),
                               );
 
                               final cart = Provider.of<CartProvider>(
@@ -1002,6 +1102,7 @@ class _CompleatedState extends State<Compleated> {
                               );
                             }
                           }
+                        }
                         }
                       },
                       child: Container(

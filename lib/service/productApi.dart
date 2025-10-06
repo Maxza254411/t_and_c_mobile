@@ -155,7 +155,7 @@ class ProductApi {
     request.headers['Authorization'] = 'Bearer $token';
 
     request.fields['distributor_id'] = distributor_id;
-    request.fields['qo_date'] = "1999-01-01";
+    request.fields['qo_date'] = qo_date;
     request.fields['total_qty'] = total_qty;
     request.fields['total_cost_ex_vat'] = total_cost_ex_vat;
     request.fields['total_vat_amount'] = total_vat_amount;

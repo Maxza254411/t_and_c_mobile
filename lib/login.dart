@@ -213,6 +213,11 @@ class _LoginpageState extends State<Loginpage> {
                                     "email",
                                     _login["user"]["email"],
                                   );
+                                  await prefs.setString(
+                                    "user_type",
+                                    _login["user"]["user_type"],
+                                  );
+                                  
                                   if ( _login["user"]["tel_no"]!=null) {                                    
                                   await prefs.setString(
                                     "tel_no",
@@ -309,26 +314,26 @@ class _LoginpageState extends State<Loginpage> {
                         ),
                       ),
                       SizedBox(height: size.height * 0.02),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: [
-                      //     Text("ยังไม่มีบัญชีผู้ใช้? "),
-                      //     GestureDetector(
-                      //       onTap: () {
-                      //         Navigator.push(
-                      //           context,
-                      //           MaterialPageRoute(
-                      //             builder: (context) => Register(),
-                      //           ),
-                      //         );
-                      //       },
-                      //       child: Text(
-                      //         "สมัครสมาชิก",
-                      //         style: TextStyle(color: kButtonColor),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                      
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Register(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "ติดต่อเรา",
+                              style: TextStyle(color: kButtonColor,fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

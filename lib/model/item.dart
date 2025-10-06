@@ -21,7 +21,9 @@ class Item {
   String? po_unit;
   String? total_po_cost_ex_vat;
   String? total_po_cost_inc_vat;
+  String?path_image;
   ProductTyp?product;
+  
   Data?product_sku;
 
   Item(
@@ -42,6 +44,7 @@ class Item {
     this.total_po_cost_inc_vat,
     this.product,
     this.product_sku,
+    this.path_image,
   );
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);

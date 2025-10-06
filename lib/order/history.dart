@@ -205,7 +205,7 @@ class _HistoryState extends State<History> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>  Orderdetail(),
+                              builder: (context) =>  Orderdetail(orderData: filteredOrders[index], ),
                             ),
                           );
                         },
@@ -271,7 +271,7 @@ class _HistoryState extends State<History> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text("วันที่สั่งซื้อ"),
+                                     Text("วันที่สั่งซื้อ"),
                                       Text(
                                         "${filteredOrders[index].qo_date}",
                                         style: const TextStyle(

@@ -12,9 +12,6 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
-  final TextEditingController email = TextEditingController();
-  final TextEditingController password = TextEditingController();
-  bool _isChecked = false;
 
   //ฟังชั่นดักอีเมล
   bool validateEmail(BuildContext context, String? value) {
@@ -60,6 +57,13 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+          backgroundColor: kButtonColor,
+  iconTheme: IconThemeData(
+              color: Colors.white
+            ),
+            title: Text("ติดต่อเรา",style: TextStyle(color: Colors.white),),
+      ),
       body: Container(
         height: double.infinity,
         width: double.infinity,
@@ -78,11 +82,8 @@ class _RegisterState extends State<Register> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: size.height * 0.01),
-                SizedBox(
-                  height: size.height * 0.3,
-                  child: Image.asset("assets/images/LOGO CMYK-01.png"),
-                ),
+                SizedBox(height: size.height * 0.1),
+                
                 Container(
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -94,203 +95,79 @@ class _RegisterState extends State<Register> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "สมัครสมาชิก",
+                        "ติดต่อเรา",
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        "ลงทะเบียนกับ TNC Partner สั่งซื้อง่าย ครบในที่เดียว\nพร้อมรับสิทธิประโยชน์และกิจกรรมอีกมากมาย",
-                        style: TextStyle(color: kbgM),
+                        "หากทานมีปัญหาเกี่ยวกับการใช้งานระบบหรือต้องการสอบถามข้อมูลเพิ่มเติม",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      Text(
+                        "(เวลาทำการ จันทร์-ศุกร์ 9:00-18:00 น.)",
+                        style: TextStyle(
+                          color: const Color.fromARGB(253, 119, 118, 118),
+                          fontSize: 12,
+                        ),
                       ),
                       SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Text("เคยลงทะเบียนแล้ว? "),
-                          GestureDetector(
-                            onTap: () {
-                             Navigator.pop(context);
-                            },
-                            child: Text(
-                              "เข้าสู่ระบบ",
-                              style: TextStyle(color: kButtonColor),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: size.height * 0.01),
-
-                      InputTextFormField(
-                        labelText: "รหัสร้านค้า",
-                        controller: email,
-                        size: size,
-                        heights: size.height * 0.05,
-                        imagestatus: false,
-                        whatfield: true,
-                        width: double.infinity,
-                        fontsize: 16,
-                      ),
-                      SizedBox(height: size.height * 0.01),
-                      InputTextFormField(
-                        labelText: "ชื่อ-นามสกุล ผู้รับ",
-                        controller: email,
-                        size: size,
-                        heights: size.height * 0.05,
-                        imagestatus: false,
-                        whatfield: true,
-                        width: double.infinity,
-                        fontsize: 16,
-                      ),
-                      SizedBox(height: size.height * 0.01),
-                      InputTextFormField(
-                        labelText: "ชื่อร้าน",
-                        controller: email,
-                        size: size,
-                        heights: size.height * 0.05,
-                        imagestatus: false,
-                        whatfield: true,
-                        width: double.infinity,
-                        fontsize: 16,
-                      ),
-                      SizedBox(height: size.height * 0.01),
-                      InputTextFormField(
-                        labelText: "เบอร์โทรศัพท์",
-                        controller: email,
-                        size: size,
-                        heights: size.height * 0.05,
-                        imagestatus: false,
-                        whatfield: true,
-                        width: double.infinity,
-                        fontsize: 16,
-                      ),
-                      SizedBox(height: size.height * 0.03),
-                      GestureDetector(
-                        onTap: () async {
-                          // if (validateEmail(context, email.text)) {
-                          //   if (password.text == '' || email.text == '') {
-                          //     await showDialog(
-                          //       barrierDismissible: false,
-                          //       context: context,
-                          //       builder: (context) => AlertDialogYes(
-                          //         title: 'แจ้งเตือน',
-                          //         description: 'กรูณากรอกข้อมูล',
-                          //         pressYes: () {
-                          //           Navigator.pop(context);
-                          //         },
-                          //       ),
-                          //     );
-                          //   } else {
-                          //     try {
-                          //       LoadingDialog.open(context);
-                          //       final _login = await LoginApi.login(
-                          //         email.text,
-                          //         password.text,
-                          //       );
-                          //       if (_login["token"] != null) {
-                          //         final prefs =
-                          //             await SharedPreferences.getInstance();
-                          //         await prefs.setString(
-                          //           "token",
-                          //           _login["token"],
-                          //         );
-                          //         await prefs.setInt(
-                          //           "userId",
-                          //           _login["user"]["id"],
-                          //         );
-                          //         await prefs.setString(
-                          //           "first_name",
-                          //           _login["user"]["first_name"],
-                          //         );
-                          //         await prefs.setString(
-                          //           "last_name",
-                          //           _login["user"]["last_name"],
-                          //         );
-                          //         await prefs.setString(
-                          //           "staff_code",
-                          //           _login["user"]["staff_code"],
-                          //         );
-                          //         await prefs.setString(
-                          //           "email",
-                          //           _login["user"]["email"],
-                          //         );
-                          //       }
-
-                          //       LoadingDialog.close(context);
-                          //       Navigator.pushAndRemoveUntil(
-                          //         context,
-                          //         MaterialPageRoute(
-                          //           builder: (context) => FirstPage(),
-                          //         ),
-                          //         (route) => false,
-                          //       );
-
-                          //     } on Exception catch (e) {
-                          //       if (!mounted) return;
-                          //       LoadingDialog.close(context);
-                          //       await showDialog(
-                          //         barrierDismissible: false,
-                          //         context: context,
-                          //         builder: (context) => AlertDialogYes(
-                          //           title: 'แจ้งเตือน',
-                          //           description: '$e',
-                          //           pressYes: () {
-                          //             Navigator.pop(context);
-                          //           },
-                          //         ),
-                          //       );
-                          //     }
-                          //   }
-                          // }
-                        },
-
-                        child: Center(
-                          child: Container(
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: kButtonColor,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-
-                            height: size.height * 0.06,
-                            child: Center(
-                              child: Text(
-                                "ยืนยัน",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
+                      Text(
+                        "ติดต่อแอดมิน",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                       SizedBox(height: size.height * 0.01),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color:Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        
-                          height: size.height * 0.06,
-                          child: Center(
-                            child: Text(
-                              "ย้อนกลับ",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: kButtonColor,
-                              ),
-                            ),
-                          ),
+                      Text(
+                        "090-000-0000",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: kButtonColor,
                         ),
                       ),
+                            SizedBox(height: 10),
+                      Text(
+                        "หรือ",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      SizedBox(height: size.height * 0.05),
+                         Column(
+                           children: [
+                           
+                             Container(
+                              decoration: BoxDecoration(border: Border.all(color: Colors.green,)),
+                               child: Column(
+                                 children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset("assets/icons/LINE_Brand_icon 2 1.png",scale: 20,),
+                                        Text("  Line Official Account",style:TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                      ],
+                                    ),
+                                  ),
+                                   Padding(
+                                     padding: const EdgeInsets.all(8.0),
+                                     child: Center(
+                                       child: SizedBox(
+                                                         height: size.height * 0.3,
+                                                         child: Image.asset("assets/images/LHVGYY_qrcode.png"),
+                                                       ),
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                             ),
+                           ],
+                         ),
                     ],
                   ),
                 ),
