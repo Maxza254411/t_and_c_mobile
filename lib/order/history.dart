@@ -168,6 +168,7 @@ class _HistoryState extends State<History> {
                           height: size.height * 0.05,
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
+                              dropdownColor:Colors.white,
                               value: selectedDateFilter,
                               isExpanded: true,
                               items: const [

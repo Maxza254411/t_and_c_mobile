@@ -138,7 +138,7 @@ class _CompleatedState extends State<Compleated> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getpreferences();
       await getapi();
-     await calculateVat();
+      await calculateVat();
     });
   }
 
@@ -342,61 +342,56 @@ class _CompleatedState extends State<Compleated> {
                                           ),
                                         ),
                                         SizedBox(height: 10),
-                                     
-                                            GestureDetector(
-                                                onTap: () async {
-                                                  final out =
-                                                      await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              AddressPage(
-                                                                address:
-                                                                    addresslists,
-                                                              ),
-                                                        ),
-                                                      );
-                                                  if (out != null) {
-                                                    setState(() {
-                                                      address_id =
-                                                          out["addressid"];
-                                                      selectedAddress =
-                                                          out["full_th_address"];
-                                                      print(
-                                                        "address_id คือ ${address_id}",
-                                                      );
-                                                    });
-                                                  }
-                                                },
-                                                child: Container(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                      color: kButtonColor,
-                                                      width: 2,
+
+                                        GestureDetector(
+                                          onTap: () async {
+                                            final out = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddressPage(
+                                                      address: addresslists,
                                                     ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          8,
-                                                        ),
-                                                  ),
-                                                  child: selectedAddress == null
-                                                      ? Text(
-                                                          addresslists[0]
-                                                                  .full_th_address ??
-                                                              "",
-                                                          style: TextStyle(
-                                                            fontSize: 16,
-                                                          ),
-                                                        )
-                                                      : Text(
-                                                          "$selectedAddress",
-                                                          style: TextStyle(
-                                                            fontSize: 16,
-                                                          ),
-                                                        ),
-                                                ),
                                               ),
+                                            );
+                                            if (out != null) {
+                                              setState(() {
+                                                address_id = out["addressid"];
+                                                selectedAddress =
+                                                    out["full_th_address"];
+                                                print(
+                                                  "address_id คือ ${address_id}",
+                                                );
+                                              });
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(8.0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: kButtonColor,
+                                                width: 2,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: selectedAddress == null
+                                                ? Text(
+                                                    addresslists[0]
+                                                            .full_th_address ??
+                                                        "",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    "$selectedAddress",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                          ),
+                                        ),
                                         SizedBox(height: 10),
                                       ],
                                     ),
@@ -670,7 +665,7 @@ class _CompleatedState extends State<Compleated> {
                     ),
                     child: Column(
                       children: [
-                      ContainerHeader(size: size, text: 'วิธีการชำระเงิน'),
+                        ContainerHeader(size: size, text: 'วิธีการชำระเงิน'),
                         Column(
                           children: List.generate(
                             pay.length,
@@ -769,7 +764,8 @@ class _CompleatedState extends State<Compleated> {
                                   ],
                                 ),
                               )
-                            : Padding(
+                            : selectedPay == "cash"
+                            ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -839,73 +835,93 @@ class _CompleatedState extends State<Compleated> {
                                     ),
                                   ],
                                 ),
-                              ),
+                              )
+                            : selectedPay == "credit"
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    // 🏦 ชื่อธนาคาร
+                                    ContainerHeader(
+                                      size: size,
+                                      text: 'จ่ายผ่านเครดิต',
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("เครดิตปัจจุบันมีอยู่ 0/5,000",style: TextStyle(fontSize: 16,fontWeight:FontWeight.bold,color: kButtonColor),),
+                                    )
+                                  ],
+                                ),
+                              )
+                            : SizedBox.shrink(),
                         SizedBox(height: 10),
                       ],
                     ),
                   ),
                 ),
-
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    // เพิ่มความสูงหน่อยเพื่อให้มีที่วาง Tab
-                    width: size.width * 1,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      children: [
-                        _image != null
-                            ? Padding(
+                selectedPay == "credit"
+                    ? SizedBox.shrink()
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          // เพิ่มความสูงหน่อยเพื่อให้มีที่วาง Tab
+                          width: size.width * 1,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            children: [
+                              _image != null
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.file(
+                                          _image!,
+                                          height: 150,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.asset(
+                                          "assets/images/NoImage.jpg",
+                                          height: 150,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                              Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.file(
-                                    _image!,
-                                    height: 150,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.asset(
-                                    "assets/images/NoImage.jpg",
-                                    height: 150,
-                                    fit: BoxFit.cover,
+                                child: SizedBox(
+                                  width: size.width * 0.4,
+                                  child: ElevatedButton.icon(
+                                    onPressed: _pickImage,
+                                    icon: const Icon(Icons.upload_file),
+                                    label: const Text("อัพโหลดสลิป"),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: size.width * 0.4,
-                            child: ElevatedButton.icon(
-                              onPressed: _pickImage,
-                              icon: const Icon(Icons.upload_file),
-                              label: const Text("อัพโหลดสลิป"),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 12,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ],
             ),
           ),
@@ -990,7 +1006,7 @@ class _CompleatedState extends State<Compleated> {
                     GestureDetector(
                       onTap: () async {
                         if (addresslists.isEmpty) {
-                           await showDialog(
+                          await showDialog(
                             barrierDismissible: false,
                             context: context,
                             builder: (context) => AlertDialogYes(
@@ -1002,107 +1018,198 @@ class _CompleatedState extends State<Compleated> {
                             ),
                           );
                         } else {
-                          
-                        if (_image == null) {
-                          await showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (context) => AlertDialogYes(
-                              title: 'แจ้งเตือน',
-                              description: 'กรุณาอัพโหลดสลิป',
-                              pressYes: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          );
-                        } else {
-                          final out = await showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (context) => AlertDialogYesNo(
-                              title: 'แจ้งเตือน',
-                              description:
-                                  'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
-                            ),
-                          );
+                          if (selectedPay == "credit") {
+                             final out = await showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (context) => AlertDialogYesNo(
+                                title: 'แจ้งเตือน',
+                                description:
+                                    'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
+                              ),
+                            );
 
-                          if (out == true) {
-                            try {
-                              List<Product> productModel = [];
-                              for (
-                                var i = 0;
-                                i < widget.selectedItems.length;
-                                i++
-                              ) {
-                                final item = widget.selectedItems[i];
+                            if (out == true) {
+                              try {
+                                List<Product> productModel = [];
+                                for (
+                                  var i = 0;
+                                  i < widget.selectedItems.length;
+                                  i++
+                                ) {
+                                  final item = widget.selectedItems[i];
 
-                                productModel.add(
-                                  Product(
-                                    item.product_id ?? "",
-                                    item.warehouse_skus[0].product_sku_id
-                                        .toString(), // product_sku_id
-                                    item.price, // item.price, // price
-                                    item.warehouse_skus[0].warehouse_id
-                                        .toString(), // warehouse_id (สมมติใส่ค่า default)
-                                    item.quantity.toString(), // qty
-                                  ),
+                                  productModel.add(
+                                    Product(
+                                      item.product_id ?? "",
+                                      item.warehouse_skus[0].product_sku_id
+                                          .toString(), // product_sku_id
+                                      item.price, // item.price, // price
+                                      item.warehouse_skus[0].warehouse_id
+                                          .toString(), // warehouse_id (สมมติใส่ค่า default)
+                                      item.quantity.toString(), // qty
+                                    ),
+                                  );
+                                }
+                                await ProductApi.createOrder(
+                                  distributor_id: distributor_id.toString(),
+                                  qo_date: formatDate(DateTime.now()),
+                                  total_qty: totalQuantity.toString(),
+                                  total_cost_ex_vat: priceBeforeVat.toString(),
+                                  total_vat_amount: widget.totalPrice
+                                      .toString(),
+                                  grand_total: widget.totalPrice.toString(),
+                                  products: productModel,
+                                  address_id: address_id.toString(),
+                                  slip_image: _image!,
+                                  payment_method: '$selectedPay',
+                                  total_cost_inc_vat: widget.totalPrice
+                                      .toString(),
                                 );
-                              }
-                              await ProductApi.createOrder(
-                                distributor_id: distributor_id.toString(),
-                                qo_date: formatDate(DateTime.now()),
-                                total_qty: totalQuantity.toString(),
-                                total_cost_ex_vat: priceBeforeVat.toString(),
-                                total_vat_amount: widget.totalPrice.toString(),
-                                grand_total: widget.totalPrice.toString(),
-                                products: productModel,
-                                address_id: address_id.toString(),
-                                slip_image: _image!,
-                                payment_method: '$selectedPay',
-                                total_cost_inc_vat: widget.totalPrice.toString(),
-                              );
 
-                              final cart = Provider.of<CartProvider>(
-                                context,
-                                listen: false,
-                              );
-
-                              // ลบเฉพาะสินค้าที่เลือก
-                              cart.removeSelected(widget.selectedItems);
-
-                              final out = await showDialog(
-                                barrierDismissible: true,
-                                context: context,
-                                builder: (context) => SucesDialog(
-                                  title: 'แจ้งเตือน',
-                                  description: 'ชำระเงินสำเร็จ',
-                                ),
-                              );
-
-                              if (out == true) {
-                                Navigator.pushAndRemoveUntil(
+                                final cart = Provider.of<CartProvider>(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => FirstPage(),
+                                  listen: false,
+                                );
+
+                                // ลบเฉพาะสินค้าที่เลือก
+                                cart.removeSelected(widget.selectedItems);
+
+                                final out = await showDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (context) => SucesDialog(
+                                    title: 'แจ้งเตือน',
+                                    description: 'ชำระเงินสำเร็จ',
                                   ),
-                                  (route) => false,
+                                );
+
+                                if (out == true) {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FirstPage(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                }
+                              } on Exception catch (e) {
+                                if (!mounted) return;
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialogYes(
+                                    title: 'แจ้งเตือน',
+                                    description: '$e',
+                                    pressYes: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
                                 );
                               }
-                            } on Exception catch (e) {
-                              if (!mounted) return;
-                              await showDialog(
-                                context: context,
-                                builder: (context) => AlertDialogYes(
-                                  title: 'แจ้งเตือน',
-                                  description: '$e',
-                                  pressYes: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              );
+                            } 
+                          }
+                          if (_image == null) {
+                            await showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (context) => AlertDialogYes(
+                                title: 'แจ้งเตือน',
+                                description: 'กรุณาอัพโหลดสลิป',
+                                pressYes: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            );
+                          } else {
+                            final out = await showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (context) => AlertDialogYesNo(
+                                title: 'แจ้งเตือน',
+                                description:
+                                    'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
+                              ),
+                            );
+
+                            if (out == true) {
+                              try {
+                                List<Product> productModel = [];
+                                for (
+                                  var i = 0;
+                                  i < widget.selectedItems.length;
+                                  i++
+                                ) {
+                                  final item = widget.selectedItems[i];
+
+                                  productModel.add(
+                                    Product(
+                                      item.product_id ?? "",
+                                      item.warehouse_skus[0].product_sku_id
+                                          .toString(), // product_sku_id
+                                      item.price, // item.price, // price
+                                      item.warehouse_skus[0].warehouse_id
+                                          .toString(), // warehouse_id (สมมติใส่ค่า default)
+                                      item.quantity.toString(), // qty
+                                    ),
+                                  );
+                                }
+                                await ProductApi.createOrder(
+                                  distributor_id: distributor_id.toString(),
+                                  qo_date: formatDate(DateTime.now()),
+                                  total_qty: totalQuantity.toString(),
+                                  total_cost_ex_vat: priceBeforeVat.toString(),
+                                  total_vat_amount: widget.totalPrice
+                                      .toString(),
+                                  grand_total: widget.totalPrice.toString(),
+                                  products: productModel,
+                                  address_id: address_id.toString(),
+                                  slip_image: _image!,
+                                  payment_method: '$selectedPay',
+                                  total_cost_inc_vat: widget.totalPrice
+                                      .toString(),
+                                );
+
+                                final cart = Provider.of<CartProvider>(
+                                  context,
+                                  listen: false,
+                                );
+
+                                // ลบเฉพาะสินค้าที่เลือก
+                                cart.removeSelected(widget.selectedItems);
+
+                                final out = await showDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (context) => SucesDialog(
+                                    title: 'แจ้งเตือน',
+                                    description: 'ชำระเงินสำเร็จ',
+                                  ),
+                                );
+
+                                if (out == true) {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FirstPage(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                }
+                              } on Exception catch (e) {
+                                if (!mounted) return;
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialogYes(
+                                    title: 'แจ้งเตือน',
+                                    description: '$e',
+                                    pressYes: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                );
+                              }
                             }
                           }
-                        }
                         }
                       },
                       child: Container(
