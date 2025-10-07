@@ -8,7 +8,7 @@ part of 'distributors.dart';
 
 Distributors _$DistributorsFromJson(Map<String, dynamic> json) => Distributors(
   (json['id'] as num).toInt(),
-  json['user_id'] as String?,
+  (json['user_id'] as num?)?.toInt(),
   json['company_code'] as String?,
   json['company_name'] as String?,
   (json['customer_type_id'] as num?)?.toInt(),

@@ -4,21 +4,16 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/category/brandPage.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/model/brands.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
-import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/nontification.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
-import 'package:t_and_c_mobile/order/detailPro.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
-import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
-import 'package:t_and_c_mobile/category/catagory.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
-import 'package:t_and_c_mobile/widget/field.dart';
-import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   String? namePro;
   String? first_name;
   String? last_name;
-  String?email;
+  String? email;
   int? userId;
   List<ProductTyp?> uniqueProducts = [];
   List<Brands> allbands = []; //เก็บข้อมูลเเบร์นทั้งหมด
@@ -84,10 +79,10 @@ class _HomePageState extends State<HomePage> {
     first_name = prefs.getString('first_name');
     last_name = prefs.getString('last_name');
     userId = prefs.getInt('userId');
-      email  = prefs.getString('email');
+    email = prefs.getString('email');
   }
 
- void filterProducts(String keyword) {
+  void filterProducts(String keyword) {
     if (keyword.isEmpty) {
       filteredBand = List.from(allbands);
     } else {
@@ -98,7 +93,6 @@ class _HomePageState extends State<HomePage> {
     }
     setState(() {});
   }
-
 
   @override
   void initState() {
@@ -123,50 +117,72 @@ class _HomePageState extends State<HomePage> {
           key: _scaffoldKey,
           drawer: Drawer(
             backgroundColor: Colors.white,
-           child: ListView(
-           padding: EdgeInsets.zero,
-           children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: kButtonColor),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    backgroundColor: kbgf,
-                    radius: 30,
-                    backgroundImage: AssetImage("assets/icons/Vector.png"),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                DrawerHeader(
+                  decoration: BoxDecoration(color: kButtonColor),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: kbgf,
+                        radius: 30,
+                        backgroundImage: AssetImage("assets/icons/Vector.png"),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "${first_name ?? ""} ${last_name ?? ""}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text("${email}", style: TextStyle(color: Colors.white70)),
+                    ],
                   ),
-                  SizedBox(height: 8),
-                  Text("${first_name ?? ""} ${last_name ?? ""}",
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                  Text("${email}", style: TextStyle(color: Colors.white70)),
-                ],
-              ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.currency_exchange),
+                  title: Text('เครดิต 0.00/5,000.0'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => FirstPage(profile: 3)),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text('หน้าแรก'),
+                  onTap: () => Navigator.pop(context),
+                ),
+                ListTile(
+                  leading: Image.asset("assets/icons/BuyBack.png", scale: 20),
+                  title: Text('ตะกร้า'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => Bucket()),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.notifications),
+                  title: Text('การแจ้งเตือน'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => Nontification()),
+                    );
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('หน้าแรก'),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: Image.asset("assets/icons/BuyBack.png",scale: 20,),
-              title: Text('ตะกร้า'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (_) => Bucket()));
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.notifications),
-              title: Text('การแจ้งเตือน'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (_) => Nontification()));
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
           appBar: AppBar(
             backgroundColor: kButtonColor,
             actions: [
@@ -226,7 +242,7 @@ class _HomePageState extends State<HomePage> {
             ],
             leading: GestureDetector(
               onTap: () {
-                     _scaffoldKey.currentState?.openDrawer();
+                _scaffoldKey.currentState?.openDrawer();
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -324,12 +340,11 @@ class _HomePageState extends State<HomePage> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: const Color.fromARGB(255, 241, 241, 241),
-                    border: Border.all(color: kButtonColor)
+                    border: Border.all(color: kButtonColor),
                   ),
                   width: double.infinity,
                   height: size.height * 0.05,
                   child: TextFormField(
-                    
                     controller: search,
                     style: TextStyle(fontSize: 22),
                     decoration: InputDecoration(
@@ -351,78 +366,76 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               filteredBand.isEmpty
-              ? Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: size.height*0.1,),
-                  CircularProgressIndicator(
-                    color: kButtonColor,
-                  ),
-                ],
-              )
-             : Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GridView.builder(
-                    shrinkWrap: true,
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: size.height * 0.1),
+                        CircularProgressIndicator(color: kButtonColor),
+                      ],
+                    )
+                  : Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GridView.builder(
+                          shrinkWrap: true,
 
-                    itemCount: filteredBand.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 0.8,
-                    ),
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BrandPage(
-                                title: filteredBand[index].name ?? "",
-                                brandId: filteredBand[index].id,
+                          itemCount: filteredBand.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.8,
                               ),
-                            ),
-                          );
-                        },
-                        child: Column(
-                          children: [
-                            // รูปสี่เหลี่ยมโค้งมน
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: 
-                              filteredBand[index].image_url==null
-                             ? Image.asset(
-                                "assets/images/NoImage.jpg",
-                                // ถ้าเป็นรูปจาก API ใช้ NetworkImage
-                                // Image.network(brands[index].image ?? "url สำรอง"),
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              )
-                             : Image.network(
-                                "${filteredBand[index].image_url}",
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BrandPage(
+                                      title: filteredBand[index].name ?? "",
+                                      brandId: filteredBand[index].id,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  // รูปสี่เหลี่ยมโค้งมน
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: filteredBand[index].image_url == null
+                                        ? Image.asset(
+                                            "assets/images/NoImage.jpg",
+                                            // ถ้าเป็นรูปจาก API ใช้ NetworkImage
+                                            // Image.network(brands[index].image ?? "url สำรอง"),
+                                            width: 80,
+                                            height: 80,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.network(
+                                            "${filteredBand[index].image_url}",
+                                            width: 80,
+                                            height: 80,
+                                            fit: BoxFit.cover,
+                                          ),
+                                  ),
+                                  const SizedBox(height: 6),
 
-                            Text(
-                              filteredBand[index].name ?? "",
-                              style: TextStyle(fontSize: 12),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                                  Text(
+                                    filteredBand[index].name ?? "",
+                                    style: TextStyle(fontSize: 12),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                ),
-              ),
+                      ),
+                    ),
 
               //  Padding(
               //    padding: const EdgeInsets.all(8.0),

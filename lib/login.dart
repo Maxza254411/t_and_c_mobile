@@ -201,14 +201,22 @@ class _LoginpageState extends State<Loginpage> {
                                     "first_name",
                                     _login["user"]["first_name"],
                                   );
+                                   if (_login["user"]["last_name"]!=null) {     
                                   await prefs.setString(
                                     "last_name",
                                     _login["user"]["last_name"],
                                   );
-                                  await prefs.setString(
+                                   }else{
+                                     print("last_nameเป็น null");
+                                   }
+                                   if (  _login["user"]["staff_code"]!=null) {
+                                     await prefs.setString(
                                     "staff_code",
                                     _login["user"]["staff_code"],
                                   );
+                                   } else {
+                                       print("staff_codeเป็น null");
+                                   }                               
                                   await prefs.setString(
                                     "email",
                                     _login["user"]["email"],
@@ -226,6 +234,7 @@ class _LoginpageState extends State<Loginpage> {
                                   }else{
                                     print("เบอร์โทรเป็น null");
                                   }
+                                 
                                 }
 
                                 LoadingDialog.close(context);

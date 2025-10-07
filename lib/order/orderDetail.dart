@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:screenshot/screenshot.dart';
-import 'package:t_and_c_mobile/addressPage.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/order.dart';
-import 'package:t_and_c_mobile/model/shoping.dart';
-import 'package:t_and_c_mobile/service/productController.dart';
-import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
 
 class Orderdetail extends StatefulWidget {
   Orderdetail({super.key, required this.orderData});

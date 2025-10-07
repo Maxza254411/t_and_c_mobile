@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/constang.dart';
-import 'package:t_and_c_mobile/fristPage.dart';
+
 import 'package:t_and_c_mobile/login.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 
@@ -24,7 +24,7 @@ class _ProfileState extends State<Profile> {
     first_name = prefs.getString('first_name');
     last_name = prefs.getString('last_name');
     staff_code = prefs.getString('staff_code');
-      email  = prefs.getString('email');
+    email = prefs.getString('email');
     setState(() {});
   }
 
@@ -115,7 +115,7 @@ class _ProfileState extends State<Profile> {
                         SizedBox(height: 8),
 
                         Text(
-                          "${first_name} ${last_name}",
+                          "${first_name} ${last_name ?? ""}",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -128,21 +128,23 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             ),
+             BoxProfile(size: size, title: 'เครดิตคงเหลือของคุณ', description: '0.00/5,000.0'),
+
             BoxProfile(
               size: size,
               title: 'ชื่อผู้ใช้',
-              description: "${first_name} ${last_name}",
+              description: "${first_name} ${last_name ?? ""}",
             ),
-            BoxProfile(
-              size: size,
-              title: 'Staff Code',
-              description: '${staff_code}',
-            ),
-            BoxProfile(
-              size: size,
-              title: 'email',
-              description: '${email}',
-            ),
+
+            staff_code == null
+                ? SizedBox.shrink()
+                : BoxProfile(
+                    size: size,
+                    title: 'Staff Code',
+                    description: '${staff_code}',
+                  ),
+            BoxProfile(size: size, title: 'email', description: '${email}'),
+             
             // BoxProfile(
             //   size: size,
             //   title: 'เบอร์มือถือ',
@@ -154,7 +156,6 @@ class _ProfileState extends State<Profile> {
             //   description: 'เงินสด',
             //   status: true,
             // ),
-
             GestureDetector(
               onTap: () async {
                 final out = await showDialog(
@@ -193,8 +194,12 @@ class _ProfileState extends State<Profile> {
 
                       // ✅ ลบข้อมูลทั้งหมด
                       await prefs.clear();
-                    
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Loginpage()), (route) => false);
+
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => Loginpage()),
+                        (route) => false,
+                      );
                     }
                   },
 

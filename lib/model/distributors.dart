@@ -5,7 +5,7 @@ part 'distributors.g.dart';
 @JsonSerializable()
 class Distributors {
  int id;
- String? user_id;
+ int? user_id;
  String? company_code;
  String? company_name;
  int? customer_type_id;

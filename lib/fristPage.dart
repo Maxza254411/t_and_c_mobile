@@ -8,14 +8,28 @@ import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/profile.dart';
 
 class FirstPage extends StatefulWidget {
-  FirstPage({super.key});
+  FirstPage({super.key, this.profile});
 
   @override
   State<FirstPage> createState() => _FirstPageState();
+  int? profile;
 }
 
 class _FirstPageState extends State<FirstPage> {
   int _currentIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (widget.profile == null) {
+        _currentIndex = 0;
+        setState(() {});
+      } else {
+        _currentIndex = widget.profile!;
+        setState(() {});
+      }
+    });
+  }
 
   // สร้างหน้าที่จะแสดงเมื่อกด bottom nav
   final List<Widget> _pages = [
@@ -52,56 +66,57 @@ class _FirstPageState extends State<FirstPage> {
             ),
             label: "Home",
           ),
-         BottomNavigationBarItem(
-  icon: Stack(
-    clipBehavior: Clip.none,
-    children: [
-      Image.asset(
-        _currentIndex == 1
-            ? "assets/icons/love.png"
-            : "assets/icons/lovef.png",
-        width: 24,
-        height: 24,
-      ),
-
-      // Badge (มุมขวาบน)
-      Consumer<FavoriteProvider>(
-        builder: (context, favProvider, child) {
-          if (favProvider.favorites.isEmpty) {
-            return SizedBox.shrink(); // ไม่มีสินค้า -> ไม่แสดงอะไร
-          }
-          return Positioned(
-            right: -6,
-            top: -6,
-            child: Container(
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-              constraints: BoxConstraints(
-                minWidth: 18,
-                minHeight: 18,
-              ),
-              child: Center(
-                child: Text(
-                  favProvider.favorites.length.toString(), // จำนวนสินค้า
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
+          BottomNavigationBarItem(
+            icon: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Image.asset(
+                  _currentIndex == 1
+                      ? "assets/icons/love.png"
+                      : "assets/icons/lovef.png",
+                  width: 24,
+                  height: 24,
                 ),
-              ),
+
+                // Badge (มุมขวาบน)
+                Consumer<FavoriteProvider>(
+                  builder: (context, favProvider, child) {
+                    if (favProvider.favorites.isEmpty) {
+                      return SizedBox.shrink(); // ไม่มีสินค้า -> ไม่แสดงอะไร
+                    }
+                    return Positioned(
+                      right: -6,
+                      top: -6,
+                      child: Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 18,
+                          minHeight: 18,
+                        ),
+                        child: Center(
+                          child: Text(
+                            favProvider.favorites.length
+                                .toString(), // จำนวนสินค้า
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-          );
-        },
-      ),
-    ],
-  ),
-  label: "Wishlist",
-),
+            label: "Wishlist",
+          ),
 
           BottomNavigationBarItem(
             icon: Image.asset(
