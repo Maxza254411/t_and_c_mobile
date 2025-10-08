@@ -252,10 +252,10 @@ class _HistoryState extends State<History> {
                                               BorderRadius.circular(12),
                                         ),
                                         height: size.height * 0.05,
-                                        child: const Center(
+                                        child: Center(
                                           child: Text(
-                                            "สถานะ",
-                                            style: TextStyle(
+                                          filteredOrders[index].status_name??"",
+                                            style:  TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16,
                                               color: Colors.white,

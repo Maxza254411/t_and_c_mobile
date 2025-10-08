@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +17,7 @@ import 'package:t_and_c_mobile/model/address.dart';
 import 'package:t_and_c_mobile/model/distributors.dart';
 import 'package:t_and_c_mobile/model/product.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
+import 'package:t_and_c_mobile/model/user.dart';
 import 'package:t_and_c_mobile/order/billpage.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
@@ -40,6 +41,7 @@ class Compleated extends StatefulWidget {
   double? totalPrice;
   String? image;
   bool slipe_status;
+
   @override
   State<Compleated> createState() => _CompleatedState();
 }
@@ -47,25 +49,20 @@ class Compleated extends StatefulWidget {
 class _CompleatedState extends State<Compleated> {
   final TextEditingController addes = TextEditingController();
   final TextEditingController talk = TextEditingController();
-  String? first_name;
-  String? last_name;
+  // String? first_name;
+  // String? last_name;
   File? _image;
   String? selectedAddress;
   int? distributor_id;
   int? address_id;
-  String? tel_no;
+  // String? tel_no;
   final _controller = ScreenshotController();
   String? company_name;
   List<Address> addresslists = [];
   double vatRate = 0.07;
   double priceBeforeVat = 0.00;
-
-  Future<void> getpreferences() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    first_name = prefs.getString('first_name');
-    last_name = prefs.getString('last_name');
-    tel_no = prefs.getString('tel_no');
-  }
+  User? custommer;
+  bool _wantPrint = false;
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -83,7 +80,23 @@ class _CompleatedState extends State<Compleated> {
   Future<void> getapi() async {
     try {
       LoadingDialog.open(context);
-      await context.read<ProductController>().getlistdistributors();
+      custommer = await ProductApi.getUser();
+      if (custommer?.customer == null) {
+        await context.read<ProductController>().getlistdistributors();
+        print("custommer เป็น null");
+      } else {
+        addresslists = await ProductApi.getAddressbyid(
+          distributor_id: custommer!.customer!.id,          
+        );
+        distributor_id= custommer!.customer!.id;
+        address_id=addresslists[0].id;
+
+      }
+      setState(() {
+
+      });
+      // custommer = await ProductApi.getUser();
+     
       LoadingDialog.close(context);
     } on Exception catch (e) {
       LoadingDialog.close(context);
@@ -136,7 +149,6 @@ class _CompleatedState extends State<Compleated> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getpreferences();
       await getapi();
       await calculateVat();
     });
@@ -195,104 +207,115 @@ class _CompleatedState extends State<Compleated> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "เลือกลูกค้า",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                              custommer?.customer == null
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "เลือกลูกค้า",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
 
-                                  SizedBox(height: 10),
-                                  ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      maxWidth: size.width * 0.78,
-                                    ), // กำหนดความกว้าง
-                                    child: DropdownButtonFormField<Distributors>(
-                                      isExpanded: true,
-                                      dropdownColor: Colors.white,
-                                      decoration: InputDecoration(
-                                        labelText: "เลือลูกค้า",
-                                        labelStyle: TextStyle(color: kbgM),
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 8,
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: kButtonColor,
-                                          ),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: kButtonColor,
-                                          ),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: kButtonColor,
-                                            width: 2,
-                                          ),
-                                        ),
-                                      ),
-                                      items: distributors.map((distributor) {
-                                        return DropdownMenuItem<Distributors>(
-                                          value: distributor,
-                                          child: Text(
-                                            distributor.company_name ??
-                                                "", // ✅ ใช้ distributor
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: const TextStyle(
-                                              fontSize: 14,
+                                        SizedBox(height: 10),
+                                        ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth: size.width * 0.78,
+                                          ), // กำหนดความกว้าง
+                                          child: DropdownButtonFormField<Distributors>(
+                                            isExpanded: true,
+                                            dropdownColor: Colors.white,
+                                            decoration: InputDecoration(
+                                              labelText: "เลือลูกค้า",
+                                              labelStyle: TextStyle(
+                                                color: kbgM,
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white,
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 8,
+                                                  ),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  color: kButtonColor,
+                                                ),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  color: kButtonColor,
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  color: kButtonColor,
+                                                  width: 2,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      }).toList(),
-                                      onChanged: (value) async {
-                                        if (value != null) {
-                                          print("ID: ${value.id}");
-                                          print(
-                                            "Company Name: ${value.company_name}",
-                                          );
-                                          distributor_id = value.id;
-                                          company_name =
-                                              value.company_name ?? "";
-                                          final addresslist =
-                                              await ProductApi.getAddressbyid(
-                                                distributor_id: distributor_id!,
+                                            items: distributors.map((
+                                              distributor,
+                                            ) {
+                                              return DropdownMenuItem<
+                                                Distributors
+                                              >(
+                                                value: distributor,
+                                                child: Text(
+                                                  distributor.company_name ??
+                                                      "", // ✅ ใช้ distributor
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
                                               );
-                                          addresslists = addresslist;
-                                          if (addresslists.isNotEmpty) {
-                                            address_id = addresslists[0].id;
-                                            print(
-                                              "address_id คือ ${address_id}",
-                                            );
-                                          }
+                                            }).toList(),
+                                            onChanged: (value) async {
+                                              if (value != null) {
+                                                print("ID: ${value.id}");
+                                                print(
+                                                  "Company Name: ${value.company_name}",
+                                                );
+                                                distributor_id = value.id;
+                                                company_name =
+                                                    value.company_name ?? "";
+                                                final addresslist =
+                                                    await ProductApi.getAddressbyid(
+                                                      distributor_id:
+                                                          distributor_id!,
+                                                    );
+                                                addresslists = addresslist;
+                                                if (addresslists.isNotEmpty) {
+                                                  address_id =
+                                                      addresslists[0].id;
+                                                  print(
+                                                    "address_id คือ ${address_id}",
+                                                  );
+                                                }
 
-                                          setState(() {});
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                ],
-                              ),
+                                                setState(() {});
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                      ],
+                                    )
+                                  : SizedBox.shrink(),
                               addresslists.isEmpty
                                   ? Column(
                                       crossAxisAlignment:
@@ -459,7 +482,7 @@ class _CompleatedState extends State<Compleated> {
 
                               title: Text("ชื่อผู้รับสินค้า"),
                               subtitle: Text(
-                                "${first_name ?? ""} ${last_name ?? ""}",
+                                "${custommer?.first_name ?? ""} ${custommer?.last_name ?? ""}",
                                 style: TextStyle(color: kButtonColor),
                               ),
                             ),
@@ -471,7 +494,7 @@ class _CompleatedState extends State<Compleated> {
                               ),
                               title: Text("เบอร์โทรผู้รับสินค้า"),
                               subtitle: Text(
-                                tel_no ?? "-",
+                                custommer?.tel_no ?? "-",
                                 style: TextStyle(color: kButtonColor),
                               ),
                             ),
@@ -849,8 +872,15 @@ class _CompleatedState extends State<Compleated> {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text("เครดิตปัจจุบันมีอยู่ 0/5,000",style: TextStyle(fontSize: 16,fontWeight:FontWeight.bold,color: kButtonColor),),
-                                    )
+                                      child: Text(
+                                        "เครดิตปัจจุบันมีอยู่  ${formatNumber(custommer?.customer?.current_credit_used ?? "0")}/${formatNumber(custommer?.customer?.credit_limit ?? "0")}",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: kButtonColor,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               )
@@ -942,6 +972,33 @@ class _CompleatedState extends State<Compleated> {
                   children: [
                     // --- แถวราคารวม ---
                     Row(
+                      children: [
+                        // เช็คบ็อกซ์แบบปกติ
+                        Checkbox(
+                          checkColor: Colors.white, // ✅ สีของเครื่องหมายถูก (✓)
+                          activeColor: kButtonColor,
+                          value: _wantPrint,
+                          onChanged: (bool? newValue) {
+                            setState(() {
+                              _wantPrint = newValue ?? false;
+                            });
+                          },
+                        ),
+
+                        // ข้อความข้างๆ
+                        GestureDetector(
+                          onTap: () {
+                            // แตะที่ข้อความก็ toggle ได้ด้วย
+                            setState(() {
+                              _wantPrint = !_wantPrint;
+                            });
+                          },
+                          child: const Text("ต้องการเอกสาร"),
+                        ),
+                      ],
+                    ),
+                    Divider(),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -1019,7 +1076,7 @@ class _CompleatedState extends State<Compleated> {
                           );
                         } else {
                           if (selectedPay == "credit") {
-                             final out = await showDialog(
+                            final out = await showDialog(
                               barrierDismissible: false,
                               context: context,
                               builder: (context) => AlertDialogYesNo(
@@ -1052,7 +1109,9 @@ class _CompleatedState extends State<Compleated> {
                                   );
                                 }
                                 await ProductApi.createOrder(
-                                  distributor_id: distributor_id.toString(),
+                                  distributor_id: custommer!.customer == null
+                                      ? distributor_id.toString()
+                                      : custommer!.customer!.id.toString(),
                                   qo_date: formatDate(DateTime.now()),
                                   total_qty: totalQuantity.toString(),
                                   total_cost_ex_vat: priceBeforeVat.toString(),
@@ -1061,10 +1120,11 @@ class _CompleatedState extends State<Compleated> {
                                   grand_total: widget.totalPrice.toString(),
                                   products: productModel,
                                   address_id: address_id.toString(),
-                                  slip_image: _image!,
+                                  slip_image: _image,
                                   payment_method: '$selectedPay',
                                   total_cost_inc_vat: widget.totalPrice
                                       .toString(),
+                                  is_print: '$_wantPrint',
                                 );
 
                                 final cart = Provider.of<CartProvider>(
@@ -1106,107 +1166,112 @@ class _CompleatedState extends State<Compleated> {
                                   ),
                                 );
                               }
-                            } 
-                          }
-                          if (_image == null) {
-                            await showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (context) => AlertDialogYes(
-                                title: 'แจ้งเตือน',
-                                description: 'กรุณาอัพโหลดสลิป',
-                                pressYes: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            );
+                            }
                           } else {
-                            final out = await showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (context) => AlertDialogYesNo(
-                                title: 'แจ้งเตือน',
-                                description:
-                                    'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
-                              ),
-                            );
+                            if (_image == null) {
+                              await showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (context) => AlertDialogYes(
+                                  title: 'แจ้งเตือน',
+                                  description: 'กรุณาอัพโหลดสลิป',
+                                  pressYes: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              );
+                            } else {
+                              final out = await showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (context) => AlertDialogYesNo(
+                                  title: 'แจ้งเตือน',
+                                  description:
+                                      'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
+                                ),
+                              );
 
-                            if (out == true) {
-                              try {
-                                List<Product> productModel = [];
-                                for (
-                                  var i = 0;
-                                  i < widget.selectedItems.length;
-                                  i++
-                                ) {
-                                  final item = widget.selectedItems[i];
+                              if (out == true) {
+                                try {
+                                  List<Product> productModel = [];
+                                  for (
+                                    var i = 0;
+                                    i < widget.selectedItems.length;
+                                    i++
+                                  ) {
+                                    final item = widget.selectedItems[i];
 
-                                  productModel.add(
-                                    Product(
-                                      item.product_id ?? "",
-                                      item.warehouse_skus[0].product_sku_id
-                                          .toString(), // product_sku_id
-                                      item.price, // item.price, // price
-                                      item.warehouse_skus[0].warehouse_id
-                                          .toString(), // warehouse_id (สมมติใส่ค่า default)
-                                      item.quantity.toString(), // qty
-                                    ),
+                                    productModel.add(
+                                      Product(
+                                        item.product_id ?? "",
+                                        item.warehouse_skus[0].product_sku_id
+                                            .toString(), // product_sku_id
+                                        item.price, // item.price, // price
+                                        item.warehouse_skus[0].warehouse_id
+                                            .toString(), // warehouse_id (สมมติใส่ค่า default)
+                                        item.quantity.toString(), // qty
+                                      ),
+                                    );
+                                  }
+                                  await ProductApi.createOrder(
+                                    distributor_id: custommer!.customer == null
+                                        ? distributor_id.toString()
+                                        : custommer!.customer!.id.toString(),
+                                    qo_date: formatDate(DateTime.now()),
+                                    total_qty: totalQuantity.toString(),
+                                    total_cost_ex_vat: priceBeforeVat
+                                        .toString(),
+                                    total_vat_amount: widget.totalPrice
+                                        .toString(),
+                                    grand_total: widget.totalPrice.toString(),
+                                    products: productModel,
+                                    address_id: address_id.toString(),
+                                    slip_image: _image,
+                                    payment_method: '$selectedPay',
+                                    total_cost_inc_vat: widget.totalPrice
+                                        .toString(),
+                                    is_print: '$_wantPrint',
                                   );
-                                }
-                                await ProductApi.createOrder(
-                                  distributor_id: distributor_id.toString(),
-                                  qo_date: formatDate(DateTime.now()),
-                                  total_qty: totalQuantity.toString(),
-                                  total_cost_ex_vat: priceBeforeVat.toString(),
-                                  total_vat_amount: widget.totalPrice
-                                      .toString(),
-                                  grand_total: widget.totalPrice.toString(),
-                                  products: productModel,
-                                  address_id: address_id.toString(),
-                                  slip_image: _image!,
-                                  payment_method: '$selectedPay',
-                                  total_cost_inc_vat: widget.totalPrice
-                                      .toString(),
-                                );
 
-                                final cart = Provider.of<CartProvider>(
-                                  context,
-                                  listen: false,
-                                );
-
-                                // ลบเฉพาะสินค้าที่เลือก
-                                cart.removeSelected(widget.selectedItems);
-
-                                final out = await showDialog(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (context) => SucesDialog(
-                                    title: 'แจ้งเตือน',
-                                    description: 'ชำระเงินสำเร็จ',
-                                  ),
-                                );
-
-                                if (out == true) {
-                                  Navigator.pushAndRemoveUntil(
+                                  final cart = Provider.of<CartProvider>(
                                     context,
-                                    MaterialPageRoute(
-                                      builder: (context) => FirstPage(),
+                                    listen: false,
+                                  );
+
+                                  // ลบเฉพาะสินค้าที่เลือก
+                                  cart.removeSelected(widget.selectedItems);
+
+                                  final out = await showDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (context) => SucesDialog(
+                                      title: 'แจ้งเตือน',
+                                      description: 'ชำระเงินสำเร็จ',
                                     ),
-                                    (route) => false,
+                                  );
+
+                                  if (out == true) {
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FirstPage(),
+                                      ),
+                                      (route) => false,
+                                    );
+                                  }
+                                } on Exception catch (e) {
+                                  if (!mounted) return;
+                                  await showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialogYes(
+                                      title: 'แจ้งเตือน',
+                                      description: '$e',
+                                      pressYes: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
                                   );
                                 }
-                              } on Exception catch (e) {
-                                if (!mounted) return;
-                                await showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialogYes(
-                                    title: 'แจ้งเตือน',
-                                    description: '$e',
-                                    pressYes: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                );
                               }
                             }
                           }

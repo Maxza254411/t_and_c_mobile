@@ -4,7 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/constang.dart';
 
 import 'package:t_and_c_mobile/login.dart';
+import 'package:t_and_c_mobile/model/user.dart';
+import 'package:t_and_c_mobile/order/pendingPayments.dart';
+import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
+import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
 class Profile extends StatefulWidget {
   Profile({super.key});
@@ -14,25 +18,38 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String? first_name;
-  String? last_name;
-  String? staff_code;
+  User? custommer;
   String? email;
 
-  Future<void> getpreferences() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    first_name = prefs.getString('first_name');
-    last_name = prefs.getString('last_name');
-    staff_code = prefs.getString('staff_code');
-    email = prefs.getString('email');
-    setState(() {});
+  Future<void> getapi() async {
+    try {
+      LoadingDialog.open(context);
+      custommer = await ProductApi.getUser();
+      setState(() {
+        
+      });
+      LoadingDialog.close(context);
+    } on Exception catch (e) {
+      LoadingDialog.close(context);
+      if (!mounted) return;
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialogYes(
+          title: 'แจ้งเตือน',
+          description: '$e',
+          pressYes: () {
+            Navigator.pop(context);
+          },
+        ),
+      );
+    }
   }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getpreferences();
+      await getapi();
     });
   }
 
@@ -115,7 +132,7 @@ class _ProfileState extends State<Profile> {
                         SizedBox(height: 8),
 
                         Text(
-                          "${first_name} ${last_name ?? ""}",
+                          "${custommer?.first_name ?? ""} ${custommer?.last_name ?? ""}",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -128,23 +145,39 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             ),
-             BoxProfile(size: size, title: 'เครดิตคงเหลือของคุณ', description: '0.00/5,000.0'),
-
+            custommer?.customer !=null
+           ? GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> PendingPayments()));
+            },
+             child: BoxProfile(
+                size: size,
+                title: 'เครดิตคงเหลือของคุณ',
+                description:
+                    '${formatNumber(custommer?.customer?.current_credit_used ?? "0")}/${formatNumber(custommer?.customer?.credit_limit ?? "0")}',
+              ),
+           )
+           :SizedBox.shrink(),
             BoxProfile(
               size: size,
               title: 'ชื่อผู้ใช้',
-              description: "${first_name} ${last_name ?? ""}",
+              description:
+                  "${custommer?.first_name ?? ""} ${custommer?.last_name ?? ""}",
             ),
 
-            staff_code == null
+            custommer?.staff_code == null
                 ? SizedBox.shrink()
                 : BoxProfile(
                     size: size,
                     title: 'Staff Code',
-                    description: '${staff_code}',
+                    description: '${custommer?.staff_code}',
                   ),
-            BoxProfile(size: size, title: 'email', description: '${email}'),
-             
+            BoxProfile(
+              size: size,
+              title: 'email',
+              description: "${custommer?.email}",
+            ),
+
             // BoxProfile(
             //   size: size,
             //   title: 'เบอร์มือถือ',

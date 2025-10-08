@@ -29,9 +29,6 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   String? idPro;
   String? namePro;
-  String? first_name;
-  String? last_name;
-  String? email;
   int? userId;
   List<ProductTyp?> uniqueProducts = [];
   List<Brands> allbands = []; //เก็บข้อมูลเเบร์นทั้งหมด
@@ -53,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> getapi() async {
     try {
       // LoadingDialog.open(context);
-     allbands = await ProductApi.listbrands();
+    allbands = await ProductApi.listbrands();
     custommer= await ProductApi.getUser();
      
       // LoadingDialog.close(context);
@@ -75,10 +72,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getpreferences() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    first_name = prefs.getString('first_name');
-    last_name = prefs.getString('last_name');
     userId = prefs.getInt('userId');
-    email = prefs.getString('email');
   }
 
   void filterProducts(String keyword) {
@@ -97,7 +91,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getpreferences();
+      // await getpreferences();
       await getapi();
       filteredBand = List.from(allbands);
     });
@@ -131,19 +125,20 @@ class _HomePageState extends State<HomePage> {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        "${first_name ?? ""} ${last_name ?? ""}",
+                        "${custommer?.first_name ?? ""} ${custommer?.last_name ?? ""}",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text("${email}", style: TextStyle(color: Colors.white70)),
+                      Text("${custommer?.email }", style: TextStyle(color: Colors.white70)),
                     ],
                   ),
                 ),
-                ListTile(
+                custommer?.customer!=null
+                ?ListTile(
                   leading: Icon(Icons.currency_exchange),
-                  title: Text('เครดิต 0.00/5,000.0'),
+                  title: Text('เครดิต ${formatNumber(custommer?.customer?.current_credit_used??"0")  }/${formatNumber(custommer?.customer?.credit_limit??"0") }'),
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(
@@ -151,7 +146,8 @@ class _HomePageState extends State<HomePage> {
                       MaterialPageRoute(builder: (_) => FirstPage(profile: 3)),
                     );
                   },
-                ),
+                )
+              :SizedBox.shrink(),
                 ListTile(
                   leading: Icon(Icons.home),
                   title: Text('หน้าแรก'),
@@ -249,7 +245,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             title: Text(
-              "${first_name ?? ""} ${last_name ?? ""}",
+              "${custommer?.first_name ?? ""} ${custommer?.last_name ?? ""}",
               style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
             ),
           ),

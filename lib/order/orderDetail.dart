@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/model/order.dart';
 import 'package:t_and_c_mobile/order/billpage.dart';
+import 'package:t_and_c_mobile/service/productApi.dart';
+import 'package:t_and_c_mobile/widget/dialog.dart';
 
 class Orderdetail extends StatefulWidget {
   Orderdetail({super.key, required this.orderData});
@@ -12,6 +18,20 @@ class Orderdetail extends StatefulWidget {
 }
 
 class _OrderdetailState extends State<Orderdetail> {
+    File? _image;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+    ); // หรือ camera
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
   @override
   void initState() {
     super.initState();
@@ -47,52 +67,55 @@ class _OrderdetailState extends State<Orderdetail> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white,
-                ),
-                child: Column(
+         Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+      color: Colors.white,
+    ),
+    child: Column(
+      children: [
+        ContainerHeader(size: size, text: 'ข้อมูลการจัดส่ง'),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ContainerHeader(size: size, text: 'ข้อมูลการจัดส่ง'),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Image.asset(
-                                    "assets/icons/Package.png",
-                                    scale: 20,
-                                  ),
-                                ),
-                                SizedBox(width: 10),
+                    // ✅ แทน Expanded ด้วย SizedBox เพื่อกำหนดขนาดตายตัว
+                    SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: Image.asset(
+                        "assets/icons/Package.png",
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
 
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                     Text(
-                                  widget.orderData.distributor?.company_name ?? "",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                  ),
-                                    Text(
-                                      widget.orderData.distributor?.address ?? "",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                    // ✅ ข้อความชิดซ้าย กระชับขึ้น
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.orderData.distributor?.company_name ?? "",
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            widget.orderData.distributor?.address ?? "",
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.black87,
                             ),
                           ),
                         ],
@@ -101,7 +124,14 @@ class _OrderdetailState extends State<Orderdetail> {
                   ],
                 ),
               ),
-            ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -282,6 +312,125 @@ class _OrderdetailState extends State<Orderdetail> {
                                             ),
                                           ),
                        ),
+                       widget.orderData.payment_method=="credit"
+                      ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          // เพิ่มความสูงหน่อยเพื่อให้มีที่วาง Tab
+                          width: size.width * 1,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            children: [
+                              _image != null
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.file(
+                                          _image!,
+                                          height: 150,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.asset(
+                                          "assets/images/NoImage.jpg",
+                                          height: 150,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SizedBox(
+                                  width: size.width * 0.4,
+                                  child: ElevatedButton.icon(
+                                    onPressed: _pickImage,
+                                    icon: const Icon(Icons.upload_file),
+                                    label: const Text("อัพโหลดสลิป"),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:  EdgeInsets.all(8.0),
+                                child: SizedBox(
+                                  width: size.width * 0.4,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () async{
+                                  try {
+                                  await ProductApi.paymentSilp(quotation_id: widget.orderData.id.toString(),slip_image:_image);
+                                  final out = await showDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (context) => SucesDialog(
+                                    title: 'แจ้งเตือน',
+                                    description: 'ชำระเงินสำเร็จ',
+                                  ),
+                                );
+
+                                if (out == true) {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FirstPage(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                }
+                                     } on Exception catch (e) {
+                                if (!mounted) return;
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialogYes(
+                                    title: 'แจ้งเตือน',
+                                    description: '$e',
+                                    pressYes: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                );
+                              }
+                                    },
+                                   
+                                    label:  Text("ชำระเงิน"),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:kButtonColor,
+                                      foregroundColor: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                      :SizedBox.shrink()
+                     
                   ],
                 ),
               ),
@@ -289,6 +438,7 @@ class _OrderdetailState extends State<Orderdetail> {
           ],
         ),
       ),
+     
     );
   }
 }

@@ -43,8 +43,7 @@ class _BillPageState extends State<BillPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: Container(
-                  width: 380,
+                child: Container(           
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.white,
