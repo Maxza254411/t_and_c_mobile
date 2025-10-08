@@ -751,7 +751,7 @@ class _CompleatedState extends State<Compleated> {
                                               borderRadius:
                                                   BorderRadius.circular(8),
                                               child: Image.asset(
-                                                "assets/images/LHVGYY_qrcode.png",
+                                                "assets/images/QrCodeTnC.jpg",
                                                 height: 150,
                                                 fit: BoxFit.cover,
                                               ),
