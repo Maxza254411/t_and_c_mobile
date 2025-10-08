@@ -127,34 +127,38 @@ class _HistoryState extends State<History> {
                     children: [
                       Expanded(
                         flex: 2,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: const Color.fromARGB(255, 241, 241, 241),
-                            border: Border.all(color: kButtonColor),
+                        child:  TextFormField(
+                        controller: search,
+                        style: TextStyle(fontSize: 22),
+                        decoration: InputDecoration(
+                          fillColor:  Colors.white,
+                          prefixIcon: Image.asset(
+                            "assets/icons/Search.png",
+                            scale: 20,
                           ),
-                          height: size.height * 0.05,
-                          child: TextFormField(
-                            controller: search,
-                            style: const TextStyle(fontSize: 18),
-                            decoration: InputDecoration(
-                              prefixIcon: Image.asset(
-                                "assets/icons/Search.png",
-                                scale: 20,
-                              ),
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              hintText: "ค้นหาหมายเลข Order ...",
-                              hintStyle: TextStyle(
-                                fontSize: 18,
-                                fontFamily: 'IBMPlexSansThai',
-                                color: kbgM,
-                              ),
-                            ),
-                            onChanged: (val) => filterOrders(),
+                        border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey.shade400),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: kButtonColor,width: 2),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: kButtonColor, width: 2),
+                      ),
+                          hintText: "ค้นหาเลขคำสั่งซื้อ ...",
+                          hintStyle: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'IBMPlexSansThai',
+                            color: kbgM,
                           ),
                         ),
+                        onChanged: (val) =>filterOrders,
                       ),
+                      ),
+                     
                       const SizedBox(width: 8),
                       Expanded(
                         flex: 1,

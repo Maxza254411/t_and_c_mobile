@@ -116,7 +116,7 @@ class _InputTextFormFieldState extends State<InputTextFormField> {
     return widget.whatfield == true
         ? TextFormField(
             maxLines: widget.maxLines,
-            controller: widget.controller,
+            controller: widget.controller, 
             validator: widget.validator,
             style: TextStyle(fontSize: widget.fontsize ?? 22),
             decoration: InputDecoration(

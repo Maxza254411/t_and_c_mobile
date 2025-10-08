@@ -142,33 +142,38 @@ class _CatagoryState extends State<Catagory> {
         children: [
           // Search field
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: const Color.fromARGB(255, 241, 241, 241),
-                  border: Border.all(color: kButtonColor)
-              ),
-              width: double.infinity,
-              height: size.height * 0.05,
-              child: TextFormField(
-                controller: search,
-                style: TextStyle(fontSize: 22),
-                decoration: InputDecoration(
-                  prefixIcon: Image.asset("assets/icons/Search.png", scale: 20),
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  hintText: "Search here ...",
-                  hintStyle: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'IBMPlexSansThai',
-                    color: kbgM,
-                  ),
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: search,
+                  style: TextStyle(fontSize: 22),
+                  decoration: InputDecoration(
+                    fillColor:  Colors.white,
+                    prefixIcon: Image.asset(
+                      "assets/icons/Search.png",
+                      scale: 20,
+                    ),
+                  border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: Colors.grey.shade400),
                 ),
-                onChanged: filterProducts,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: kButtonColor,width: 2),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: kButtonColor, width: 2),
+                ),
+                    hintText: "Search Product ...",
+                    hintStyle: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'IBMPlexSansThai',
+                      color: kbgM,
+                    ),
+                  ),
+                  onChanged: filterProducts,
+                ),
               ),
-            ),
-          ),
 
           // GridView
           uniqueProducts.isEmpty
