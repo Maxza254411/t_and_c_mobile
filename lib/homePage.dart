@@ -8,6 +8,7 @@ import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/model/brands.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
+import 'package:t_and_c_mobile/model/user.dart';
 import 'package:t_and_c_mobile/nontification.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
@@ -35,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   List<ProductTyp?> uniqueProducts = [];
   List<Brands> allbands = []; //เก็บข้อมูลเเบร์นทั้งหมด
   List<Brands> filteredBand = []; //กรองเเบร์น
+   User? custommer;
 
   final CarouselSliderController _controller = CarouselSliderController();
   List<Data> product = [];
@@ -51,12 +53,9 @@ class _HomePageState extends State<HomePage> {
   Future<void> getapi() async {
     try {
       // LoadingDialog.open(context);
-      final listband = await ProductApi.listbrands();
-      allbands = listband;
-      // final producs = await ProductApi.getproductbyid(id: 1, page: 1);
-      // product = producs;
-      // uniqueProducts = product.map((e) => e.product).toSet().toList();
-
+     allbands = await ProductApi.listbrands();
+    custommer= await ProductApi.getUser();
+     
       // LoadingDialog.close(context);
     } on Exception catch (e) {
       // LoadingDialog.close(context);

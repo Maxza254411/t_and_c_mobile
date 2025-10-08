@@ -54,6 +54,7 @@ class _FavoritePageState extends State<FavoritePage> {
       backgroundColor: kbgH,
       appBar: AppBar(
         backgroundColor: kButtonColor,
+        automaticallyImplyLeading: false,
         actions: [
           GestureDetector(
             onTap: () {

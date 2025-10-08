@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/order.dart';
+import 'package:t_and_c_mobile/order/billpage.dart';
 
 class Orderdetail extends StatefulWidget {
   Orderdetail({super.key, required this.orderData});
@@ -64,17 +65,32 @@ class _OrderdetailState extends State<Orderdetail> {
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               children: [
-                                Image.asset(
-                                  "assets/icons/Package.png",
-                                  scale: 20,
+                                Expanded(
+                                  child: Image.asset(
+                                    "assets/icons/Package.png",
+                                    scale: 20,
+                                  ),
                                 ),
                                 SizedBox(width: 10),
-                                Text(
-                                  widget.orderData.distributor?.address ?? "",
+
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                     Text(
+                                  widget.orderData.distributor?.company_name ?? "",
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.black,
                                   ),
+                                  ),
+                                    Text(
+                                      widget.orderData.distributor?.address ?? "",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -95,7 +111,7 @@ class _OrderdetailState extends State<Orderdetail> {
                 ),
                 child: Column(
                   children: [
-                    ContainerHeader(size: size, text: 'รายการสินค้า'),
+                    ContainerHeader(size: size, text: 'รายการสินค้า',status: true,orderData: widget.orderData,),
                     Column(
                       children: List.generate(
                         widget.orderData.items!.length,
@@ -196,12 +212,34 @@ class _OrderdetailState extends State<Orderdetail> {
                     Divider(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
                         children: [
-                          Text("ราคารวม"),
-                          Text(
-                            "${formatNumber(widget.orderData.total_po_cost_inc_vat ?? "")} บาท",
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("ราคาก่อน vat"),
+                              Text(
+                                "${formatNumber(widget.orderData.total_po_cost_ex_vat ?? "")} บาท",
+                              ),
+                            ],
+                          ),
+                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("ราคารวม vat"),
+                              Text(
+                                "${formatNumber(widget.orderData.total_po_cost_inc_vat ?? "")} บาท",
+                              ),
+                            ],
+                          ),
+                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("ราคารวม"),
+                              Text(
+                                "${formatNumber(widget.orderData.grand_total ?? "")} บาท",
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -261,11 +299,14 @@ class ContainerHeader extends StatelessWidget {
     required this.size,
     required this.text,
     this.status = false,
+    this.orderData,
+
   });
 
   final Size size;
   String text;
   bool? status;
+  Order? orderData;
 
   @override
   Widget build(BuildContext context) {
@@ -296,6 +337,13 @@ class ContainerHeader extends StatelessWidget {
                   color: kbgf,
                 ),
               ),
+              status==true
+          ? GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>BillPage(orderData: orderData!)));
+            },
+            child: Icon(Icons.description,color: Colors.white,))
+          :SizedBox.shrink()
             ],
           ),
         ),

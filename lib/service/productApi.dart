@@ -11,6 +11,7 @@ import 'package:t_and_c_mobile/model/distributors.dart';
 import 'package:t_and_c_mobile/model/order.dart';
 import 'package:t_and_c_mobile/model/product.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
+import 'package:t_and_c_mobile/model/user.dart';
 import 'package:t_and_c_mobile/widget/apiException.dart';
 
 class ProductApi {
@@ -207,6 +208,24 @@ class ProductApi {
     } else {
       final data = convert.jsonDecode(response.body);
       throw ApiException(data['message']);
+    }
+  }
+  ///getUser
+    static Future<User> getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+    final url = Uri.https(publicUrl, '/api/user');
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = convert.jsonDecode(response.body);
+      return User.fromJson(data);
+    } else {
+      final data = convert.jsonDecode(response.body);
+      throw Exception(data['message']);
     }
   }
 
