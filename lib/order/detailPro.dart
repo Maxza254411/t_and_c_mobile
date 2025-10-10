@@ -552,16 +552,22 @@ class _DetailproState extends State<Detailpro> {
                       ),
                     ),
                     onPressed: () async {
+                      if ( widget.warehouse_skus.isEmpty) {
+                         ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
+                        );
+                      }else{
+
                       if (selectedColor == null || selectedColor!.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
                         );
                         return;
-                      }
-                      showModalBottomSheet(
-                        backgroundColor: Colors.white,
-                        context: context,
-                        shape: RoundedRectangleBorder(
+                           }
+                        showModalBottomSheet(
+                         backgroundColor: Colors.white,
+                         context: context,
+                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(
                             top: Radius.circular(16),
                           ),
@@ -925,6 +931,7 @@ class _DetailproState extends State<Detailpro> {
                           );
                         },
                       );
+                      }
                     },
                     child: Text(
                       "สั่งซื้อ",

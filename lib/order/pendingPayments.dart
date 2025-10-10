@@ -27,8 +27,8 @@ class _PendingPaymentsState extends State<PendingPayments> {
         .toList();
 
     setState(() {
-      listOrders = listOrder;              // เก็บทั้งหมด
-      filteredOrders = filteredCreditOrders; // แสดงเฉพาะ credit
+      listOrders = listOrder;             
+      filteredOrders = filteredCreditOrders; 
     });
 
     LoadingDialog.close(context);
@@ -61,7 +61,10 @@ class _PendingPaymentsState extends State<PendingPayments> {
     return  Scaffold(
           backgroundColor: kbgH,
           appBar: AppBar(
-            automaticallyImplyLeading: false,
+           iconTheme: IconThemeData(
+              color: Colors.white
+            ),
+            automaticallyImplyLeading: true,
             backgroundColor: kButtonColor,
             actions: [
               Padding(
@@ -71,7 +74,7 @@ class _PendingPaymentsState extends State<PendingPayments> {
             ],
             centerTitle: true,
             title: const Text(
-              "ประวัติการสั่งซื้อ",
+              "ประวัติการชำระด้วยเครดิต",
               style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
             ),
           ),
