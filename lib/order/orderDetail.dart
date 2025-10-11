@@ -1,12 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/model/order.dart';
 import 'package:t_and_c_mobile/order/billpage.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
+import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 
 class Orderdetail extends StatefulWidget {
@@ -18,7 +22,8 @@ class Orderdetail extends StatefulWidget {
 }
 
 class _OrderdetailState extends State<Orderdetail> {
-    File? _image;
+  File? _image;
+    final _controller = ScreenshotController();
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -32,6 +37,33 @@ class _OrderdetailState extends State<Orderdetail> {
       });
     }
   }
+    Future<void> _captureAndSave() async {
+    try {
+      final Uint8List? imageBytes = await _controller.capture();
+      if (imageBytes != null) {
+        final result = await ImageGallerySaverPlus.saveImage(
+          imageBytes,
+          quality: 100,
+          name: "qr_code_promptpay",
+        );
+
+        if (result['isSuccess'] == true) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("บันทึกรูปภาพเรียบร้อยแล้ว")),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("บันทึกรูปภาพไม่สำเร็จ")),
+          );
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("เกิดข้อผิดพลาด: $e")));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,55 +99,91 @@ class _OrderdetailState extends State<Orderdetail> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-         Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-      color: Colors.white,
-    ),
-    child: Column(
-      children: [
-        ContainerHeader(size: size, text: 'ข้อมูลการจัดส่ง'),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ✅ แทน Expanded ด้วย SizedBox เพื่อกำหนดขนาดตายตัว
-                    SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: Image.asset(
-                        "assets/icons/Package.png",
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-
-                    // ✅ ข้อความชิดซ้าย กระชับขึ้น
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.orderData.distributor?.company_name ?? "",
+             Padding(
+               padding: const EdgeInsets.all(8.0),
+               child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: widget.orderData.status == "doc_to_peak"
+                              ? Colors.amber
+                              : kbgM,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        height: size.height * 0.05,
+                        child: Center(
+                          child: Text(
+                            widget.orderData.status_name ?? "",
                             style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
                               fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            widget.orderData.distributor?.address ?? "",
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.black87,
+                        ),
+                      ),
+             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  children: [
+                   
+                    ContainerHeader(size: size, text: 'ข้อมูลการจัดส่ง'),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // ✅ แทน Expanded ด้วย SizedBox เพื่อกำหนดขนาดตายตัว
+                                SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: Image.asset(
+                                    "assets/icons/Package.png",
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+
+                                // ✅ ข้อความชิดซ้าย กระชับขึ้น
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        widget
+                                                .orderData
+                                                .distributor
+                                                ?.company_name ??
+                                            "",
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        widget.orderData.distributor?.address ??
+                                            "",
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -124,13 +192,7 @@ class _OrderdetailState extends State<Orderdetail> {
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  ),
-),
+            ),
 
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -141,7 +203,12 @@ class _OrderdetailState extends State<Orderdetail> {
                 ),
                 child: Column(
                   children: [
-                    ContainerHeader(size: size, text: 'รายการสินค้า',status: true,orderData: widget.orderData,),
+                    ContainerHeader(
+                      size: size,
+                      text: 'รายการสินค้า',
+                      status: true,
+                      orderData: widget.orderData,
+                    ),
                     Column(
                       children: List.generate(
                         widget.orderData.items!.length,
@@ -216,14 +283,33 @@ class _OrderdetailState extends State<Orderdetail> {
                                         ),
                                       ],
                                     ),
-                                    Row(children: [
-                                      Text("sku : "),
-                                      Text(widget.orderData.items![index].product_sku!.sku??""),
-                                    ],),
-                                    Row(children: [
-                                      Text("สี : "),
-                                      Text(widget.orderData.items![index].product_sku!.color!.name_th??""),
-                                    ],),
+                                    Row(
+                                      children: [
+                                        Text("sku : "),
+                                        Text(
+                                          widget
+                                                  .orderData
+                                                  .items![index]
+                                                  .product_sku!
+                                                  .sku ??
+                                              "",
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text("สี : "),
+                                        Text(
+                                          widget
+                                                  .orderData
+                                                  .items![index]
+                                                  .product_sku!
+                                                  .color!
+                                                  .name_th ??
+                                              "",
+                                        ),
+                                      ],
+                                    ),
                                     Row(
                                       children: [
                                         Text(
@@ -253,7 +339,7 @@ class _OrderdetailState extends State<Orderdetail> {
                               ),
                             ],
                           ),
-                           Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text("ราคารวม vat"),
@@ -262,7 +348,7 @@ class _OrderdetailState extends State<Orderdetail> {
                               ),
                             ],
                           ),
-                           Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text("ราคารวม"),
@@ -288,149 +374,334 @@ class _OrderdetailState extends State<Orderdetail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ContainerHeader(size: size, text: 'วิธีชำระเงิน'),
-                       Padding(
-                         padding: const EdgeInsets.all(8.0),
-                         child: Container(
-                                            padding: EdgeInsets.all(8.0),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: kButtonColor,
-                                                width: 2,
-                                              ),
-                                              borderRadius: BorderRadius.circular(
-                                                8,
-                                              ),
-                                            ),
-                                            child: Text(
-                                             widget.orderData.payment_method=="cash"
-                                             ?"จ่ายผ่านบัญชี"
-                                             : widget.orderData.payment_method=="qrcode"
-                                             ?"จ่ายผ่านพร้อมเพลย์"
-                                             :"จ่ายผ่านเครดิต",
-                                              style: TextStyle(fontSize: 16),
-                                            ),
-                                          ),
-                       ),
-                       widget.orderData.payment_method=="credit"
-                      ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          // เพิ่มความสูงหน่อยเพื่อให้มีที่วาง Tab
-                          width: size.width * 1,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            children: [
-                              _image != null
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.file(
-                                          _image!,
-                                          height: 150,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    )
-                                  : Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.asset(
-                                          "assets/images/NoImage.jpg",
-                                          height: 150,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
+                    ContainerHeader(size: size, text: 'ชำระเงินผ่าน'),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: kButtonColor, width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          widget.orderData.payment_method == "cash"
+                              ? "จ่ายผ่านบัญชี"
+                              : widget.orderData.payment_method == "qrcode"
+                              ? "จ่ายผ่านQrcode"
+                              : "จ่ายผ่านเครดิต",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
+              
+                    widget.orderData.payment_method == "credit"
+                        ? Column(
+                          children: [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  width: size.width * 0.4,
-                                  child: ElevatedButton.icon(
-                                    onPressed: _pickImage,
-                                    icon: const Icon(Icons.upload_file),
-                                    label: const Text("อัพโหลดสลิป"),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green,
-                                      foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                        vertical: 12,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
+                    ),
+                    child: Column(
+                      children: [
+                        ContainerHeader(size: size, text: 'เลือกวิธีชำระเงิน'),
+                        Column(
+                          children: List.generate(
+                           2,
+                            (index) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: BuildRadioOption(
+                                title: pay[index]['pay']!,
+                                value: pay[index]['value']!,
+                                groupValue: selectedPay,
+                                onChanged: (val) {
+                                  setState(() {
+                                    selectedPay = val;
+                                    print(selectedPay);
+                                  });
+                                },
                               ),
-                              Padding(
-                                padding:  EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  width: size.width * 0.4,
-                                  child: ElevatedButton.icon(
-                                    onPressed: () async{
-                                  try {
-                                  await ProductApi.paymentSilp(quotation_id: widget.orderData.id.toString(),slip_image:_image);
-                                  final out = await showDialog(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (context) => SucesDialog(
-                                    title: 'แจ้งเตือน',
-                                    description: 'ชำระเงินสำเร็จ',
-                                  ),
-                                );
-
-                                if (out == true) {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => FirstPage(),
-                                    ),
-                                    (route) => false,
-                                  );
-                                }
-                                     } on Exception catch (e) {
-                                if (!mounted) return;
-                                await showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialogYes(
-                                    title: 'แจ้งเตือน',
-                                    description: '$e',
-                                    pressYes: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                );
-                              }
-                                    },
-                                   
-                                    label:  Text("ชำระเงิน"),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:kButtonColor,
-                                      foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                        vertical: 12,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                      )
-                      :SizedBox.shrink()
-                     
+                      ],
+                    ),
+                  ),
+                ),
+                   selectedPay == "qrcode"
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ContainerHeader(
+                                      size: size,
+                                      text: 'จ่ายผ่านQrcode',
+                                    ),
+                                    Text(
+                                      "บัญชีQrcode ธนาคาร",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    // 🏦 ชื่อธนาคาร
+                                    Screenshot(
+                                      controller: _controller,
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Image.asset(
+                                                "assets/images/QrCodeTnC.jpg",
+                                                height: 150,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    SizedBox(
+                                      width: size.width * 0.4,
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                          _captureAndSave();
+                                        },
+                                        icon: Icon(Icons.copy),
+                                        label: Text("บันทึกรูปภาพ"),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: kButtonColor,
+                                          foregroundColor: Colors.white,
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 12,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : selectedPay == "cash"
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    // 🏦 ชื่อธนาคาร
+                                    ContainerHeader(
+                                      size: size,
+                                      text: 'จ่ายผ่านบัญชี',
+                                    ),
+                                    Text(
+                                      "ธนาคารกสิกรไทย",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 12),
+
+                                    // 🔢 เลขบัญชี
+                                    Text(
+                                      "123-456-789-0",
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                        letterSpacing: 2,
+                                      ),
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    // 📋 ปุ่มคัดลอก
+                                    SizedBox(
+                                      width: size.width * 0.4,
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                          Clipboard.setData(
+                                            ClipboardData(text: "1234567890"),
+                                          );
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                "คัดลอกเลขบัญชีแล้ว",
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        icon: Icon(Icons.copy),
+                                        label: Text("คัดลอกเลขบัญชี"),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: kButtonColor,
+                                          foregroundColor: Colors.white,
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 12,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                           :SizedBox.shrink(),
+
+
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  // เพิ่มความสูงหน่อยเพื่อให้มีที่วาง Tab
+                                  width: size.width * 1,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      _image != null
+                                          ? Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(
+                                                  8,
+                                                ),
+                                                child: Image.file(
+                                                  _image!,
+                                                  height: 150,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            )
+                                          : Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(
+                                                  8,
+                                                ),
+                                                child: Image.asset(
+                                                  "assets/images/NoImage.jpg",
+                                                  height: 150,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SizedBox(
+                                          width: size.width * 0.4,
+                                          child: ElevatedButton.icon(
+                                            onPressed: _pickImage,
+                                            icon: const Icon(Icons.upload_file),
+                                            label: const Text("อัพโหลดสลิป"),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.green,
+                                              foregroundColor: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                                vertical: 12,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                  8,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: SizedBox(
+                                          width: size.width * 0.4,
+                                          child: ElevatedButton.icon(
+                                            onPressed: () async {
+                                              try {
+                                                await ProductApi.paymentSilp(
+                                                  quotation_id: widget.orderData.id
+                                                      .toString(),
+                                                  slip_image: _image,
+                                                );
+                                                final out = await showDialog(
+                                                  barrierDismissible: true,
+                                                  context: context,
+                                                  builder: (context) => SucesDialog(
+                                                    title: 'แจ้งเตือน',
+                                                    description: 'ชำระเงินสำเร็จ',
+                                                  ),
+                                                );
+                            
+                                                if (out == true) {
+                                                  Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          FirstPage(),
+                                                    ),
+                                                    (route) => false,
+                                                  );
+                                                }
+                                              } on Exception catch (e) {
+                                                if (!mounted) return;
+                                                await showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      AlertDialogYes(
+                                                        title: 'แจ้งเตือน',
+                                                        description: '$e',
+                                                        pressYes: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                      ),
+                                                );
+                                              }
+                                            },
+                            
+                                            label: Text("ชำระเงิน"),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: kButtonColor,
+                                              foregroundColor: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                                vertical: 12,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                  8,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        )
+                        : SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -438,7 +709,6 @@ class _OrderdetailState extends State<Orderdetail> {
           ],
         ),
       ),
-     
     );
   }
 }
@@ -450,7 +720,6 @@ class ContainerHeader extends StatelessWidget {
     required this.text,
     this.status = false,
     this.orderData,
-
   });
 
   final Size size;
@@ -487,13 +756,20 @@ class ContainerHeader extends StatelessWidget {
                   color: kbgf,
                 ),
               ),
-              status==true
-          ? GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>BillPage(orderData: orderData!)));
-            },
-            child: Icon(Icons.description,color: Colors.white,))
-          :SizedBox.shrink()
+              status == true
+                  ? GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                BillPage(orderData: orderData!),
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.description, color: Colors.white),
+                    )
+                  : SizedBox.shrink(),
             ],
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:t_and_c_mobile/allProduct.dart';
 import 'package:t_and_c_mobile/category/catagory.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/data.dart';
@@ -15,6 +16,7 @@ import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
+import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
 class BrandPage extends StatefulWidget {
   BrandPage({super.key, required this.title, required this.brandId});
@@ -43,7 +45,7 @@ class _BrandPageState extends State<BrandPage> {
 
   Future<void> getapi() async {
     try {
-      // LoadingDialog.open(context);
+      LoadingDialog.open(context);
       await context.read<ProductController>().getproductypBybrandId(
         brandid: widget.brandId,
       );
@@ -54,12 +56,15 @@ class _BrandPageState extends State<BrandPage> {
         page: 1,
       );
       product = producs;
+      setState(() {
+
+      });
 
       // uniqueProducts = product.map((e) => e.product).toSet().toList();
 
-      // LoadingDialog.close(context);
+      LoadingDialog.close(context);
     } on Exception catch (e) {
-      // LoadingDialog.close(context);
+      LoadingDialog.close(context);
       if (!mounted) return;
       await showDialog(
         context: context,
@@ -229,111 +234,38 @@ class _BrandPageState extends State<BrandPage> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: size.width * 0.78,
-                      ), // กำหนดความกว้าง
-                      child: DropdownButtonFormField<ProductTyp>(
-                        isExpanded: true,
-                        dropdownColor: Colors.white,
-                        decoration: InputDecoration(
-                          labelText: "เลือกประเภทสินค้า",
-                          labelStyle: TextStyle(color: kbgM),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: kButtonColor),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: kButtonColor),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                              color: kButtonColor,
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                        items: productBandTyp.map((product) {
-                          return DropdownMenuItem<ProductTyp>(
-                            value: product,
-                            child: Text(
-                              product.name_en ?? "",
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            print("ID: ${value.id}");
-                            print("Name: ${value.name_en}");
-                            idPro = value.id.toString();
-                            namePro = value.name_en ?? "";
-                          }
-                        },
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        if (idPro == null) {
-                          await showDialog(
-                            context: context,
-                            builder: (context) => AlertDialogYes(
-                              title: 'แจ้งเตือน',
-                              description: 'กรุณาเลือกประเภทสินค้า',
-                              pressYes: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          );
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Catagory(
-                              title: namePro ?? "",
-                              brandid: widget.brandId,
-                              productTypid: int.parse(idPro!),
-                            ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        width: size.width * 0.15,
-                        height: size.height * 0.05,
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-
-                          color: kButtonColor,
-                        ),
-                        child: Center(
-                          child: Text(
-                            "ค้นหา",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: kbgf,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+      padding: EdgeInsets.all(8.0),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Allproduct(status: 'brand',brandId:  widget.brandId,)),
+          );
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: kButtonColor, width: 2),
+          ),
+          child: Row(
+            children: [
+              Image.asset("assets/icons/Search.png", scale: 20),
+              SizedBox(width: 8),
+              Text(
+                "ค้นหาประเภทสินค้า ...",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'IBMPlexSansThai',
+                  color: kbgM,
                 ),
               ),
+            ],
+          ),
+        ),
+      ),
+    ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -350,48 +282,20 @@ class _BrandPageState extends State<BrandPage> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: size.height * 0.1,
-                  decoration: BoxDecoration(
-                    color: kButtonColor,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 30, // ขนาดวงกลม
-                        backgroundImage: AssetImage(
-                          "assets/images/NoImage.jpg",
-                        ),
-                        // หรือถ้าเป็น Network รูปจาก API ใช้:
-                        // backgroundImage: NetworkImage("https://picsum.photos/200"),
-                      ),
-                      SizedBox(width: size.width * 0.05),
-                      Text(
-                        widget.title,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
               uniqueProducts.isEmpty
                   ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: size.height * 0.1),
-                        CircularProgressIndicator(color: kButtonColor),
-                      ],
-                    )
+                  children: [
+                    SizedBox(height: size.height * 0.1),
+                    Text(
+                      "ไม่พบสินค้าแนะนำ",
+                      style: TextStyle(
+                        color: kbgM,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                )
                   : Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),

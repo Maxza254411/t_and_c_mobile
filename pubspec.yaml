@@ -52,6 +52,7 @@ dependencies:
   screenshot: ^3.0.0
   image_gallery_saver_plus: ^4.0.1
   permission_handler: ^11.2.0
+  flutter_datetime_picker_plus: ^2.1.0
 
 
 

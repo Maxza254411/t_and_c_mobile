@@ -731,10 +731,10 @@ class _CompleatedState extends State<Compleated> {
                                   children: [
                                     ContainerHeader(
                                       size: size,
-                                      text: 'จ่ายผ่านพร้อมเพลย์',
+                                      text: 'จ่ายผ่านQrcode ธนาคาร',
                                     ),
                                     Text(
-                                      "บัญชีพร้อมเพลย์ ธนาคาร",
+                                      "บัญชีQrcode ธนาคาร ธนาคาร",
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
