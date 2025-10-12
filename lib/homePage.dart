@@ -18,6 +18,7 @@ import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
+import 'package:t_and_c_mobile/testpage.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 
 class HomePage extends StatefulWidget {
@@ -108,18 +109,7 @@ class _HomePageState extends State<HomePage> {
                       _buildSearchBar(context),
                       _buildSectionTitle("แบรนด์สินค้า"),
                       filteredBand.isEmpty
-                          ? Column(
-                              children: [
-                                Text(
-                                  "ไม่พบแบรนด์สินค้า",
-                                  style: TextStyle(
-                                    color: kbgM,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            )
+                          ? SizedBox.shrink()
                           : SizedBox(
                               height: 120,
                               child: ListView.builder(
@@ -180,18 +170,7 @@ class _HomePageState extends State<HomePage> {
 
                       _buildSectionTitle("สินค้าแนะนำ"),
                       uniqueProducts.isEmpty
-                          ? Column(
-                              children: [
-                                Text(
-                                  "ไม่พบสินค้้าแนะนำ",
-                                  style: TextStyle(
-                                    color: kbgM,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            )
+                          ? SizedBox.shrink()
                           : SizedBox(
                               height: 250,
                               child: ListView.builder(
@@ -435,7 +414,7 @@ class _HomePageState extends State<HomePage> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => Allproduct(status: '')),
+            MaterialPageRoute(builder: (_) => Allproduct(status: 'product')),
           );
         },
         child: Container(

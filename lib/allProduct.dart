@@ -49,11 +49,12 @@ class _AllproductState extends State<Allproduct> {
           title: 'แจ้งเตือน',
           description: '$e',
           pressYes: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => Loginpage()),
-              (route) => false,
-            );
+            Navigator.pop(context);
+            // Navigator.pushAndRemoveUntil(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => Loginpage()),
+            //   (route) => false,
+            // );
           },
         ),
       );

@@ -338,6 +338,26 @@ class _HistoryState extends State<History> {
                                     ],
                                   ),
                                 ),
+                                filteredOrders[index].payment_method=="credit"
+                               ?Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                     Text("วันที่ครบกำหนดชำระ"),
+                                      Text(
+                                        "${filteredOrders[index].qo_date}",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: kButtonColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                                : SizedBox.shrink()
                               ],
                             ),
                           ),

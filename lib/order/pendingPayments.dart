@@ -133,7 +133,10 @@ class _PendingPaymentsState extends State<PendingPayments> {
                                       Container(
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(
-                                          color: ktextColr,
+                                          color: filteredOrders[index]
+                                                    .status=="doc_to_peak"
+                                          ?Colors.amber
+                                          : kbgM,
                                           borderRadius:
                                               BorderRadius.circular(12),
                                         ),
@@ -143,7 +146,7 @@ class _PendingPaymentsState extends State<PendingPayments> {
                                           filteredOrders[index].status_name??"",
                                             style:  TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 16,
+                                              fontSize: 12,
                                               color: Colors.white,
                                             ),
                                           ),
@@ -159,6 +162,24 @@ class _PendingPaymentsState extends State<PendingPayments> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                      Text("วันที่สั่งซื้อ"),
+                                      Text(
+                                        "${filteredOrders[index].qo_date}",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: kButtonColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                 Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                     Text("วันที่ครบกำหนดชำระ"),
                                       Text(
                                         "${filteredOrders[index].qo_date}",
                                         style: const TextStyle(
