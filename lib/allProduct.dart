@@ -198,7 +198,7 @@ class _AllproductState extends State<Allproduct> {
                                           brandid: widget.brandId ?? 1,
                                           title: product.name_en ?? "",
                                           productTypid: product.id,
-                                          statusPage: "product",
+                                          statusPage:widget.status == "product"? "product":"brand"
                                         ),
                                       ),
                                     );

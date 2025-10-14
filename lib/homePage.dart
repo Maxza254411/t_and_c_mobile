@@ -588,6 +588,7 @@ class _HomePageState extends State<HomePage> {
                             proNameTh: selectedProduct.product?.name_th ?? "",
                             warehouse_skus:
                                 selectedProduct.warehouse_skus ?? [],
+                                //  selectedProduct: selectedProduct,
                           ),
                         ),
                       );

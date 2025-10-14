@@ -473,6 +473,8 @@ class _BrandPageState extends State<BrandPage> {
                                                   )
                                                   .map((e) => e.product)
                                                   .toList();
+
+                                                  
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -507,6 +509,7 @@ class _BrandPageState extends State<BrandPage> {
                                                         selectedProduct
                                                             .warehouse_skus ??
                                                         [],
+                                                  //  selectedProduct: product[index],
                                                   ),
                                                 ),
                                               );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
+import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/model/warehouse.dart';
@@ -26,6 +27,7 @@ class Detailpro extends StatefulWidget {
     this.sameproduct,
     this.sku,
     required this.warehouse_skus,
+    // required this.selectedProduct,
   });
 
   String productId;
@@ -38,6 +40,7 @@ class Detailpro extends StatefulWidget {
   String? proNameTh;
   String? sku;
   List<Warehouse> warehouse_skus = [];
+  // Data selectedProduct;
 
   @override
   State<Detailpro> createState() => _DetailproState();
@@ -225,6 +228,7 @@ class _DetailproState extends State<Detailpro> {
                           onPageChanged: (index, reason) {
                             setState(() {
                               _currentIndex = index;
+                            //  widget.selectedProduct.sku;
                             });
                           },
                         ),
@@ -353,7 +357,7 @@ class _DetailproState extends State<Detailpro> {
                        widget.warehouse_skus.isNotEmpty
                      ? Expanded(
                         child: Text(
-                         "${widget.warehouse_skus[0].available.toString()} ชิ้น" ,
+                         "${widget.warehouse_skus[0].available??0.toString()} ชิ้น" ,
                           style: TextStyle(fontSize: 14, color: Colors.black),
                         ),
                       )
@@ -498,7 +502,7 @@ class _DetailproState extends State<Detailpro> {
                       ),
                     ),
                     onPressed: () {
-                      if ( widget.warehouse_skus.isEmpty) {
+                      if ( widget.warehouse_skus.isEmpty||widget.warehouse_skus[0].available==null) {
                          ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
                         );

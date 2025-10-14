@@ -73,6 +73,9 @@ class _CompleatedState extends State<Compleated> {
     }
   }
 
+  // Future <void>testlist()async{
+  //   inspect( widget.selectedItems);
+  // }
   Future<void> getapi() async {
     try {
       LoadingDialog.open(context);
@@ -82,17 +85,14 @@ class _CompleatedState extends State<Compleated> {
         print("custommer เป็น null");
       } else {
         addresslists = await ProductApi.getAddressbyid(
-          distributor_id: custommer!.customer!.id,          
+          distributor_id: custommer!.customer!.id,
         );
-        distributor_id= custommer!.customer!.id;
-        address_id=addresslists[0].id;
-
+        distributor_id = custommer!.customer!.id;
+        address_id = addresslists[0].id;
       }
-      setState(() {
-
-      });
+      setState(() {});
       // custommer = await ProductApi.getUser();
-     
+
       LoadingDialog.close(context);
     } on Exception catch (e) {
       LoadingDialog.close(context);
@@ -147,6 +147,7 @@ class _CompleatedState extends State<Compleated> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getapi();
       await calculateVat();
+      // await testlist();
     });
   }
 
@@ -968,33 +969,6 @@ class _CompleatedState extends State<Compleated> {
                   children: [
                     // --- แถวราคารวม ---
                     Row(
-                      children: [
-                        // เช็คบ็อกซ์แบบปกติ
-                        Checkbox(
-                          checkColor: Colors.white, // ✅ สีของเครื่องหมายถูก (✓)
-                          activeColor: kButtonColor,
-                          value: _wantPrint,
-                          onChanged: (bool? newValue) {
-                            setState(() {
-                              _wantPrint = newValue ?? false;
-                            });
-                          },
-                        ),
-
-                        // ข้อความข้างๆ
-                        GestureDetector(
-                          onTap: () {
-                            // แตะที่ข้อความก็ toggle ได้ด้วย
-                            setState(() {
-                              _wantPrint = !_wantPrint;
-                            });
-                          },
-                          child: const Text("ต้องการเอกสาร"),
-                        ),
-                      ],
-                    ),
-                    Divider(),
-                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -1085,27 +1059,36 @@ class _CompleatedState extends State<Compleated> {
                             if (out == true) {
                               try {
                                 List<Product> productModel = [];
-                                for (
-                                  var i = 0;
-                                  i < widget.selectedItems.length;
-                                  i++
-                                ) {
-                                  final item = widget.selectedItems[i];
+                                 for (
+                                    var i = 0;
+                                    i < widget.selectedItems.length;
+                                    i++
+                                  ) {
+                                    final item = widget.selectedItems[i];
 
-                                    productModel.add(
-                                      Product(
-                                        item.product_id ?? "",
-                                        item.nameTh,
-                                        item.sku,
-                                        item.warehouse_skus[0].product_sku_id
-                                            .toString(),
-                                        item.price, 
-                                        item.warehouse_skus[0].warehouse_id
-                                            .toString(),
-                                        item.quantity.toString(), 
-                                      ),
-                                    );
+                                    // วนซ้อนเพื่อเข้าถึง warehouse_skus ทุกตัวของ item นั้น ๆ
+                                    for (
+                                      var j = 0;
+                                      j < item.warehouse_skus.length;
+                                      j++
+                                    ) {
+                                      final sku = item.warehouse_skus[j];
+
+                                      productModel.add(
+                                        Product(
+                                          item.product_id ?? "",
+                                          item.nameTh,
+                                          item.sku,
+                                          sku.product_sku_id.toString(),
+                                          item.price,
+                                          sku.warehouse_id.toString(),
+                                          item.quantity.toString(),
+                                        ),
+                                      );
+                                    }
+                                  
                                 }
+                                // inspect(productModel);
                                 await ProductApi.createOrder(
                                   distributor_id: custommer!.customer == null
                                       ? distributor_id.toString()
@@ -1199,20 +1182,34 @@ class _CompleatedState extends State<Compleated> {
                                   ) {
                                     final item = widget.selectedItems[i];
 
-                                    productModel.add(
-                                      Product(
-                                        item.product_id ?? "",
-                                        item.nameTh,
-                                        item.sku,
-                                        item.warehouse_skus[0].product_sku_id
-                                            .toString(), // product_sku_id
-                                        item.price, // item.price, // price
-                                        item.warehouse_skus[0].warehouse_id
-                                            .toString(), // warehouse_id (สมมติใส่ค่า default)
-                                        item.quantity.toString(), // qty
-                                      ),
-                                    );
+                                    // วนซ้อนเพื่อเข้าถึง warehouse_skus ทุกตัวของ item นั้น ๆ
+                                    for (
+                                      var j = 0;
+                                      j < item.warehouse_skus.length;
+                                      j++
+                                    ) {
+                                      final sku = item.warehouse_skus[j];
+
+                                      productModel.add(
+                                        Product(
+                                          item.product_id ?? "",
+                                          item.nameTh,
+                                          item.sku,
+                                          sku.product_sku_id.toString(),
+                                          item.price,
+                                          sku.warehouse_id.toString(),
+                                          item.quantity.toString(),
+                                        ),
+                                      );
+                                    }
                                   }
+                                  print(
+                                    convert.jsonEncode(
+                                      productModel
+                                          .map((p) => p.toJson())
+                                          .toList(),
+                                    ),
+                                  );
                                   await ProductApi.createOrder(
                                     distributor_id: custommer!.customer == null
                                         ? distributor_id.toString()

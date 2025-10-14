@@ -378,7 +378,8 @@ class _CatagoryState extends State<Catagory> {
                             proNameTh:
                                 product.product?.name_th, // ส่ง list สีทั้งหมด
                             sku: product.sku,
-                            warehouse_skus: product.warehouse_skus ?? [],
+                            warehouse_skus: product.warehouse_skus ?? [], 
+                            // selectedProduct: product,
                           ),
                         ),
                       );

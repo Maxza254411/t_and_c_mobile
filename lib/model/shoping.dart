@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
+import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/model/warehouse.dart';
 
@@ -20,12 +21,14 @@ class Shoping {
   int? userId;
   List<Colorp?>? colors;
   List<ProductTyp?>? sameproduct;
+  Data?skulist;
   final String? sku;
   String?qty;
 final List<Warehouse>warehouse_skus;
 
   Shoping({
     required this.nameTh,
+    this.skulist,
     this.warehouse_id,
     this.product_sku_id,
     this.image,
