@@ -20,7 +20,7 @@ class Shoping {
   int? userId;
   List<Colorp?>? colors;
   List<ProductTyp?>? sameproduct;
-  String? sku;
+  final String? sku;
   String?qty;
 final List<Warehouse>warehouse_skus;
 

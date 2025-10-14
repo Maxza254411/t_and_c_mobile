@@ -137,46 +137,49 @@ class _HistoryState extends State<History> {
                     children: [
                       Expanded(
                         flex: 2,
-                        child: TextFormField(
-                          controller: search,
-                          style: const TextStyle(fontSize: 22),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            prefixIcon: Image.asset(
-                              "assets/icons/Search.png",
-                              scale: 20,
+                        child: SizedBox(
+                              height: size.height * 0.05,
+                          child: TextFormField(
+                            controller: search,
+                            style: const TextStyle(fontSize: 22),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              prefixIcon: Image.asset(
+                                "assets/icons/Search.png",
+                                scale: 20,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade400),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                    color: kButtonColor, width: 2),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                    color: kButtonColor, width: 2),
+                              ),
+                              hintText: "ค้นหาเลขคำสั่งซื้อ ...",
+                              hintStyle: const TextStyle(
+                                fontSize: 20,
+                                fontFamily: 'IBMPlexSansThai',
+                                color: kbgM,
+                              ),
                             ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade400),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: const BorderSide(
-                                  color: kButtonColor, width: 2),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: const BorderSide(
-                                  color: kButtonColor, width: 2),
-                            ),
-                            hintText: "ค้นหาเลขคำสั่งซื้อ ...",
-                            hintStyle: const TextStyle(
-                              fontSize: 20,
-                              fontFamily: 'IBMPlexSansThai',
-                              color: kbgM,
-                            ),
+                            onChanged: (val) => filterOrders(),
                           ),
-                          onChanged: (val) => filterOrders(),
                         ),
                       ),
                      SizedBox(width: 8),
                       Expanded(
                         flex: 1,
                           child: Container(
-                          height: size.height * 0.07,
+                          height: size.height * 0.05,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             color:

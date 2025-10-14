@@ -29,7 +29,7 @@ Shoping _$ShopingFromJson(Map<String, dynamic> json) => Shoping(
             e == null ? null : ProductTyp.fromJson(e as Map<String, dynamic>),
       )
       .toList(),
-  sku: json['sku'] as String?,
+  sku: json['sku'] as String,
   qty: json['qty'] as String?,
   warehouse_skus: (json['warehouse_skus'] as List<dynamic>)
       .map((e) => Warehouse.fromJson(e as Map<String, dynamic>))

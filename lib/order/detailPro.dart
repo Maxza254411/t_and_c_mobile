@@ -396,7 +396,7 @@ class _DetailproState extends State<Detailpro> {
                   Consumer<FavoriteProvider>(
                     builder: (context, favProvider, child) {
                       final currentProduct = Shoping(
-                        sku: widget.sku,
+                        sku: widget.sku!,
                         sameproduct: widget.sameproduct,
                         image: widget.image,
                         product_id: widget.productId,
@@ -511,7 +511,7 @@ class _DetailproState extends State<Detailpro> {
                       }
                       final shoping = Shoping(
                         product_id: widget.productId,
-                        sku: widget.sku,
+                        sku: widget.sku!,
                         image: widget.image,
                         name: widget.proName,
                         price: widget.proPice,

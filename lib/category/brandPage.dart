@@ -392,7 +392,7 @@ class _BrandPageState extends State<BrandPage> {
                                                     .toList();
 
                                                 final currentProduct = Shoping(
-                                                  sku: selectedProduct.sku,
+                                                  sku: selectedProduct.sku!,
                                                   product_id: selectedProduct!
                                                       .id
                                                       .toString(),

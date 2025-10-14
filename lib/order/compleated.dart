@@ -5,20 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/addressPage.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
-import 'package:t_and_c_mobile/homepage.dart';
 import 'package:t_and_c_mobile/model/address.dart';
 import 'package:t_and_c_mobile/model/distributors.dart';
 import 'package:t_and_c_mobile/model/product.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/model/user.dart';
-import 'package:t_and_c_mobile/order/billpage.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
@@ -1096,17 +1092,19 @@ class _CompleatedState extends State<Compleated> {
                                 ) {
                                   final item = widget.selectedItems[i];
 
-                                  productModel.add(
-                                    Product(
-                                      item.product_id ?? "",
-                                      item.warehouse_skus[0].product_sku_id
-                                          .toString(), // product_sku_id
-                                      item.price, // item.price, // price
-                                      item.warehouse_skus[0].warehouse_id
-                                          .toString(), // warehouse_id (สมมติใส่ค่า default)
-                                      item.quantity.toString(), // qty
-                                    ),
-                                  );
+                                    productModel.add(
+                                      Product(
+                                        item.product_id ?? "",
+                                        item.nameTh,
+                                        item.sku,
+                                        item.warehouse_skus[0].product_sku_id
+                                            .toString(),
+                                        item.price, 
+                                        item.warehouse_skus[0].warehouse_id
+                                            .toString(),
+                                        item.quantity.toString(), 
+                                      ),
+                                    );
                                 }
                                 await ProductApi.createOrder(
                                   distributor_id: custommer!.customer == null
@@ -1204,6 +1202,8 @@ class _CompleatedState extends State<Compleated> {
                                     productModel.add(
                                       Product(
                                         item.product_id ?? "",
+                                        item.nameTh,
+                                        item.sku,
                                         item.warehouse_skus[0].product_sku_id
                                             .toString(), // product_sku_id
                                         item.price, // item.price, // price

@@ -320,7 +320,7 @@ class _CatagoryState extends State<Catagory> {
                       builder: (context, favProvider, child) {
                         final currentProduct = Shoping(
                           warehouse_skus: product.warehouse_skus ?? [],
-                          sku: product.sku,
+                          sku: product.sku!,
                           image: product.product?.image_url,
                           product_id: product.product?.id.toString(),
                           name: product.product?.name_en ?? "",

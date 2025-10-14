@@ -19,7 +19,7 @@ final List<String> imgList = [
 
 List<Map<String, String>> pay = [
   {"pay": "จ่ายผ่านบัญชี", "value": "cash"},
-  {"pay": "จ่ายผ่านพร้อมเพลย์", "value": "qrcode"},
+  {"pay": "จ่ายผ่าน Qrcode", "value": "qrcode"},
   {"pay": "จ่ายผ่านเครดิต", "value": "credit"},
 ];
 

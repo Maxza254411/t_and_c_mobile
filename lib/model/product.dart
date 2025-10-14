@@ -5,6 +5,8 @@ part 'product.g.dart';
 @JsonSerializable()
 class Product {
   String? product_id;
+  String? product_name;
+  String? product_sku;
   String? product_sku_id;
   String? warehouse_id;
   String? price;
@@ -12,6 +14,8 @@ class Product {
 
   Product(
     this.product_id,
+    this.product_name,
+    this.product_sku,
     this.product_sku_id,
     this.price,
     this.warehouse_id,

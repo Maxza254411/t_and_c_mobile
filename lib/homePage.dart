@@ -1,14 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/AllProduct.dart';
 import 'package:t_and_c_mobile/category/brandPage.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
+import 'package:t_and_c_mobile/login.dart';
 import 'package:t_and_c_mobile/model/brands.dart';
 import 'package:t_and_c_mobile/model/data.dart';
-import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/model/user.dart';
 import 'package:t_and_c_mobile/nontification.dart';
@@ -18,8 +17,9 @@ import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
-import 'package:t_and_c_mobile/testpage.dart';
+
 import 'package:t_and_c_mobile/widget/dialog.dart';
+import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getapi() async {
     try {
+      LoadingDialog.open(context);
       await context.read<ProductController>().getproducttypes();
       final producs = await ProductApi.getproduct();
       product = producs;
@@ -51,7 +52,9 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         filteredBand = List.from(allbands);
       });
+      LoadingDialog.close(context);
     } catch (e) {
+      LoadingDialog.close(context);
       if (!mounted) return;
       await showDialog(
         context: context,
@@ -59,7 +62,11 @@ class _HomePageState extends State<HomePage> {
           title: 'แจ้งเตือน',
           description: '$e',
           pressYes: () {
-            Navigator.pop(context);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => Loginpage()),
+              (route) => false,
+            );
           },
         ),
       );
@@ -107,7 +114,9 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildSearchBar(context),
-                      _buildSectionTitle("แบรนด์สินค้า"),
+                      filteredBand.isEmpty
+                          ? SizedBox.shrink()
+                          : _buildSectionTitle("แบรนด์สินค้า"),
                       filteredBand.isEmpty
                           ? SizedBox.shrink()
                           : SizedBox(
@@ -167,8 +176,9 @@ class _HomePageState extends State<HomePage> {
                                 },
                               ),
                             ),
-
-                      _buildSectionTitle("สินค้าแนะนำ"),
+                      filteredBand.isEmpty
+                          ? SizedBox.shrink()
+                          : _buildSectionTitle("สินค้าแนะนำ"),
                       uniqueProducts.isEmpty
                           ? SizedBox.shrink()
                           : SizedBox(
