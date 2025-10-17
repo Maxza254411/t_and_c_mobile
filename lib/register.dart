@@ -121,7 +121,7 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                       Text(
-                        "090-000-0000",
+                        "095-712-7848",
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
