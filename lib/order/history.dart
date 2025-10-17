@@ -23,7 +23,8 @@ class _HistoryState extends State<History> {
   List<Order> filteredOrders = [];
 
   String selectedDateFilter = "all";
-  DateTime? selectedCustomDate;
+  DateTime? selectedCustomStartDate;
+  DateTime? selectedCustomEndDate;
 
   Future<void> getapi() async {
     try {
@@ -91,12 +92,15 @@ class _HistoryState extends State<History> {
         final orderDate = DateTime.parse(order.qo_date!);
         return orderDate.year == now.year && orderDate.month == now.month;
       }).toList();
-    } else if (selectedDateFilter == "custom" && selectedCustomDate != null) {
+    } else if (selectedDateFilter == "custom" &&
+        selectedCustomStartDate != null &&
+        selectedCustomEndDate != null) {
       temp = temp.where((order) {
         final orderDate = DateTime.parse(order.qo_date!);
-        return orderDate.year == selectedCustomDate!.year &&
-            orderDate.month == selectedCustomDate!.month &&
-            orderDate.day == selectedCustomDate!.day;
+        return orderDate.isAfter(
+                selectedCustomStartDate!.subtract(const Duration(days: 1))) &&
+            orderDate.isBefore(
+                selectedCustomEndDate!.add(const Duration(days: 1)));
       }).toList();
     }
 
@@ -133,109 +137,153 @@ class _HistoryState extends State<History> {
                 // 🔎 Search + Filter Dropdown + DatePicker
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Expanded(
-                        flex: 2,
-                        child: SizedBox(
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: SizedBox(
                               height: size.height * 0.05,
-                          child: TextFormField(
-                            controller: search,
-                            style: const TextStyle(fontSize: 22),
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              prefixIcon: Image.asset(
-                                "assets/icons/Search.png",
-                                scale: 20,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade400),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: const BorderSide(
-                                    color: kButtonColor, width: 2),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: const BorderSide(
-                                    color: kButtonColor, width: 2),
-                              ),
-                              hintText: "ค้นหาเลขคำสั่งซื้อ ...",
-                              hintStyle: const TextStyle(
-                                fontSize: 20,
-                                fontFamily: 'IBMPlexSansThai',
-                                color: kbgM,
+                              child: TextFormField(
+                                controller: search,
+                                style: const TextStyle(fontSize: 22),
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  prefixIcon: Image.asset(
+                                    "assets/icons/Search.png",
+                                    scale: 20,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide:
+                                        BorderSide(color: Colors.grey.shade400),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                        color: kButtonColor, width: 2),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                        color: kButtonColor, width: 2),
+                                  ),
+                                  hintText: "ค้นหาเลขคำสั่งซื้อ ...",
+                                  hintStyle: const TextStyle(
+                                    fontSize: 20,
+                                    fontFamily: 'IBMPlexSansThai',
+                                    color: kbgM,
+                                  ),
+                                ),
+                                onChanged: (val) => filterOrders(),
                               ),
                             ),
-                            onChanged: (val) => filterOrders(),
                           ),
-                        ),
-                      ),
-                     SizedBox(width: 8),
-                      Expanded(
-                        flex: 1,
-                          child: Container(
-                          height: size.height * 0.05,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color:
-                               Colors.white,
-                            border: Border.all(color: kButtonColor,width: 2),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                focusColor: Colors.white,
-                                dropdownColor: Colors.white,
-                                value: selectedDateFilter,
-                                isExpanded: true,
-                                items:  [
-                                  DropdownMenuItem(
-                                      value: "all", child: Text("ทั้งหมด")),
-                                  DropdownMenuItem(
-                                      value: "today", child: Text("วันนี้")),
-                                  DropdownMenuItem(
-                                      value: "week", child: Text("สัปดาห์นี้")),
-                                  DropdownMenuItem(
-                                      value: "month", child: Text("เดือนนี้")),
-                                  DropdownMenuItem(
-                                      value: "custom", child: Text("เลือกวันที่")),
-                                ],
-                                onChanged: (value) async {
-                                  if (value == "custom") {
-                                    picker.DatePicker.showDatePicker(
-                                      context,
-                                      showTitleActions: true,
-                                      minTime: DateTime(2020, 1, 1),
-                                      maxTime: DateTime(2100, 12, 31),
-                                      currentTime: DateTime.now(),
-                                      locale: picker.LocaleType.th,
-                                      onConfirm: (date) {
+                          const SizedBox(width: 8),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              height: size.height * 0.05,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.white,
+                                border:
+                                    Border.all(color: kButtonColor, width: 2),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    focusColor: Colors.white,
+                                    dropdownColor: Colors.white,
+                                    value: selectedDateFilter,
+                                    isExpanded: true,
+                                    items: const [
+                                      DropdownMenuItem(
+                                          value: "all", child: Text("ทั้งหมด")),
+                                      DropdownMenuItem(
+                                          value: "today", child: Text("วันนี้")),
+                                      DropdownMenuItem(
+                                          value: "week",
+                                          child: Text("สัปดาห์นี้")),
+                                      DropdownMenuItem(
+                                          value: "month",
+                                          child: Text("เดือนนี้")),
+                                      DropdownMenuItem(
+                                          value: "custom",
+                                          child: Text("เลือกช่วงวันที่")),
+                                    ],
+                                    onChanged: (value) async {
+                                      if (value == "custom") {
+                                        DateTime? start;
+                                        DateTime? end;
+
+                                        // 🗓 เลือกวันเริ่ม
+                                        await picker.DatePicker.showDatePicker(
+                                          context,
+                                          showTitleActions: true,
+                                          minTime: DateTime(2020, 1, 1),
+                                          maxTime: DateTime(2100, 12, 31),
+                                          currentTime: DateTime.now(),
+                                          locale: picker.LocaleType.th,
+                                          onConfirm: (date) {
+                                            start = date;
+                                          },
+                                        );
+
+                                        if (start == null) return;
+
+                                        // 🗓 เลือกวันสิ้นสุด
+                                        await picker.DatePicker.showDatePicker(
+                                          context,
+                                          showTitleActions: true,
+                                          minTime: start,
+                                          maxTime: DateTime(2100, 12, 31),
+                                          currentTime: start,
+                                          locale: picker.LocaleType.th,
+                                          onConfirm: (date) {
+                                            end = date;
+                                          },
+                                        );
+
+                                        if (end == null) return;
+
                                         setState(() {
                                           selectedDateFilter = "custom";
-                                          selectedCustomDate = date;
+                                          selectedCustomStartDate = start;
+                                          selectedCustomEndDate = end;
                                         });
                                         filterOrders();
-                                      },
-                                    );
-                                  } else {
-                                    setState(() {
-                                      selectedCustomDate = null;
-                                      selectedDateFilter = value!;
-                                      filterOrders();
-                                    });
-                                  }
-                                },
+                                      } else {
+                                        setState(() {
+                                          selectedCustomStartDate = null;
+                                          selectedCustomEndDate = null;
+                                          selectedDateFilter = value!;
+                                          filterOrders();
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
+                      if (selectedDateFilter == "custom" &&
+                          selectedCustomStartDate != null &&
+                          selectedCustomEndDate != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            "ตั้งแต่ ${selectedCustomStartDate!.toLocal().toString().split(' ')[0]} "
+                            "ถึง ${selectedCustomEndDate!.toLocal().toString().split(' ')[0]}",
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 14),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -248,8 +296,6 @@ class _HistoryState extends State<History> {
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
                         onTap: () {
-                          // print(  filteredOrders[index]
-                          //                           .status??"");
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -297,12 +343,11 @@ class _HistoryState extends State<History> {
                                       Container(
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(
-                                          color:
-                                          
-                                           filteredOrders[index]
-                                                    .status=="doc_to_peak"
-                                          ?Colors.amber
-                                          : kbgM,
+                                          color: filteredOrders[index]
+                                                      .status ==
+                                                  "doc_to_peak"
+                                              ? Colors.amber
+                                              : kbgM,
                                           borderRadius:
                                               BorderRadius.circular(12),
                                         ),
@@ -341,26 +386,26 @@ class _HistoryState extends State<History> {
                                     ],
                                   ),
                                 ),
-                                filteredOrders[index].payment_method=="credit"
-                               ?Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                     Text("วันที่ครบกำหนดชำระ"),
-                                      Text(
-                                        "${filteredOrders[index].qo_date}",
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: kButtonColor,
+                                filteredOrders[index].payment_method == "credit"
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text("วันที่ครบกำหนดชำระ"),
+                                            Text(
+                                              "${filteredOrders[index].qo_date}",
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: kButtonColor,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                                : SizedBox.shrink()
+                                      )
+                                    : const SizedBox.shrink()
                               ],
                             ),
                           ),

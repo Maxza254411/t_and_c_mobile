@@ -88,7 +88,13 @@ class _CompleatedState extends State<Compleated> {
           distributor_id: custommer!.customer!.id,
         );
         distributor_id = custommer!.customer!.id;
-        address_id = addresslists[0].id;
+        if (addresslists.isEmpty) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("กรุณาเพิ่มที่อยู่ในระบบ")));
+        } else {
+          address_id = addresslists[0].id;
+        }
       }
       setState(() {});
       // custommer = await ProductApi.getUser();
@@ -638,6 +644,26 @@ class _CompleatedState extends State<Compleated> {
                                                       ),
                                                     ],
                                                   ),
+                                                   Row(
+                                                    children: [
+                                                      Text(
+                                                        "สี ",
+
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                         
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        widget
+                                                            .selectedItems![index].color
+                                                            
+                                                           
+                                                      ),
+                                                    ],
+                                                  ),
                                                   Row(
                                                     children: [
                                                       Text(
@@ -1033,135 +1059,24 @@ class _CompleatedState extends State<Compleated> {
                     GestureDetector(
                       onTap: () async {
                         if (addresslists.isEmpty) {
-                          await showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (context) => AlertDialogYes(
-                              title: 'แจ้งเตือน',
-                              description: 'กรุณาเลือกที่อยู่',
-                              pressYes: () {
-                                Navigator.pop(context);
-                              },
-                            ),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("กรุณาเพิ่มที่อยู่ในระบบ")),
                           );
                         } else {
-                          if (selectedPay == "credit") {
-                            final out = await showDialog(
+                          if (addresslists.isEmpty) {
+                            await showDialog(
                               barrierDismissible: false,
                               context: context,
-                              builder: (context) => AlertDialogYesNo(
+                              builder: (context) => AlertDialogYes(
                                 title: 'แจ้งเตือน',
-                                description:
-                                    'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
+                                description: 'กรุณาเลือกที่อยู่',
+                                pressYes: () {
+                                  Navigator.pop(context);
+                                },
                               ),
                             );
-
-                            if (out == true) {
-                              try {
-                                List<Product> productModel = [];
-                                 for (
-                                    var i = 0;
-                                    i < widget.selectedItems.length;
-                                    i++
-                                  ) {
-                                    final item = widget.selectedItems[i];
-
-                                    // วนซ้อนเพื่อเข้าถึง warehouse_skus ทุกตัวของ item นั้น ๆ
-                                    for (
-                                      var j = 0;
-                                      j < item.warehouse_skus.length;
-                                      j++
-                                    ) {
-                                      final sku = item.warehouse_skus[j];
-
-                                      productModel.add(
-                                        Product(
-                                          item.product_id ?? "",
-                                          item.nameTh,
-                                          item.sku,
-                                          sku.product_sku_id.toString(),
-                                          item.price,
-                                          sku.warehouse_id.toString(),
-                                          item.quantity.toString(),
-                                        ),
-                                      );
-                                    }
-                                  
-                                }
-                                // inspect(productModel);
-                                await ProductApi.createOrder(
-                                  distributor_id: custommer!.customer == null
-                                      ? distributor_id.toString()
-                                      : custommer!.customer!.id.toString(),
-                                  qo_date: formatDate(DateTime.now()),
-                                  total_qty: totalQuantity.toString(),
-                                  total_cost_ex_vat: priceBeforeVat.toString(),
-                                  total_vat_amount: widget.totalPrice
-                                      .toString(),
-                                  grand_total: widget.totalPrice.toString(),
-                                  products: productModel,
-                                  address_id: address_id.toString(),
-                                  slip_image: _image,
-                                  payment_method: '$selectedPay',
-                                  total_cost_inc_vat: widget.totalPrice
-                                      .toString(),
-                                  is_print: '$_wantPrint',
-                                );
-
-                                final cart = Provider.of<CartProvider>(
-                                  context,
-                                  listen: false,
-                                );
-
-                                // ลบเฉพาะสินค้าที่เลือก
-                                cart.removeSelected(widget.selectedItems);
-
-                                final out = await showDialog(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (context) => SucesDialog(
-                                    title: 'แจ้งเตือน',
-                                    description: 'ชำระเงินสำเร็จ',
-                                  ),
-                                );
-
-                                if (out == true) {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => FirstPage(),
-                                    ),
-                                    (route) => false,
-                                  );
-                                }
-                              } on Exception catch (e) {
-                                if (!mounted) return;
-                                await showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialogYes(
-                                    title: 'แจ้งเตือน',
-                                    description: '$e',
-                                    pressYes: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                );
-                              }
-                            }
                           } else {
-                            if (_image == null) {
-                              await showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (context) => AlertDialogYes(
-                                  title: 'แจ้งเตือน',
-                                  description: 'กรุณาอัพโหลดสลิป',
-                                  pressYes: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              );
-                            } else {
+                            if (selectedPay == "credit") {
                               final out = await showDialog(
                                 barrierDismissible: false,
                                 context: context,
@@ -1203,13 +1118,7 @@ class _CompleatedState extends State<Compleated> {
                                       );
                                     }
                                   }
-                                  print(
-                                    convert.jsonEncode(
-                                      productModel
-                                          .map((p) => p.toJson())
-                                          .toList(),
-                                    ),
-                                  );
+                                  // inspect(productModel);
                                   await ProductApi.createOrder(
                                     distributor_id: custommer!.customer == null
                                         ? distributor_id.toString()
@@ -1268,6 +1177,130 @@ class _CompleatedState extends State<Compleated> {
                                       },
                                     ),
                                   );
+                                }
+                              }
+                            } else {
+                              if (_image == null) {
+                                await showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (context) => AlertDialogYes(
+                                    title: 'แจ้งเตือน',
+                                    description: 'กรุณาอัพโหลดสลิป',
+                                    pressYes: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                );
+                              } else {
+                                final out = await showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (context) => AlertDialogYesNo(
+                                    title: 'แจ้งเตือน',
+                                    description:
+                                        'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
+                                  ),
+                                );
+
+                                if (out == true) {
+                                  try {
+                                    List<Product> productModel = [];
+                                    for (
+                                      var i = 0;
+                                      i < widget.selectedItems.length;
+                                      i++
+                                    ) {
+                                      final item = widget.selectedItems[i];
+
+                                      // วนซ้อนเพื่อเข้าถึง warehouse_skus ทุกตัวของ item นั้น ๆ
+                                      for (
+                                        var j = 0;
+                                        j < item.warehouse_skus.length;
+                                        j++
+                                      ) {
+                                        final sku = item.warehouse_skus[j];
+
+                                        productModel.add(
+                                          Product(
+                                            item.product_id ?? "",
+                                            item.nameTh,
+                                            item.sku,
+                                            sku.product_sku_id.toString(),
+                                            item.price,
+                                            sku.warehouse_id.toString(),
+                                            item.quantity.toString(),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                    print(
+                                      convert.jsonEncode(
+                                        productModel
+                                            .map((p) => p.toJson())
+                                            .toList(),
+                                      ),
+                                    );
+                                    await ProductApi.createOrder(
+                                      distributor_id:
+                                          custommer!.customer == null
+                                          ? distributor_id.toString()
+                                          : custommer!.customer!.id.toString(),
+                                      qo_date: formatDate(DateTime.now()),
+                                      total_qty: totalQuantity.toString(),
+                                      total_cost_ex_vat: priceBeforeVat
+                                          .toString(),
+                                      total_vat_amount: widget.totalPrice
+                                          .toString(),
+                                      grand_total: widget.totalPrice.toString(),
+                                      products: productModel,
+                                      address_id: address_id.toString(),
+                                      slip_image: _image,
+                                      payment_method: '$selectedPay',
+                                      total_cost_inc_vat: widget.totalPrice
+                                          .toString(),
+                                      is_print: '$_wantPrint',
+                                    );
+
+                                    final cart = Provider.of<CartProvider>(
+                                      context,
+                                      listen: false,
+                                    );
+
+                                    // ลบเฉพาะสินค้าที่เลือก
+                                    cart.removeSelected(widget.selectedItems);
+
+                                    final out = await showDialog(
+                                      barrierDismissible: true,
+                                      context: context,
+                                      builder: (context) => SucesDialog(
+                                        title: 'แจ้งเตือน',
+                                        description: 'ชำระเงินสำเร็จ',
+                                      ),
+                                    );
+
+                                    if (out == true) {
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => FirstPage(),
+                                        ),
+                                        (route) => false,
+                                      );
+                                    }
+                                  } on Exception catch (e) {
+                                    if (!mounted) return;
+                                    await showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialogYes(
+                                        title: 'แจ้งเตือน',
+                                        description: '$e',
+                                        pressYes: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    );
+                                  }
                                 }
                               }
                             }

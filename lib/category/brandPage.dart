@@ -265,7 +265,7 @@ class _BrandPageState extends State<BrandPage> {
           ),
         ),
       ),
-    ),
+         ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

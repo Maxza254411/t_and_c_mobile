@@ -432,49 +432,51 @@ class _DetailproState extends State<Detailpro> {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: widget.color!.map((colorItem) {
-                          if (colorItem?.name_en == null ||
-                              colorItem!.name_en!.isEmpty) {
-                            return SizedBox.shrink();
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                            ),
-                            child: SizedBox(
-                              width: size.width * 0.4,
-                              child: BuildRadioOption(
-                                title: colorItem.name_en!,
-                                value: colorItem.name_en!,
-                                groupValue: selectedColor,
-                                onChanged: (val) {
-                                  setState(() {
-                                    selectedColor = val;
-                                  });
-
-                                  // หา index ของสีที่เลือก
-                                  final index = widget.color!.indexWhere(
-                                    (c) => c?.name_en == val,
-                                  );
-
-                                  if (index != -1 &&
-                                      index < widget.sameproduct!.length) {
-                                    _controller.animateToPage(
-                                      index,
-                                      duration: const Duration(
-                                        milliseconds: 500,
-                                      ),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  }
-                                },
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: widget.color!.map((colorItem) {
+                            if (colorItem?.name_en == null ||
+                                colorItem!.name_en!.isEmpty) {
+                              return SizedBox.shrink();
+                            }
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
                               ),
-                            ),
-                          );
-                        }).toList(),
+                              child: SizedBox(
+                                width: size.width * 0.4,
+                                child: BuildRadioOption(
+                                  title: colorItem.name_en!,
+                                  value: colorItem.name_en!,
+                                  groupValue: selectedColor,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      selectedColor = val;
+                                    });
+                      
+                                    // หา index ของสีที่เลือก
+                                    final index = widget.color!.indexWhere(
+                                      (c) => c?.name_en == val,
+                                    );
+                      
+                                    if (index != -1 &&
+                                        index < widget.sameproduct!.length) {
+                                      _controller.animateToPage(
+                                        index,
+                                        duration: const Duration(
+                                          milliseconds: 500,
+                                        ),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                   ],
@@ -502,7 +504,7 @@ class _DetailproState extends State<Detailpro> {
                       ),
                     ),
                     onPressed: () {
-                      if ( widget.warehouse_skus.isEmpty||widget.warehouse_skus[0].available==null) {
+                      if ( widget.warehouse_skus.isEmpty || widget.warehouse_skus[0].available==null) {
                          ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
                         );
@@ -556,7 +558,7 @@ class _DetailproState extends State<Detailpro> {
                       ),
                     ),
                     onPressed: () async {
-                      if ( widget.warehouse_skus.isEmpty) {
+                      if ( widget.warehouse_skus.isEmpty|| widget.warehouse_skus[0].available==null) {
                          ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
                         );

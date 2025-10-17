@@ -172,11 +172,10 @@ class _CatagoryState extends State<Catagory> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
-              
               controller: search,
               style: TextStyle(fontSize: 22),
               decoration: InputDecoration(
-                   filled: true,
+                filled: true,
                 fillColor: Colors.white,
                 prefixIcon: Image.asset("assets/icons/Search.png", scale: 20),
                 border: OutlineInputBorder(
@@ -279,16 +278,50 @@ class _CatagoryState extends State<Catagory> {
         children: [
           // รูปสินค้า
           Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
-              ),
-              child: product.product?.image_url == null
-                  ? Image.asset("assets/images/NoImage.jpg", fit: BoxFit.cover)
-                  : Image.network(
-                      product.product!.image_url!,
-                      fit: BoxFit.cover,
+            child: Stack(
+              children: [
+                // ----- รูปสินค้า -----
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  child: product.product?.image_url == null
+                      ? Image.asset(
+                          "assets/images/NoImage.jpg",
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                        )
+                      : Image.network(
+                          product.product!.image_url!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                ),
+
+                // ----- ถ้าของหมด แสดง Overlay -----
+                if (product.warehouse_skus!.isEmpty ||
+                    product.warehouse_skus![0].available == null)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16),
+                      ),
                     ),
+                    child: const Center(
+                      child: Text(
+                        "สินค้าหมด",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
 
@@ -350,7 +383,6 @@ class _CatagoryState extends State<Catagory> {
                     ),
                   ],
                 ),
-
                 SizedBox(height: 8),
                 SizedBox(
                   width: double.infinity,
@@ -362,27 +394,35 @@ class _CatagoryState extends State<Catagory> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Detailpro(
-                            sameproduct: sameproduct,
-                            image: product.product?.image_url,
-                            productId: product.product?.id.toString() ?? "",
-                            proName: product.product?.name_en ?? "",
-                            proPice: formatNumber(
-                              product.product?.srp_inc_vat ?? "0",
+                      if (product.warehouse_skus!.isEmpty ||
+                          product.warehouse_skus![0].available == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Detailpro(
+                              sameproduct: sameproduct,
+                              image: product.product?.image_url,
+                              productId: product.product?.id.toString() ?? "",
+                              proName: product.product?.name_en ?? "",
+                              proPice: formatNumber(
+                                product.product?.srp_inc_vat ?? "0",
+                              ),
+                              detail: '',
+                              color: productColors,
+                              proNameTh: product
+                                  .product
+                                  ?.name_th, // ส่ง list สีทั้งหมด
+                              sku: product.sku,
+                              warehouse_skus: product.warehouse_skus ?? [],
+                              // selectedProduct: product,
                             ),
-                            detail: '',
-                            color: productColors,
-                            proNameTh:
-                                product.product?.name_th, // ส่ง list สีทั้งหมด
-                            sku: product.sku,
-                            warehouse_skus: product.warehouse_skus ?? [], 
-                            // selectedProduct: product,
                           ),
-                        ),
-                      );
+                        );
+                      }
                     },
                     child: Text(
                       "สั่งซื้อ",
