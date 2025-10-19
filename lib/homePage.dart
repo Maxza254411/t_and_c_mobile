@@ -17,7 +17,6 @@ import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
-
 import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 

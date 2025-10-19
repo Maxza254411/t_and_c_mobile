@@ -192,49 +192,7 @@ class _LoginpageState extends State<Loginpage> {
                                   await prefs.setString(
                                     "token",
                                     _login["token"],
-                                  );
-                                  await prefs.setInt(
-                                    "userId",
-                                    _login["user"]["id"],
-                                  );
-                                  await prefs.setString(
-                                    "first_name",
-                                    _login["user"]["first_name"],
-                                  );
-                                   if (_login["user"]["last_name"]!=null) {     
-                                  await prefs.setString(
-                                    "last_name",
-                                    _login["user"]["last_name"],
-                                  );
-                                   }else{
-                                     print("last_nameเป็น null");
-                                   }
-                                   if (  _login["user"]["staff_code"]!=null) {
-                                     await prefs.setString(
-                                    "staff_code",
-                                    _login["user"]["staff_code"],
-                                  );
-                                   } else {
-                                       print("staff_codeเป็น null");
-                                   }                               
-                                  await prefs.setString(
-                                    "email",
-                                    _login["user"]["email"],
-                                  );
-                                  await prefs.setString(
-                                    "user_type",
-                                    _login["user"]["user_type"],
-                                  );
-                                  
-                                  if ( _login["user"]["tel_no"]!=null) {                                    
-                                  await prefs.setString(
-                                    "tel_no",
-                                    _login["user"]["tel_no"],
-                                  );
-                                  }else{
-                                    print("เบอร์โทรเป็น null");
-                                  }
-                                 
+                                  );                                                                
                                 }
 
                                 LoadingDialog.close(context);

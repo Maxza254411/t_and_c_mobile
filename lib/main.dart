@@ -8,6 +8,7 @@ import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/login.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
 import 'package:t_and_c_mobile/povider/favoriteProvider.dart';
+import 'package:t_and_c_mobile/privacyPolicyPage.dart';
 import 'package:t_and_c_mobile/service/productController.dart';
 
 String? token;
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           fontFamily: 'IBMPlexSansThai',
         ),
-        home: token == null ? Loginpage() : FirstPage(),
+        home: token == null ? PrivacyPolicyPage() : FirstPage(),
       ),
     );
   }
