@@ -12,6 +12,7 @@ import 'package:t_and_c_mobile/order/billpage.dart';
 import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/widget/buildRadioOption.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Orderdetail extends StatefulWidget {
   Orderdetail({super.key, required this.orderData});
@@ -25,6 +26,8 @@ class _OrderdetailState extends State<Orderdetail> {
   File? _image;
   final _controller = ScreenshotController();
   int? currentStep;
+  final Uri _url = Uri.parse('https://www.flashexpress.co.th/fle/tracking'); 
+
   final steps = [
     "FINANCE_APPROVAL",
     "ส่งเอกสารถึงพีค",
@@ -32,6 +35,12 @@ class _OrderdetailState extends State<Orderdetail> {
     "สินค้ากำลังจัดส่ง",
     "จัดส่งสำเร็จ",
   ];
+
+  Future<void>_launchUrl() async {
+    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -200,69 +209,6 @@ class _OrderdetailState extends State<Orderdetail> {
                       ),
                     ),
                   ),
-
-            //          Row(
-            //        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //          children: List.generate(steps.length * 2 - 1, (index) {
-            //     if (index.isEven) {
-            //       int stepIndex = index ~/ 2;
-            //       bool isActive = stepIndex <= currentStep!;
-            //       return Column(
-            //         children: [
-            //           CircleAvatar(
-            //             radius: 15,
-            //             backgroundColor: isActive ? Colors.green : Colors.grey,
-            //             child: Icon(
-            //               isActive ? Icons.check : Icons.circle,
-            //               color: Colors.white,
-            //               size: 16,
-            //             ),
-            //           ),
-            //           const SizedBox(height: 6),
-            //           Text(
-            //             steps[stepIndex],
-            //             style: TextStyle(
-            //               color: isActive ? Colors.black : Colors.grey,
-            //               fontSize: 12,
-            //             ),
-            //           ),
-            //         ],
-            //       );
-            //     } else {
-            //       int lineIndex = (index - 1) ~/ 2;
-            //       bool isActive = lineIndex < currentStep!;
-            //       return Expanded(
-            //         child: Container(
-            //           height: 3,
-            //           color: isActive ? Colors.green : Colors.grey[300],
-            //         ),
-            //       );
-            //     }
-            //   }),
-            // ),
-            //  Padding(
-            //    padding: const EdgeInsets.all(8.0),
-            //    child: Container(
-            //             padding: const EdgeInsets.all(12),
-            //             decoration: BoxDecoration(
-            //               color: widget.orderData.status == "doc_to_peak"
-            //                   ? Colors.amber
-            //                   : kbgM,
-            //               borderRadius: BorderRadius.circular(12),
-            //             ),
-            //             height: size.height * 0.05,
-            //             child: Center(
-            //               child: Text(
-            //                 widget.orderData.status_name ?? "",
-            //                 style: const TextStyle(
-            //                   fontWeight: FontWeight.bold,
-            //                   fontSize: 12,
-            //                   color: Colors.white,
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //  ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -283,12 +229,17 @@ class _OrderdetailState extends State<Orderdetail> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 // ✅ แทน Expanded ด้วย SizedBox เพื่อกำหนดขนาดตายตัว
-                                SizedBox(
-                                  width: 30,
-                                  height: 30,
-                                  child: Image.asset(
-                                    "assets/icons/Package.png",
-                                    fit: BoxFit.contain,
+                                GestureDetector(
+                                  onTap: ()async {
+                                  await _launchUrl();
+                                  },
+                                  child: SizedBox(
+                                    width: 30,
+                                    height: 30,
+                                    child: Image.asset(
+                                      "assets/icons/Package.png",
+                                      fit: BoxFit.contain,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 10),
@@ -326,6 +277,24 @@ class _OrderdetailState extends State<Orderdetail> {
                               ],
                             ),
                           ),
+                          Divider(),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                        width: 30,
+                                        height: 30,
+                                        child: Image.asset(
+                                          "assets/icons/flash-express.png",
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+
+
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -333,6 +302,7 @@ class _OrderdetailState extends State<Orderdetail> {
                 ),
               ),
             ),
+         
 
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -786,43 +756,15 @@ class _OrderdetailState extends State<Orderdetail> {
                                           width: size.width * 0.4,
                                           child: ElevatedButton.icon(
                                             onPressed: () async {
-                                              try {
-                                                await ProductApi.paymentSilp(
-                                                  quotation_id: widget
-                                                      .orderData
-                                                      .id
-                                                      .toString(),
-                                                  slip_image: _image,
-                                                );
-                                                final out = await showDialog(
-                                                  barrierDismissible: true,
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      SucesDialog(
-                                                        title: 'แจ้งเตือน',
-                                                        description:
-                                                            'ชำระเงินสำเร็จ',
-                                                      ),
-                                                );
-
-                                                if (out == true) {
-                                                  Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          FirstPage(),
-                                                    ),
-                                                    (route) => false,
-                                                  );
-                                                }
-                                              } on Exception catch (e) {
-                                                if (!mounted) return;
+                                              if (_image == null) {
                                                 await showDialog(
+                                                  barrierDismissible: false,
                                                   context: context,
                                                   builder: (context) =>
                                                       AlertDialogYes(
                                                         title: 'แจ้งเตือน',
-                                                        description: '$e',
+                                                        description:
+                                                            'กรุณาอัพโหลดสลิป',
                                                         pressYes: () {
                                                           Navigator.pop(
                                                             context,
@@ -830,7 +772,54 @@ class _OrderdetailState extends State<Orderdetail> {
                                                         },
                                                       ),
                                                 );
+                                              } else {
+                                                try {
+                                                  await ProductApi.paymentSilp(
+                                                    quotation_id: widget
+                                                        .orderData
+                                                        .id
+                                                        .toString(),
+                                                    slip_image: _image,
+                                                  );
+                                                  final out = await showDialog(
+                                                    barrierDismissible: true,
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        SucesDialog(
+                                                          title: 'แจ้งเตือน',
+                                                          description:
+                                                              'ชำระเงินสำเร็จ',
+                                                        ),
+                                                  );
+
+                                                  if (out == true) {
+                                                    Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            FirstPage(),
+                                                      ),
+                                                      (route) => false,
+                                                    );
+                                                  }
+                                                } on Exception catch (e) {
+                                                  if (!mounted) return;
+                                                  await showDialog(
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        AlertDialogYes(
+                                                          title: 'แจ้งเตือน',
+                                                          description: '$e',
+                                                          pressYes: () {
+                                                            Navigator.pop(
+                                                              context,
+                                                            );
+                                                          },
+                                                        ),
+                                                  );
+                                                }
                                               }
+                                            
                                             },
 
                                             label: Text("ชำระเงิน"),

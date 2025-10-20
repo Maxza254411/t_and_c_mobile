@@ -9,8 +9,9 @@ class Brands {
   String? name;
   int? status;
   String?image_url;
+  String?img_path;
 
-  Brands(this.id, this.code, this.name, this.status,this.image_url);
+  Brands(this.id, this.code, this.name, this.status,this.image_url,this.img_path);
 
   factory Brands.fromJson(Map<String, dynamic> json) => _$BrandsFromJson(json);
 

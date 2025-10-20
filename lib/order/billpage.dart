@@ -138,9 +138,9 @@ class _BillPageState extends State<BillPage> {
                       // Table Header
                       Row(mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
-                          Expanded(flex: 2, child: Text("ชื่อสินค้า")),
+                          Expanded(flex: 3, child: Text("ชื่อสินค้า")),
                           Expanded(flex: 2, child: Text("สี")),
-                           Expanded(flex: 2, child: Text("sku")),
+                          //  Expanded(flex: 2, child: Text("sku")),
                           Expanded(flex: 2, child: Text("ราคา")),
                           Expanded(flex: 2, child: Text("จำนวน")),
                           Expanded(flex: 2, child: Text("รวม")),
@@ -156,7 +156,7 @@ class _BillPageState extends State<BillPage> {
                           (index) => Row(
                             children: [
                               Expanded(
-                                flex: 2,
+                                flex: 3,
                                 child: Text(
                                   widget
                                           .orderData
@@ -179,18 +179,18 @@ class _BillPageState extends State<BillPage> {
                                           "",
                                 ),
                               ),
-                               Expanded(
-                                flex: 2,
-                                child: Text(
-                                  widget
-                                          .orderData
-                                          .items![index]
-                                          .product_sku!
-                                          .sku??
-                                      ""
-                                          "",
-                                ),
-                              ),
+                              //  Expanded(
+                              //   flex: 2,
+                              //   child: Text(
+                              //     widget
+                              //             .orderData
+                              //             .items![index]
+                              //             .product_sku!
+                              //             .sku??
+                              //         ""
+                              //             "",
+                              //   ),
+                              // ),
                               Expanded(
                                 flex: 2,
                                 child: Text(
@@ -205,12 +205,10 @@ class _BillPageState extends State<BillPage> {
                               ),
                               Expanded(
                                 flex: 2,
-                                child: Center(
-                                  child: Text(
-                                    double.parse(
-                                      widget.orderData.items![index].po_unit!,
-                                    ).toStringAsFixed(0),
-                                  ),
+                                child: Text(
+                                  double.parse(
+                                    widget.orderData.items![index].po_unit!,
+                                  ).toStringAsFixed(0),
                                 ),
                               ),
                           
@@ -282,7 +280,7 @@ class _BillPageState extends State<BillPage> {
                                           ? "จ่ายผ่านบัญชี"
                                           : widget.orderData.payment_method ==
                                                 "qrcode"
-                                          ? "จ่ายผ่านพร้อมเพลย์"
+                                          ? "จ่ายผ่านQrcode"
                                           : "จ่ายผ่านเครดิต",
                                     ),
                                   ],

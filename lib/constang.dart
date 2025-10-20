@@ -9,8 +9,8 @@ const kbgH = Color(0xFFEE7E7E7);
 const kbgc = Color(0xFFE9FFF8);
 const kline = Color(0xFFE6CE131);
 
-// const String publicUrl = 'dev-erp.tnc-thailand.com';
-const String publicUrl = 'erp.tnc-thailand.com';
+const String publicUrl = 'dev-erp.tnc-thailand.com';
+// const String publicUrl = 'erp.tnc-thailand.com';
 
 final List<String> imgList = [
   "assets/images/banner 1.png",

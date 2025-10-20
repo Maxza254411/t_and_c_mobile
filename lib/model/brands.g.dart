@@ -12,6 +12,7 @@ Brands _$BrandsFromJson(Map<String, dynamic> json) => Brands(
   json['name'] as String?,
   (json['status'] as num?)?.toInt(),
   json['image_url'] as String?,
+  json['img_path'] as String?,
 );
 
 Map<String, dynamic> _$BrandsToJson(Brands instance) => <String, dynamic>{
@@ -20,4 +21,5 @@ Map<String, dynamic> _$BrandsToJson(Brands instance) => <String, dynamic>{
   'name': instance.name,
   'status': instance.status,
   'image_url': instance.image_url,
+  'img_path': instance.img_path,
 };

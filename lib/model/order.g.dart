@@ -26,6 +26,7 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
   json['status_badge'] as String?,
   json['stage'] as String?,
   json['payment_method'] as String?,
+  json['tracking_no'] as String?,
   json['distributor'] == null
       ? null
       : Distributors.fromJson(json['distributor'] as Map<String, dynamic>),
@@ -54,6 +55,7 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
   'status_badge': instance.status_badge,
   'stage': instance.stage,
   'payment_method': instance.payment_method,
+  'tracking_no': instance.tracking_no,
   'distributor': instance.distributor,
   'items': instance.items,
 };

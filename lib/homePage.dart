@@ -61,7 +61,10 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) => AlertDialogYes(
           title: 'แจ้งเตือน',
-          description: '$e',
+          description:
+          e == "Unauthenticated"
+           ?'การเข้าสู่ระบบหมดอายุ'
+           :'$e',
           pressYes: () {
             Navigator.pushAndRemoveUntil(
               context,
@@ -148,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                                           borderRadius: BorderRadius.circular(
                                             12,
                                           ),
-                                          child: brand.image_url == null
+                                          child: brand.img_path == null
                                               ? Image.asset(
                                                   "assets/images/NoImage.jpg",
                                                   width: 80,
@@ -156,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                                                   fit: BoxFit.cover,
                                                 )
                                               : Image.network(
-                                                  brand.image_url!,
+                                                  brand.img_path!,
                                                   width: 80,
                                                   height: 80,
                                                   fit: BoxFit.cover,

@@ -25,6 +25,7 @@ class Order {
   String? status_badge;
   String? stage;
   String? payment_method;
+ String? tracking_no;
   Distributors? distributor;
   List<Item>?items;
 
@@ -49,7 +50,9 @@ class Order {
     this.status_name,
     this.status_badge,
     this.stage,
-    this.payment_method, this.distributor,
+    this.payment_method, 
+    this.tracking_no,
+    this.distributor,
     this.items,
   );
 
