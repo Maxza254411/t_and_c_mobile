@@ -15,6 +15,7 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'นโยบายความเป็นส่วนตัว',
@@ -32,7 +33,7 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
                   child: Text('''
 🛡️ นโยบายความเป็นส่วนตัว (Privacy Policy)
 
-มีผลบังคับใช้ ณ วันที่  20 ตุลาคม พ.ศ.2568
+มีผลบังคับใช้ ณ วันที่  21 ตุลาคม พ.ศ.2568
 
 ยินดีต้อนรับสู่ TNC Partners (แอปพลิเคชัน) และเว็บไซต์ https://erp.tnc-thailand.com 
 เรามุ่งมั่นในการปกป้องความเป็นส่วนตัวของคุณ และให้ความสำคัญกับความปลอดภัยของข้อมูลส่วนบุคคล โปรดอ่านนโยบายฉบับนี้อย่างรอบคอบ การเข้าถึงหรือการใช้งานบริการของเราถือว่าคุณยอมรับตามเงื่อนไขนี้

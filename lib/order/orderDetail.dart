@@ -33,10 +33,6 @@ class _OrderdetailState extends State<Orderdetail> {
   int? currentStep;
   Order? orderData;
 
-  
-  
-
-
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(
@@ -152,68 +148,83 @@ class _OrderdetailState extends State<Orderdetail> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        children: [
-                          ContainerHeader(size: size, text: 'หมายเลขการจัดส่ง'),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
+                  orderData!.delivery_orders!.isEmpty
+                      ? SizedBox.shrink()
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                            ),
                             child: Column(
                               children: [
-                                Column(
-                                  children: List.generate(
-                                    orderData!.delivery_orders!.length,
-                                    (index) => Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>DeliveryDetail(delivery_id: orderData!.delivery_orders![index].id,)));
-                                        },
-                                        child: Container(
-                                          height: size.height * 0.07,
-                                          padding: EdgeInsets.all(8.0),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: kButtonColor,
-                                              width: 2,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                "${orderData!.delivery_orders![index].dn_code}",
-                                              ),
-                                              Icon(
-                                                  Icons.arrow_forward_ios_sharp,
-                                                  color: kButtonColor
+                                ContainerHeader(
+                                  size: size,
+                                  text: 'หมายเลขการจัดส่ง',
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Column(
+                                        children: List.generate(
+                                          orderData!.delivery_orders!.length,
+                                          (index) => Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DeliveryDetail(
+                                                          delivery_id: orderData!
+                                                              .delivery_orders![index]
+                                                              .id,
+                                                        ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                height: size.height * 0.07,
+                                                padding: EdgeInsets.all(8.0),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: kButtonColor,
+                                                    width: 2,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
                                                 ),
-                                             
-                                            ],
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      "${orderData!.delivery_orders![index].dn_code}",
+                                                    ),
+                                                    Icon(
+                                                      Icons
+                                                          .arrow_forward_ios_sharp,
+                                                      color: kButtonColor,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ),
-                                
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
 
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -423,7 +434,7 @@ class _OrderdetailState extends State<Orderdetail> {
 
                           orderData?.payment_method == "credit"
                               ? SafeArea(
-                                child: Column(
+                                  child: Column(
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -444,12 +455,14 @@ class _OrderdetailState extends State<Orderdetail> {
                                                 children: List.generate(
                                                   2,
                                                   (index) => Padding(
-                                                    padding: const EdgeInsets.all(
-                                                      8.0,
-                                                    ),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          8.0,
+                                                        ),
                                                     child: BuildRadioOption(
                                                       title: pay[index]['pay']!,
-                                                      value: pay[index]['value']!,
+                                                      value:
+                                                          pay[index]['value']!,
                                                       groupValue: selectedPay,
                                                       onChanged: (val) {
                                                         setState(() {
@@ -467,7 +480,9 @@ class _OrderdetailState extends State<Orderdetail> {
                                       ),
                                       selectedPay == "qrcode"
                                           ? Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
@@ -480,7 +495,8 @@ class _OrderdetailState extends State<Orderdetail> {
                                                     "บัญชีQrcode ธนาคาร",
                                                     style: TextStyle(
                                                       fontSize: 18,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                   // 🏦 ชื่อธนาคาร
@@ -508,7 +524,7 @@ class _OrderdetailState extends State<Orderdetail> {
                                                       ],
                                                     ),
                                                   ),
-                                
+
                                                   SizedBox(
                                                     width: size.width * 0.4,
                                                     child: ElevatedButton.icon(
@@ -516,7 +532,9 @@ class _OrderdetailState extends State<Orderdetail> {
                                                         _captureAndSave();
                                                       },
                                                       icon: Icon(Icons.copy),
-                                                      label: Text("บันทึกรูปภาพ"),
+                                                      label: Text(
+                                                        "บันทึกรูปภาพ",
+                                                      ),
                                                       style: ElevatedButton.styleFrom(
                                                         backgroundColor:
                                                             kButtonColor,
@@ -541,7 +559,9 @@ class _OrderdetailState extends State<Orderdetail> {
                                             )
                                           : selectedPay == "cash"
                                           ? Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
@@ -555,25 +575,38 @@ class _OrderdetailState extends State<Orderdetail> {
                                                     "ธนาคารกสิกรไทย",
                                                     style: TextStyle(
                                                       fontSize: 18,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
-                                
+
                                                   const SizedBox(height: 12),
-                                
-                                                  // 🔢 เลขบัญชี
+
                                                   Text(
-                                                    "123-456-789-0",
+                                                    "ที แอนด์ ซี",
                                                     style: TextStyle(
-                                                      fontSize: 24,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.black87,
                                                       letterSpacing: 2,
                                                     ),
                                                   ),
-                                
+                                                  const SizedBox(height: 12),
+                                                  // 🔢 เลขบัญชี
+                                                  Text(
+                                                    "174-136-047-7",
+                                                    style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black87,
+                                                      letterSpacing: 2,
+                                                    ),
+                                                  ),
+
                                                   SizedBox(height: 20),
-                                
+
                                                   // 📋 ปุ่มคัดลอก
                                                   SizedBox(
                                                     width: size.width * 0.4,
@@ -581,7 +614,7 @@ class _OrderdetailState extends State<Orderdetail> {
                                                       onPressed: () {
                                                         Clipboard.setData(
                                                           ClipboardData(
-                                                            text: "1234567890",
+                                                            text: "1741360477",
                                                           ),
                                                         );
                                                         ScaffoldMessenger.of(
@@ -621,7 +654,7 @@ class _OrderdetailState extends State<Orderdetail> {
                                               ),
                                             )
                                           : SizedBox.shrink(),
-                                
+
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Container(
@@ -748,7 +781,7 @@ class _OrderdetailState extends State<Orderdetail> {
                                                                       'ชำระเงินสำเร็จ',
                                                                 ),
                                                           );
-                                
+
                                                           if (out == true) {
                                                             Navigator.pushAndRemoveUntil(
                                                               context,
@@ -760,7 +793,9 @@ class _OrderdetailState extends State<Orderdetail> {
                                                               (route) => false,
                                                             );
                                                           }
-                                                        } on Exception catch (e) {
+                                                        } on Exception catch (
+                                                          e
+                                                        ) {
                                                           if (!mounted) return;
                                                           await showDialog(
                                                             context: context,
@@ -780,7 +815,7 @@ class _OrderdetailState extends State<Orderdetail> {
                                                         }
                                                       }
                                                     },
-                                
+
                                                     label: Text("ชำระเงิน"),
                                                     style: ElevatedButton.styleFrom(
                                                       backgroundColor:
@@ -808,7 +843,7 @@ class _OrderdetailState extends State<Orderdetail> {
                                       ),
                                     ],
                                   ),
-                              )
+                                )
                               : SizedBox.shrink(),
                         ],
                       ),

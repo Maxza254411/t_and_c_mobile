@@ -1,13 +1,18 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-def keystorePropertiesFile = rootProject.file("key.properties")
-def keystoreProperties = new Properties()
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+// โหลด keystore properties
+val keystorePropertiesFile = rootProject.file("key.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) {
+        load(FileInputStream(keystorePropertiesFile))
+    }
 }
 
 android {
@@ -39,18 +44,19 @@ android {
             storeFile = keystoreProperties["storeFile"]?.let { file(it) }
             storePassword = keystoreProperties["storePassword"] as String
         }
+        getByName("debug") {
+            // ใช้ debug key ปกติ
+        }
     }
 
     buildTypes {
         release {
-            // ใช้ keystore ของเรา
             signingConfig = signingConfigs.getByName("release")
-            // ใส่ Proguard หรือ minify ถ้าต้องการ
-            isMinifyEnabled = false
+            isMinifyEnabled = false         // ปิด minify ถ้าไม่ใช้ Proguard
+            isShrinkResources = false       // ปิด resource shrinking เพื่อไม่ให้เกิด error
         }
 
         debug {
-            // ใช้ debug key สำหรับ debug
             signingConfig = signingConfigs.getByName("debug")
         }
     }

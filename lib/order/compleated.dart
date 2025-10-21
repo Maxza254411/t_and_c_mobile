@@ -644,7 +644,7 @@ class _CompleatedState extends State<Compleated> {
                                                       ),
                                                     ],
                                                   ),
-                                                   Row(
+                                                  Row(
                                                     children: [
                                                       Text(
                                                         "สี ",
@@ -653,14 +653,12 @@ class _CompleatedState extends State<Compleated> {
                                                           fontSize: 12,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                         
                                                         ),
                                                       ),
                                                       Text(
                                                         widget
-                                                            .selectedItems![index].color
-                                                            
-                                                           
+                                                            .selectedItems![index]
+                                                            .color,
                                                       ),
                                                     ],
                                                   ),
@@ -829,11 +827,20 @@ class _CompleatedState extends State<Compleated> {
                                       ),
                                     ),
 
-                                    const SizedBox(height: 12),
-
+                                     SizedBox(height: 12),
+Text(
+                                                    "ที แอนด์ ซี",
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.black87,
+                                                      letterSpacing: 2,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 12),
                                     // 🔢 เลขบัญชี
                                     Text(
-                                      "123-456-789-0",
+                                      "174-136-047-7",
                                       style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
@@ -850,7 +857,7 @@ class _CompleatedState extends State<Compleated> {
                                       child: ElevatedButton.icon(
                                         onPressed: () {
                                           Clipboard.setData(
-                                            ClipboardData(text: "1234567890"),
+                                            ClipboardData(text: "1741360477"),
                                           );
                                           ScaffoldMessenger.of(
                                             context,

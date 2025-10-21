@@ -159,7 +159,7 @@ class _RegisterState extends State<Register> {
                                      child: Center(
                                        child: SizedBox(
                                                          height: size.height * 0.3,
-                                                         child: Image.asset("assets/images/LHVGYY_qrcode.png"),
+                                                         child: Image.asset("assets/images/QrLineOf.png"),
                                                        ),
                                      ),
                                    ),

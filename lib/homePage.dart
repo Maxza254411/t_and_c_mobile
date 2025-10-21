@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                           child: brand.img_path == null
                                               ? Image.asset(
-                                                  "assets/images/NoImage.jpg",
+                                                  "assets/images/Ani.png",
                                                   width: 80,
                                                   height: 80,
                                                   fit: BoxFit.cover,
