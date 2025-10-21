@@ -11,6 +11,7 @@ import 'package:t_and_c_mobile/model/distributors.dart';
 import 'package:t_and_c_mobile/model/order.dart';
 import 'package:t_and_c_mobile/model/product.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
+import 'package:t_and_c_mobile/model/quotation.dart';
 import 'package:t_and_c_mobile/model/user.dart';
 import 'package:t_and_c_mobile/widget/apiException.dart';
 
@@ -191,7 +192,7 @@ class ProductApi {
     }
   }
 
-  // เส้น OrderList
+  // เส้น Quotation
   static Future<List<Order>> getOrderList() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -211,6 +212,44 @@ class ProductApi {
       throw ApiException(data['message']);
     }
   }
+    // เส้น Quotation Details
+  static Future <Order> getOrderDetails({required int quotation_id}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+
+    final url = Uri.https(publicUrl, '/api/quotation/$quotation_id');
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = convert.jsonDecode(response.body);
+      return Order.fromJson(data["data"]);
+    } else {
+      final data = convert.jsonDecode(response.body);
+      throw ApiException(data['message']);
+    }
+  }
+  // เส้น Quotation  delivery
+  static Future <Order> getOrderdelivery({required int delivery_id}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+    final url = Uri.https(publicUrl, '/api/quotation/delivery/$delivery_id');
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = convert.jsonDecode(response.body);
+      return Order.fromJson(data["data"]);
+    } else {
+      final data = convert.jsonDecode(response.body);
+      throw ApiException(data['message']);
+    }
+  }
+  
   ///getUser
     static Future<User> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

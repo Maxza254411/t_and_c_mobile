@@ -228,7 +228,7 @@ class _DetailproState extends State<Detailpro> {
                           onPageChanged: (index, reason) {
                             setState(() {
                               _currentIndex = index;
-                            //  widget.selectedProduct.sku;
+                              //  widget.selectedProduct.sku;
                             });
                           },
                         ),
@@ -335,8 +335,8 @@ class _DetailproState extends State<Detailpro> {
             ),
 
             SizedBox(height: 5),
-           
-           Column(
+
+            Column(
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
@@ -354,26 +354,31 @@ class _DetailproState extends State<Detailpro> {
                           ),
                         ),
                       ),
-                       widget.warehouse_skus.isNotEmpty
-                     ? Expanded(
-                        child: Text(
-                         "${widget.warehouse_skus[0].available??0.toString()} ชิ้น" ,
-                          style: TextStyle(fontSize: 14, color: Colors.black),
-                        ),
-                      )
-                      :Expanded(
-                        child: Text(
-                         "สินค้าหมด" ,
-                          style: TextStyle(fontSize: 14, color: Colors.black),
-                        ),
-                      )
+                      widget.warehouse_skus.isNotEmpty
+                          ? Expanded(
+                              child: Text(
+                                "${widget.warehouse_skus[0].available ?? 0.toString()} ชิ้น",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            )
+                          : Expanded(
+                              child: Text(
+                                "สินค้าหมด",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                 ),
                 SizedBox(height: 5),
               ],
             ),
-        
 
             Padding(
               padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
@@ -455,12 +460,12 @@ class _DetailproState extends State<Detailpro> {
                                     setState(() {
                                       selectedColor = val;
                                     });
-                      
+
                                     // หา index ของสีที่เลือก
                                     final index = widget.color!.indexWhere(
                                       (c) => c?.name_en == val,
                                     );
-                      
+
                                     if (index != -1 &&
                                         index < widget.sameproduct!.length) {
                                       _controller.animateToPage(
@@ -504,33 +509,34 @@ class _DetailproState extends State<Detailpro> {
                       ),
                     ),
                     onPressed: () {
-                      if ( widget.warehouse_skus.isEmpty || widget.warehouse_skus[0].available==null) {
-                         ScaffoldMessenger.of(context).showSnackBar(
+                      if (widget.warehouse_skus.isEmpty ||
+                          widget.warehouse_skus[0].available == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
                         );
-                      } else {                       
-                      if (selectedColor == null || selectedColor!.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
+                      } else {
+                        if (selectedColor == null || selectedColor!.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
+                          );
+                          return;
+                        }
+                        final shoping = Shoping(
+                          product_id: widget.productId,
+                          sku: widget.sku!,
+                          image: widget.image,
+                          name: widget.proName,
+                          price: widget.proPice,
+                          detail: widget.detail,
+                          color: selectedColor!,
+                          nameTh: widget.proNameTh ?? "",
+                          warehouse_skus: widget.warehouse_skus,
                         );
-                        return;
-                      }
-                      final shoping = Shoping(
-                        product_id: widget.productId,
-                        sku: widget.sku!,
-                        image: widget.image,
-                        name: widget.proName,
-                        price: widget.proPice,
-                        detail: widget.detail,
-                        color: selectedColor!,
-                        nameTh: widget.proNameTh ?? "",
-                        warehouse_skus: widget.warehouse_skus,
-                      );
-                      Provider.of<CartProvider>(
-                        context,
-                        listen: false,
-                      ).addItem(shoping);
-                      _runAddToCartAnimation();
+                        Provider.of<CartProvider>(
+                          context,
+                          listen: false,
+                        ).addItem(shoping);
+                        _runAddToCartAnimation();
                       }
                     },
                     child: Text(
@@ -558,385 +564,434 @@ class _DetailproState extends State<Detailpro> {
                       ),
                     ),
                     onPressed: () async {
-                      if ( widget.warehouse_skus.isEmpty|| widget.warehouse_skus[0].available==null) {
-                         ScaffoldMessenger.of(context).showSnackBar(
+                      if (widget.warehouse_skus.isEmpty ||
+                          widget.warehouse_skus[0].available == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
                         );
-                      }else{
-
-                      if (selectedColor == null || selectedColor!.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
-                        );
-                        return;
-                           }
+                      } else {
+                        if (selectedColor == null || selectedColor!.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
+                          );
+                          return;
+                        }
                         showModalBottomSheet(
-                         backgroundColor: Colors.white,
-                         context: context,
-                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(16),
+                          backgroundColor: Colors.white,
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(16),
+                            ),
                           ),
-                        ),
-                        isScrollControlled: true, // ให้เลื่อนขึ้นลงได้
-                        builder: (BuildContext context) {
-                          int quantity = 1;
-                          int totalPriceBottom = 0;
-                          return StatefulBuilder(
-                            builder: (BuildContext context, StateSetter setState) {
-                              return Stack(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Container(
-                                          // width: size.width * 1,
-                                          // height: size.height * 0.15,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              10,
+                          isScrollControlled: true, // ให้เลื่อนขึ้นลงได้
+                          builder: (BuildContext context) {
+                            int quantity = 1;
+                            int totalPriceBottom = 0;
+                            return StatefulBuilder(
+                              builder: (BuildContext context, StateSetter setState) {
+                                return Stack(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            // width: size.width * 1,
+                                            // height: size.height * 0.15,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                color: Colors.white,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(
+                                                8.0,
                                               ),
-                                              height: size.height * 0.15,
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                          left: 2,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  color: Colors.white,
+                                                ),
+                                                height: size.height * 0.15,
+                                                child: Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                            left: 2,
+                                                          ),
+                                                      child: SizedBox(
+                                                        width:
+                                                            size.width *
+                                                            0.2, // กำหนดความกว้าง
+                                                        height:
+                                                            size.height *
+                                                            0.08, // กำหนดความสูง
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                8,
+                                                              ), // ถ้าอยากให้มุมโค้ง
+                                                          child:
+                                                              widget.image ==
+                                                                  null
+                                                              ? Image.asset(
+                                                                  "assets/images/NoImage.jpg",
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                )
+                                                              : Image.network(
+                                                                  widget.image!,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
                                                         ),
-                                                    child: SizedBox(
-                                                      width:
-                                                          size.width *
-                                                          0.2, // กำหนดความกว้าง
-                                                      height:
-                                                          size.height *
-                                                          0.08, // กำหนดความสูง
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              8,
-                                                            ), // ถ้าอยากให้มุมโค้ง
-                                                        child:
-                                                            widget.image == null
-                                                            ? Image.asset(
-                                                                "assets/images/NoImage.jpg",
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                              )
-                                                            : Image.network(
-                                                                widget.image!,
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                              ),
                                                       ),
                                                     ),
-                                                  ),
 
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                          8.0,
-                                                        ),
-                                                    child: Container(
-                                                      width: 1,
-                                                      height:
-                                                          size.height * 0.08,
-                                                      color: kButtonColor,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Padding(
+                                                    Padding(
                                                       padding:
                                                           const EdgeInsets.all(
                                                             8.0,
                                                           ),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Text(
-                                                            widget.proName,
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style:
-                                                                const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                          ),
-                                                          Text(
-                                                            "สี $selectedColor",
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style:
-                                                                const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              // แสดงราคาฟอร์แมต
-                                                              Text(
-                                                                "฿ ${widget.proPice}",
+                                                      child: Container(
+                                                        width: 1,
+                                                        height:
+                                                            size.height * 0.08,
+                                                        color: kButtonColor,
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.all(
+                                                              8.0,
+                                                            ),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text(
+                                                              widget.proName,
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
-                                                            ],
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets.all(
-                                                                  8.0,
-                                                                ),
-                                                            child: Row(
+                                                            ),
+                                                            Text(
+                                                              "สี $selectedColor",
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            Row(
                                                               children: [
-                                                                // ลดจำนวน
-                                                                InkWell(
-                                                                  onTap: () async {
-                                                                    if (quantity >
-                                                                        1) {
-                                                                      setState(
-                                                                        () {
-                                                                          quantity--;
-                                                                        },
-                                                                      );
-                                                                    } else {
-                                                                      debugPrint(
-                                                                        "ต้องการลบสินค้า",
-                                                                      );
-                                                                    }
-                                                                  },
-                                                                  child: Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.all(
-                                                                          2.0,
-                                                                        ),
-                                                                    child: Image.asset(
-                                                                      "assets/icons/minus.png",
-                                                                      scale: 30,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 10,
-                                                                ),
+                                                                // แสดงราคาฟอร์แมต
                                                                 Text(
-                                                                  "$quantity",
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 10,
-                                                                ),
-                                                                // เพิ่มจำนวน
-                                                                InkWell(
-                                                                  onTap: () {
-                                                                    setState(() {
-                                                                      quantity++;
-                                                                    });
-                                                                  },
-                                                                  child: Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.all(
-                                                                          2.0,
-                                                                        ),
-                                                                    child: Image.asset(
-                                                                      "assets/icons/Regular.png",
-                                                                      scale: 30,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 10,
+                                                                  "฿ ${widget.proPice}",
                                                                 ),
                                                               ],
                                                             ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Divider(),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: "ราคารวม ฿ ",
-                                                      style: TextStyle(
-                                                        color: Colors
-                                                            .black, // สีตัวอักษรปกติ
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-
-                                                    TextSpan(
-                                                      text: formatNumber(
-                                                        totalPriceBottom =
-                                                            (double.parse(
-                                                                      widget
-                                                                          .proPice
-                                                                          .replaceAll(
-                                                                            ',',
-                                                                            '',
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets.all(
+                                                                    8.0,
+                                                                  ),
+                                                              child: Row(
+                                                                children: [
+                                                                  // ลดจำนวน
+                                                                  InkWell(
+                                                                    onTap: () async {
+                                                                      if (quantity >
+                                                                          1) {
+                                                                        setState(
+                                                                          () {
+                                                                            quantity--;
+                                                                          },
+                                                                        );
+                                                                      } else {
+                                                                        debugPrint(
+                                                                          "ต้องการลบสินค้า",
+                                                                        );
+                                                                      }
+                                                                    },
+                                                                    child: Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                            2.0,
                                                                           ),
-                                                                    ) *
-                                                                    quantity)
-                                                                .toInt(),
-                                                      ),
-                                                      style: TextStyle(
-                                                        color: kButtonColor,
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                                      child: Image.asset(
+                                                                        "assets/icons/minus.png",
+                                                                        scale:
+                                                                            30,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+
+                                                                  const SizedBox(
+                                                                    width: 10,
+                                                                  ),
+
+                                                                  // ✅ ช่องกรอกจำนวน
+                                                                  SizedBox(
+                                                                    width: 50,
+                                                                    height: 30,
+                                                                    child: TextField(
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      keyboardType:
+                                                                          TextInputType
+                                                                              .number,
+                                                                      controller: TextEditingController(
+                                                                        text: quantity
+                                                                            .toString(),
+                                                                      ),
+                                                                      onChanged: (value) {
+                                                                        final intValue =
+                                                                            int.tryParse(
+                                                                              value,
+                                                                            );
+                                                                        if (intValue !=
+                                                                                null &&
+                                                                            intValue >
+                                                                                0) {
+                                                                          setState(
+                                                                            () {
+                                                                              quantity = intValue;
+                                                                            },
+                                                                          );
+                                                                        }
+                                                                      },
+                                                                      decoration: InputDecoration(
+                                                                        contentPadding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              4,
+                                                                        ),
+                                                                        isDense:
+                                                                            true,
+                                                                        border:
+                                                                            OutlineInputBorder(),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+
+                                                                  const SizedBox(
+                                                                    width: 10,
+                                                                  ),
+
+                                                                  // เพิ่มจำนวน
+                                                                  InkWell(
+                                                                    onTap: () {
+                                                                      setState(
+                                                                        () {
+                                                                          quantity++;
+                                                                        },
+                                                                      );
+                                                                    },
+                                                                    child: Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                            2.0,
+                                                                          ),
+                                                                      child: Image.asset(
+                                                                        "assets/icons/Regular.png",
+                                                                        scale:
+                                                                            30,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                height: 55,
-                                                child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        kButtonColor,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8,
-                                                          ),
-                                                    ),
+                                            ),
+                                          ),
+                                          Divider(),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: "ราคารวม ฿ ",
+                                                        style: TextStyle(
+                                                          color: Colors
+                                                              .black, // สีตัวอักษรปกติ
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+
+                                                      TextSpan(
+                                                        text: formatNumber(
+                                                          totalPriceBottom =
+                                                              (double.parse(
+                                                                        widget
+                                                                            .proPice
+                                                                            .replaceAll(
+                                                                              ',',
+                                                                              '',
+                                                                            ),
+                                                                      ) *
+                                                                      quantity)
+                                                                  .toInt(),
+                                                        ),
+                                                        style: TextStyle(
+                                                          color: kButtonColor,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  onPressed: () async {
-                                                    if (widget.proPice !=
-                                                        "0.00") {
-                                                      final shoping = Shoping(
-                                                        product_id:
-                                                            widget.productId,
-                                                        quantity: quantity,
-                                                        image: widget.image,
-                                                        name: widget.proName,
-                                                        price: widget.proPice,
-                                                        detail: widget.detail,
-                                                        color:
-                                                            selectedColor ?? "",
-                                                        nameTh:
-                                                            widget.proNameTh ??
-                                                            "",
-                                                        warehouse_skus: widget
-                                                            .warehouse_skus,
-                                                      );
-
-                                                      // รอให้ bottom sheet ปิดเสร็จแล้วค่อย push หน้าใหม่
-                                                      await Future.delayed(
-                                                        Duration(
-                                                          milliseconds: 200,
-                                                        ),
-                                                      );
-
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (_) => Compleated(
-                                                            totalPrice: double.parse(
-                                                              totalPriceBottom
-                                                                  .toString()
-                                                                  .replaceAll(
-                                                                    ',',
-                                                                    '',
-                                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 55,
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor:
+                                                          kButtonColor,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
                                                             ),
-                                                            status: false,
-                                                            selectedItems: [
-                                                              shoping,
-                                                            ],
-                                                            slipe_status: false,
+                                                      ),
+                                                    ),
+                                                    onPressed: () async {
+                                                      if (widget.proPice !=
+                                                          "0.00") {
+                                                        final shoping = Shoping(
+                                                          product_id:
+                                                              widget.productId,
+                                                          quantity: quantity,
+                                                          image: widget.image,
+                                                          name: widget.proName,
+                                                          price: widget.proPice,
+                                                          detail: widget.detail,
+                                                          color:
+                                                              selectedColor ??
+                                                              "",
+                                                          nameTh:
+                                                              widget
+                                                                  .proNameTh ??
+                                                              "",
+                                                          warehouse_skus: widget
+                                                              .warehouse_skus,
+                                                        );
+
+                                                        // รอให้ bottom sheet ปิดเสร็จแล้วค่อย push หน้าใหม่
+                                                        await Future.delayed(
+                                                          Duration(
+                                                            milliseconds: 200,
                                                           ),
-                                                        ),
-                                                      );
-                                                    } else {
-                                                      await showDialog(
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            AlertDialogYes(
-                                                              title:
-                                                                  'แจ้งเตือน',
-                                                              description:
-                                                                  'ไม่สามารถทำรายการได้ \n เพราะราคามีค่าเป็น 0.00 บาท',
-                                                              pressYes: () =>
-                                                                  Navigator.pop(
-                                                                    context,
-                                                                  ),
+                                                        );
+
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (_) => Compleated(
+                                                              totalPrice: double.parse(
+                                                                totalPriceBottom
+                                                                    .toString()
+                                                                    .replaceAll(
+                                                                      ',',
+                                                                      '',
+                                                                    ),
+                                                              ),
+                                                              status: false,
+                                                              selectedItems: [
+                                                                shoping,
+                                                              ],
+                                                              slipe_status:
+                                                                  false,
                                                             ),
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Text(
-                                                    "สั่งซื้อ",
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: kbgf,
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        await showDialog(
+                                                          context: context,
+                                                          builder: (context) =>
+                                                              AlertDialogYes(
+                                                                title:
+                                                                    'แจ้งเตือน',
+                                                                description:
+                                                                    'ไม่สามารถทำรายการได้ \n เพราะราคามีค่าเป็น 0.00 บาท',
+                                                                pressYes: () =>
+                                                                    Navigator.pop(
+                                                                      context,
+                                                                    ),
+                                                              ),
+                                                        );
+                                                      }
+                                                    },
+                                                    child: Text(
+                                                      "สั่งซื้อ",
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: kbgf,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 0,
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.close,
-                                        color: Colors.black,
+                                        ],
                                       ),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
                                     ),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                      );
+                                    Positioned(
+                                      right: 0,
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.close,
+                                          color: Colors.black,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        );
                       }
                     },
                     child: Text(

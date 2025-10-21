@@ -9,6 +9,7 @@ part of 'order.dart';
 Order _$OrderFromJson(Map<String, dynamic> json) => Order(
   (json['id'] as num?)?.toInt(),
   json['qo_code'] as String?,
+  json['dn_code'] as String?,
   (json['distributor_id'] as num?)?.toInt(),
   json['image_url'] as String?,
   json['qo_date'] as String?,
@@ -33,11 +34,15 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
   (json['items'] as List<dynamic>?)
       ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
       .toList(),
+  (json['delivery_orders'] as List<dynamic>?)
+      ?.map((e) => Delivery.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
   'id': instance.id,
   'qo_code': instance.qo_code,
+  'dn_code': instance.dn_code,
   'distributor_id': instance.distributor_id,
   'image_url': instance.image_url,
   'qo_date': instance.qo_date,
@@ -58,4 +63,5 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
   'tracking_no': instance.tracking_no,
   'distributor': instance.distributor,
   'items': instance.items,
+  'delivery_orders': instance.delivery_orders,
 };

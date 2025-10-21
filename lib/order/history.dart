@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as picker;
 
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/order.dart';
@@ -66,8 +67,11 @@ class _HistoryState extends State<History> {
     // 🔍 กรองจาก Search
     if (search.text.isNotEmpty) {
       temp = temp
-          .where((order) =>
-              order.qo_code!.toLowerCase().contains(search.text.toLowerCase()))
+          .where(
+            (order) => order.qo_code!.toLowerCase().contains(
+              search.text.toLowerCase(),
+            ),
+          )
           .toList();
     }
 
@@ -98,9 +102,11 @@ class _HistoryState extends State<History> {
       temp = temp.where((order) {
         final orderDate = DateTime.parse(order.qo_date!);
         return orderDate.isAfter(
-                selectedCustomStartDate!.subtract(const Duration(days: 1))) &&
+              selectedCustomStartDate!.subtract(const Duration(days: 1)),
+            ) &&
             orderDate.isBefore(
-                selectedCustomEndDate!.add(const Duration(days: 1)));
+              selectedCustomEndDate!.add(const Duration(days: 1)),
+            );
       }).toList();
     }
 
@@ -157,18 +163,23 @@ class _HistoryState extends State<History> {
                                   ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
-                                    borderSide:
-                                        BorderSide(color: Colors.grey.shade400),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey.shade400,
+                                    ),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                     borderSide: const BorderSide(
-                                        color: kButtonColor, width: 2),
+                                      color: kButtonColor,
+                                      width: 2,
+                                    ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                     borderSide: const BorderSide(
-                                        color: kButtonColor, width: 2),
+                                      color: kButtonColor,
+                                      width: 2,
+                                    ),
                                   ),
                                   hintText: "ค้นหาเลขคำสั่งซื้อ ...",
                                   hintStyle: const TextStyle(
@@ -189,8 +200,10 @@ class _HistoryState extends State<History> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
                                 color: Colors.white,
-                                border:
-                                    Border.all(color: kButtonColor, width: 2),
+                                border: Border.all(
+                                  color: kButtonColor,
+                                  width: 2,
+                                ),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -202,18 +215,25 @@ class _HistoryState extends State<History> {
                                     isExpanded: true,
                                     items: const [
                                       DropdownMenuItem(
-                                          value: "all", child: Text("ทั้งหมด")),
+                                        value: "all",
+                                        child: Text("ทั้งหมด"),
+                                      ),
                                       DropdownMenuItem(
-                                          value: "today", child: Text("วันนี้")),
+                                        value: "today",
+                                        child: Text("วันนี้"),
+                                      ),
                                       DropdownMenuItem(
-                                          value: "week",
-                                          child: Text("สัปดาห์นี้")),
+                                        value: "week",
+                                        child: Text("สัปดาห์นี้"),
+                                      ),
                                       DropdownMenuItem(
-                                          value: "month",
-                                          child: Text("เดือนนี้")),
+                                        value: "month",
+                                        child: Text("เดือนนี้"),
+                                      ),
                                       DropdownMenuItem(
-                                          value: "custom",
-                                          child: Text("เลือกช่วงวันที่")),
+                                        value: "custom",
+                                        child: Text("เลือกช่วงวันที่"),
+                                      ),
                                     ],
                                     onChanged: (value) async {
                                       if (value == "custom") {
@@ -281,7 +301,9 @@ class _HistoryState extends State<History> {
                             "ตั้งแต่ ${selectedCustomStartDate!.toLocal().toString().split(' ')[0]} "
                             "ถึง ${selectedCustomEndDate!.toLocal().toString().split(' ')[0]}",
                             style: const TextStyle(
-                                color: Colors.grey, fontSize: 14),
+                              color: Colors.grey,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                     ],
@@ -300,7 +322,7 @@ class _HistoryState extends State<History> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => Orderdetail(
-                                orderData: filteredOrders[index],
+                                quotation_id: filteredOrders[index].id!,
                               ),
                             ),
                           );
@@ -330,8 +352,8 @@ class _HistoryState extends State<History> {
                                               ),
                                             ),
                                             TextSpan(
-                                              text: filteredOrders[index]
-                                                  .qo_code,
+                                              text:
+                                                  filteredOrders[index].qo_code,
                                               style: const TextStyle(
                                                 color: kButtonColor,
                                                 fontWeight: FontWeight.bold,
@@ -343,19 +365,19 @@ class _HistoryState extends State<History> {
                                       Container(
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(
-                                          color: filteredOrders[index]
-                                                      .status ==
+                                          color:
+                                              filteredOrders[index].status ==
                                                   "doc_to_peak"
                                               ? Colors.amber
                                               : kbgM,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                         height: size.height * 0.05,
                                         child: Center(
                                           child: Text(
-                                            filteredOrders[index]
-                                                    .status_name ??
+                                            filteredOrders[index].status_name ??
                                                 "",
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
@@ -405,7 +427,7 @@ class _HistoryState extends State<History> {
                                           ],
                                         ),
                                       )
-                                    : const SizedBox.shrink()
+                                    : const SizedBox.shrink(),
                               ],
                             ),
                           ),

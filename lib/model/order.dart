@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:t_and_c_mobile/model/delivery.dart';
 import 'package:t_and_c_mobile/model/distributors.dart';
 import 'package:t_and_c_mobile/model/item.dart';
 
@@ -8,6 +9,7 @@ part 'order.g.dart';
 class Order {
   int? id;
   String? qo_code;
+   String?  dn_code;
   int? distributor_id;
   String? image_url;
   String? qo_date;
@@ -26,14 +28,16 @@ class Order {
   String? stage;
   String? payment_method;
  String? tracking_no;
-  Distributors? distributor;
-  List<Item>?items;
+ Distributors? distributor;
+ List<Item>?items;
+ List<Delivery>?delivery_orders;
 
 
 
   Order(
     this.id,
     this.qo_code,
+    this.dn_code,
     this.distributor_id,
     this.image_url,
     this.qo_date,
@@ -54,6 +58,7 @@ class Order {
     this.tracking_no,
     this.distributor,
     this.items,
+    this.delivery_orders,
   );
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);

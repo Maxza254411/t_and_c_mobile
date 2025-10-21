@@ -80,8 +80,7 @@ class _PendingPaymentsState extends State<PendingPayments> {
           ),
           body: SingleChildScrollView(
             child: Column(
-              children: [
-            
+              children: [            
                 Column(
                   children: List.generate(
                     filteredOrders.length,
@@ -92,7 +91,7 @@ class _PendingPaymentsState extends State<PendingPayments> {
                             Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>  Orderdetail(orderData: filteredOrders[index], ),
+                              builder: (context) =>  Orderdetail( quotation_id: filteredOrders[index].id!, ),
                             ),
                           );
                         },

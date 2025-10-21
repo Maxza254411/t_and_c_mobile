@@ -943,7 +943,7 @@ class _CompleatedState extends State<Compleated> {
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.asset(
-                                          "assets/images/NoImage.jpg",
+                                          "assets/images/pngtree-image-upload-icon-photo-upload-icon-png-image_2047546.jpg",
                                           height: 150,
                                           fit: BoxFit.cover,
                                         ),

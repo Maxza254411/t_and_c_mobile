@@ -187,102 +187,129 @@ class _BucketState extends State<Bucket> {
                                           Text("${product.price} บาท"),
                                         ],
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: [
-                                            // ลดจำนวน
-                                            InkWell(
-                                              onTap: () async {
-                                                if (product.quantity > 1) {
-                                                  setState(() {
-                                                    product.quantity--;
-                                                  });
-                                                } else {
-                                                  final out =
-                                                      await showDialog<bool>(
-                                                        barrierDismissible:
-                                                            true,
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            AlertDialogYesNo(
-                                                              description:
-                                                                  'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                              title:
-                                                                  'แจ้งเตือน',
-                                                            ),
-                                                      );
-                                                  if (out == true) {
-                                                    setState(() {
-                                                      cart.removeItem(product);
-                                                      checked.removeAt(index);
-                                                      quantities.removeAt(
-                                                        index,
-                                                      );
-                                                    });
-                                                  }
-                                                }
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                  2.0,
-                                                ),
-                                                child: Image.asset(
-                                                  "assets/icons/minus.png",
-                                                  scale: 30,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 10),
-                                            Text("${product.quantity}"),
-                                            SizedBox(width: 10),
-                                            // เพิ่มจำนวน
-                                            InkWell(
-                                              onTap: () {
-                                                setState(() {
-                                                  product.quantity++;
-                                                });
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                  2.0,
-                                                ),
-                                                child: Image.asset(
-                                                  "assets/icons/Regular.png",
-                                                  scale: 30,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 10),
-                                            InkWell(
-                                              onTap: () async {
-                                                final out = await showDialog<bool>(
-                                                  barrierDismissible: true,
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      AlertDialogYesNo(
-                                                        description:
-                                                            'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                        title: 'แจ้งเตือน',
-                                                      ),
-                                                );
+                                   Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: Row(
+    children: [
+      // ลดจำนวน
+      InkWell(
+        onTap: () async {
+          if (product.quantity > 1) {
+            setState(() {
+              product.quantity--;
+            });
+          } else {
+            final out = await showDialog<bool>(
+              barrierDismissible: true,
+              context: context,
+              builder: (context) => AlertDialogYesNo(
+                description: 'ต้องการลบสินค้ารายการนี้หรือไม่',
+                title: 'แจ้งเตือน',
+              ),
+            );
+            if (out == true) {
+              setState(() {
+                cart.removeItem(product);
+                checked.removeAt(index);
+                quantities.removeAt(index);
+              });
+            }
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Image.asset("assets/icons/minus.png", scale: 30),
+        ),
+      ),
 
-                                                if (out == true) {
-                                                  setState(() {
-                                                    cart.removeItem(product);
-                                                    checked.removeAt(index);
-                                                    quantities.removeAt(index);
-                                                  });
-                                                }
-                                              },
-                                              child: Image.asset(
-                                                "assets/icons/Trash.png",
-                                                scale: 30,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+      const SizedBox(width: 10),
+
+      // ✅ ช่องกรอกจำนวน
+      SizedBox(
+        width: 50,
+        height: 30,
+        child: TextField(
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          controller: TextEditingController(
+            text: product.quantity.toString(),
+          ),
+          onSubmitted: (value) {
+            final intValue = int.tryParse(value) ?? product.quantity;
+            setState(() {
+              if (intValue <= 0) {
+                // ถ้าพิมพ์เป็น 0 หรือติดลบ -> ถามว่าจะลบไหม
+                showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialogYesNo(
+                    title: 'แจ้งเตือน',
+                    description: 'ต้องการลบสินค้ารายการนี้หรือไม่',
+                  ),
+                ).then((out) {
+                  if (out == true) {
+                    setState(() {
+                      cart.removeItem(product);
+                      checked.removeAt(index);
+                      quantities.removeAt(index);
+                    });
+                  }
+                });
+              } else {
+                product.quantity = intValue;
+              }
+            });
+          },
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(vertical: 4),
+            isDense: true,
+            border: OutlineInputBorder(),
+          ),
+        ),
+      ),
+
+      const SizedBox(width: 10),
+
+      // เพิ่มจำนวน
+      InkWell(
+        onTap: () {
+          setState(() {
+            product.quantity++;
+          });
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Image.asset("assets/icons/Regular.png", scale: 30),
+        ),
+      ),
+
+      const SizedBox(width: 10),
+
+      // ปุ่มถังขยะ
+      InkWell(
+        onTap: () async {
+          final out = await showDialog<bool>(
+            barrierDismissible: true,
+            context: context,
+            builder: (context) => AlertDialogYesNo(
+              description: 'ต้องการลบสินค้ารายการนี้หรือไม่',
+              title: 'แจ้งเตือน',
+            ),
+          );
+
+          if (out == true) {
+            setState(() {
+              cart.removeItem(product);
+              checked.removeAt(index);
+              quantities.removeAt(index);
+            });
+          }
+        },
+        child: Image.asset("assets/icons/Trash.png", scale: 30),
+      ),
+    ],
+  ),
+),
+
                                     ],
                                   ),
                                 ),
