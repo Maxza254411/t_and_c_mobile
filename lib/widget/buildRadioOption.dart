@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:t_and_c_mobile/constang.dart';
 
-class BuildRadioOption extends StatelessWidget {
+class BuildRadioOption extends StatefulWidget {
   final String title;
   final String value;
   final String? groupValue;
   final Function(String?) onChanged;
+  final String typ;
 
   const BuildRadioOption({
     super.key,
     required this.title,
     required this.value,
     required this.groupValue,
-    required this.onChanged,
+    required this.onChanged, 
+    required this.typ,
   });
 
   @override
+  State<BuildRadioOption> createState() => _BuildRadioOptionState();
+}
+
+class _BuildRadioOptionState extends State<BuildRadioOption> {
+  @override
   Widget build(BuildContext context) {
-    final bool isSelected = groupValue == value;
+    final bool isSelected = widget.groupValue == widget.value;
   final size = MediaQuery.of(context).size;
     return GestureDetector(
-      onTap: () => onChanged(value),
+      onTap: () => widget.onChanged(widget.value),
       child: Container(
         height: size.height*0.05,
         margin: const EdgeInsets.symmetric(vertical: 6),
@@ -34,22 +41,31 @@ class BuildRadioOption extends StatelessWidget {
         child: Row(
           children: [
             Radio<String>(
-              value: value,
-              groupValue: groupValue,
+              value: widget.value,
+              groupValue: widget.groupValue,
               activeColor:kButtonColor,
-              onChanged: onChanged,
+              onChanged: widget.onChanged,
             ),
-            SizedBox(
+            widget.typ=='color'
+           ? SizedBox(
               width: size.width*0.25,
               child: Text(
-                title,
+                widget.title,
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: widget.typ=='color'? 10:16,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   color: Colors.black87,
                 ),
               ),
-            ),
+            )
+            : Text(
+                widget.title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  color: Colors.black87,
+                ),
+              ),
           ],
         ),
       ),

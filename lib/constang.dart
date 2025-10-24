@@ -25,30 +25,6 @@ List<Map<String, String>> pay = [
   {"pay": "จ่ายผ่านเครดิต", "value": "credit"},
 ];
 
-// List<Map<String, String>> orderbill = [
-//   {
-//     "productname": "Airpods pro",
-//     "pice": "0.00",
-//     "qty": "1",
-//     "discount": "0.00",
-//     "total": "0.00",
-//   },
-//   {
-//     "productname": "Aestheic Mug - white",
-//     "pice": "0.00",
-//     "qty": "1",
-//     "discount": "0.00",
-//     "total": "0.00",
-//   },
-//   {
-//     "productname": "Gaming Monitor",
-//     "pice": "0.00",
-//     "qty": "1",
-//     "discount": "0.00",
-//     "total": "0.00",
-//   },
-// ];
-
 String? selectedPay = "cash";
 
 String formatNumber(dynamic value, {int decimal = 2}) {

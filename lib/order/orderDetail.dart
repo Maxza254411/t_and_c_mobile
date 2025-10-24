@@ -148,6 +148,7 @@ class _OrderdetailState extends State<Orderdetail> {
           : SingleChildScrollView(
               child: Column(
                 children: [
+                  
                   orderData!.delivery_orders!.isEmpty
                       ? SizedBox.shrink()
                       : Padding(
@@ -254,34 +255,6 @@ class _OrderdetailState extends State<Orderdetail> {
                                   height: size.height * 0.1,
                                   child: Row(
                                     children: [
-                                      // Padding(
-                                      //   padding: const EdgeInsets.only(
-                                      //     left: 12,
-                                      //   ),
-                                      //   child:
-                                      //       orderData!
-                                      //               .items![index]
-                                      //               .product!
-                                      //               .image_url ==
-                                      //           null
-                                      //       ? Image.asset(
-                                      //           "assets/images/LOGO CMYK-01.png",
-                                      //         )
-                                      //       : Image.network(
-                                      //           orderData!
-                                      //               .items![index]
-                                      //               .product!
-                                      //               .image_url!,
-                                      //         ),
-                                      // ),
-                                      // Padding(
-                                      //   padding: const EdgeInsets.all(8.0),
-                                      //   child: Container(
-                                      //     width: 1,
-                                      //     height: size.height * 0.05,
-                                      //     color: kButtonColor,
-                                      //   ),
-                                      // ),
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -469,7 +442,7 @@ class _OrderdetailState extends State<Orderdetail> {
                                                           selectedPay = val;
                                                           print(selectedPay);
                                                         });
-                                                      },
+                                                      }, typ: 'money',
                                                     ),
                                                   ),
                                                 ),

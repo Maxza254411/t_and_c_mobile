@@ -316,7 +316,7 @@ class _HistoryState extends State<History> {
                       children: [
                         SizedBox(height: size.height*0.3,),
                         Text(
-                          "ไม่พบสินค้าในตะกร้า",
+                          "ไม่พบใบคำสั่งซื้อ",
                           style: TextStyle(
                             color: kbgM,
                             fontSize: 22,

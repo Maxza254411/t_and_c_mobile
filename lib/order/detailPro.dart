@@ -476,7 +476,7 @@ class _DetailproState extends State<Detailpro> {
                                         curve: Curves.easeInOut,
                                       );
                                     }
-                                  },
+                                  }, typ: 'color',
                                 ),
                               ),
                             );

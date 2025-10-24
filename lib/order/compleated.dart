@@ -724,7 +724,7 @@ class _CompleatedState extends State<Compleated> {
                                     selectedPay = val;
                                     print(selectedPay);
                                   });
-                                },
+                                }, typ: 'money',
                               ),
                             ),
                           ),
