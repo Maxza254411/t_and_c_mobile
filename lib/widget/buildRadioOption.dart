@@ -39,12 +39,15 @@ class BuildRadioOption extends StatelessWidget {
               activeColor:kButtonColor,
               onChanged: onChanged,
             ),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: Colors.black87,
+            SizedBox(
+              width: size.width*0.25,
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  color: Colors.black87,
+                ),
               ),
             ),
           ],

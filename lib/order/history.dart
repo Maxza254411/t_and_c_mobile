@@ -310,112 +310,110 @@ class _HistoryState extends State<History> {
                   ),
                 ),
 
-                // 📋 แสดงรายการ Order
-                Column(
-                  children: List.generate(
-                    filteredOrders.length,
-                    (index) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Orderdetail(
-                                quotation_id: filteredOrders[index].id!,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.white,
+                filteredOrders.isEmpty
+                    ? Column(
+                   
+                      children: [
+                        SizedBox(height: size.height*0.3,),
+                        Text(
+                          "ไม่พบสินค้าในตะกร้า",
+                          style: TextStyle(
+                            color: kbgM,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
                           ),
-                          child: Padding(
+                        ),
+                      ],
+                    )
+                    // 📋 แสดงรายการ Order
+                    : Column(
+                        children: List.generate(
+                          filteredOrders.length,
+                          (index) => Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text.rich(
-                                        TextSpan(
-                                          children: [
-                                            const TextSpan(
-                                              text: "Order # ",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text:
-                                                  filteredOrders[index].qo_code,
-                                              style: const TextStyle(
-                                                color: kButtonColor,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color:
-                                              filteredOrders[index].status ==
-                                                  "doc_to_peak"
-                                              ? Colors.amber
-                                              : kbgM,
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        height: size.height * 0.05,
-                                        child: Center(
-                                          child: Text(
-                                            filteredOrders[index].status_name ??
-                                                "",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Orderdetail(
+                                      quotation_id: filteredOrders[index].id!,
+                                    ),
                                   ),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.white,
                                 ),
-                                Padding(
+                                child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  child: Column(
                                     children: [
-                                      const Text("วันที่สั่งซื้อ"),
-                                      Text(
-                                        "${filteredOrders[index].qo_date}",
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: kButtonColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                filteredOrders[index].payment_method == "credit"
-                                    ? Padding(
+                                      Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            const Text("วันที่ครบกำหนดชำระ"),
+                                            Text.rich(
+                                              TextSpan(
+                                                children: [
+                                                  const TextSpan(
+                                                    text: "Order # ",
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: filteredOrders[index]
+                                                        .qo_code,
+                                                    style: const TextStyle(
+                                                      color: kButtonColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: const EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    filteredOrders[index]
+                                                            .status ==
+                                                        "doc_to_peak"
+                                                    ? Colors.amber
+                                                    : kbgM,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              height: size.height * 0.05,
+                                              child: Center(
+                                                child: Text(
+                                                  filteredOrders[index]
+                                                          .status_name ??
+                                                      "",
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text("วันที่สั่งซื้อ"),
                                             Text(
                                               "${filteredOrders[index].qo_date}",
                                               style: const TextStyle(
@@ -426,16 +424,42 @@ class _HistoryState extends State<History> {
                                             ),
                                           ],
                                         ),
-                                      )
-                                    : const SizedBox.shrink(),
-                              ],
+                                      ),
+                                      filteredOrders[index].payment_method ==
+                                              "credit"
+                                          ? Padding(
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    "วันที่ครบกำหนดชำระ",
+                                                  ),
+                                                  Text(
+                                                    "${filteredOrders[index].qo_date}",
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: kButtonColor,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          : const SizedBox.shrink(),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
