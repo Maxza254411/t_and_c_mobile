@@ -289,7 +289,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                                 proPice: item.price,
                                                 detail: '',
                                                 color: item.colors,
-                                                proNameTh: item.nameTh, warehouse_skus: item.warehouse_skus,
+                                                proNameTh: item.nameTh, warehouse_skus: item.warehouse_skus, namebrand: item.namebrand??"",
                                                 // selectedProduct:item.skulist?? ,
                                               ),
                                             ),

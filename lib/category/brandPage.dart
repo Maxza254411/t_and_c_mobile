@@ -394,6 +394,7 @@ class _BrandPageState extends State<BrandPage> {
                                                     .toList();
 
                                                 final currentProduct = Shoping(
+                                                  namebrand:widget.namebrand,
                                                   sku: selectedProduct.sku!,
                                                   product_id: selectedProduct!
                                                       .id
@@ -510,7 +511,7 @@ class _BrandPageState extends State<BrandPage> {
                                                     warehouse_skus:
                                                         selectedProduct
                                                             .warehouse_skus ??
-                                                        [],
+                                                        [], namebrand: widget.namebrand,
                                                   //  selectedProduct: product[index],
                                                   ),
                                                 ),

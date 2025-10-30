@@ -1,10 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:t_and_c_mobile/constang.dart';
-import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/order/compleated.dart';
 import 'package:t_and_c_mobile/povider/cartProvider.dart';
@@ -49,12 +47,40 @@ class _BucketState extends State<Bucket> {
     }
   }
 
+  /// ✅ ฟังก์ชันคำนวณจำนวนสินค้าของแต่ละแบรนด์ที่ถูกติ๊ก
+  Map<String, int> calculateBrandQty(CartProvider cart) {
+    Map<String, int> brandCount = {
+      "Anidary": 0,
+      "Baseus": 0,
+      "Alldocube": 0,
+    };
+
+    for (int i = 0; i < cart.items.length; i++) {
+      if (checked[i]) {
+        final brand = cart.items[i].namebrand?.toString().trim() ?? "";
+        final qty = cart.items[i].quantity;
+
+        if (brandCount.containsKey(brand)) {
+          brandCount[brand] = brandCount[brand]! + qty;
+        }
+      }
+    }
+
+    return brandCount;
+  }
+
+  String formatNumber(double number) {
+    final formatter = NumberFormat("#,##0.00");
+    return formatter.format(number);
+  }
+
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
     final size = MediaQuery.of(context).size;
 
     double totalPrice = calculateTotalPrice(cart);
+    final brandQty = calculateBrandQty(cart);
 
     return Scaffold(
       backgroundColor: kbgH,
@@ -62,13 +88,7 @@ class _BucketState extends State<Bucket> {
         automaticallyImplyLeading: false,
         backgroundColor: kButtonColor,
         leading: IconButton(
-          onPressed: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => FirstPage()),
-            // );
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.chevron_left, color: Colors.white),
         ),
         title: Row(
@@ -104,7 +124,7 @@ class _BucketState extends State<Bucket> {
                     itemBuilder: (context, index) {
                       final product = cart.items[index];
                       if (index >= checked.length) {
-                        checked.add(false); // default = false
+                        checked.add(false);
                         quantities.add(product.quantity);
                       }
                       return Padding(
@@ -130,12 +150,10 @@ class _BucketState extends State<Bucket> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 2),
                                 child: SizedBox(
-                                  width: size.width * 0.2, // กำหนดความกว้าง
-                                  height: size.height * 0.08, // กำหนดความสูง
+                                  width: size.width * 0.2,
+                                  height: size.height * 0.08,
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                      8,
-                                    ), // ถ้าอยากให้มุมโค้ง
+                                    borderRadius: BorderRadius.circular(8),
                                     child: product.image == null
                                         ? Image.asset(
                                             "assets/images/NoImage.jpg",
@@ -148,7 +166,6 @@ class _BucketState extends State<Bucket> {
                                   ),
                                 ),
                               ),
-
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Container(
@@ -170,20 +187,17 @@ class _BucketState extends State<Bucket> {
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                            fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                         "สี ${product.color}",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                            fontWeight: FontWeight.bold),
                                       ),
                                       Row(
                                         children: [
-                                          // แสดงราคาฟอร์แมต
                                           Text("${product.price} บาท"),
                                         ],
                                       ),
@@ -201,42 +215,35 @@ class _BucketState extends State<Bucket> {
                                                 } else {
                                                   final out =
                                                       await showDialog<bool>(
-                                                        barrierDismissible:
-                                                            true,
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            AlertDialogYesNo(
-                                                              description:
-                                                                  'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                              title:
-                                                                  'แจ้งเตือน',
-                                                            ),
-                                                      );
+                                                    barrierDismissible: true,
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        AlertDialogYesNo(
+                                                      description:
+                                                          'ต้องการลบสินค้ารายการนี้หรือไม่',
+                                                      title: 'แจ้งเตือน',
+                                                    ),
+                                                  );
                                                   if (out == true) {
                                                     setState(() {
                                                       cart.removeItem(product);
                                                       checked.removeAt(index);
                                                       quantities.removeAt(
-                                                        index,
-                                                      );
+                                                          index);
                                                     });
                                                   }
                                                 }
                                               },
                                               child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                  2.0,
-                                                ),
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
                                                 child: Image.asset(
                                                   "assets/icons/minus.png",
                                                   scale: 30,
                                                 ),
                                               ),
                                             ),
-
                                             const SizedBox(width: 10),
-
-                                            // ✅ ช่องกรอกจำนวน
                                             SizedBox(
                                               width: 50,
                                               height: 30,
@@ -246,37 +253,33 @@ class _BucketState extends State<Bucket> {
                                                     TextInputType.number,
                                                 controller:
                                                     TextEditingController(
-                                                      text: product.quantity
-                                                          .toString(),
-                                                    ),
+                                                  text: product.quantity
+                                                      .toString(),
+                                                ),
                                                 onSubmitted: (value) {
                                                   final intValue =
                                                       int.tryParse(value) ??
-                                                      product.quantity;
+                                                          product.quantity;
                                                   setState(() {
                                                     if (intValue <= 0) {
-                                                      // ถ้าพิมพ์เป็น 0 หรือติดลบ -> ถามว่าจะลบไหม
                                                       showDialog<bool>(
                                                         context: context,
                                                         builder: (context) =>
                                                             AlertDialogYesNo(
-                                                              title:
-                                                                  'แจ้งเตือน',
-                                                              description:
-                                                                  'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                            ),
+                                                          title: 'แจ้งเตือน',
+                                                          description:
+                                                              'ต้องการลบสินค้ารายการนี้หรือไม่',
+                                                        ),
                                                       ).then((out) {
                                                         if (out == true) {
                                                           setState(() {
                                                             cart.removeItem(
-                                                              product,
-                                                            );
+                                                                product);
                                                             checked.removeAt(
-                                                              index,
-                                                            );
-                                                            quantities.removeAt(
-                                                              index,
-                                                            );
+                                                                index);
+                                                            quantities
+                                                                .removeAt(
+                                                                    index);
                                                           });
                                                         }
                                                       });
@@ -289,16 +292,13 @@ class _BucketState extends State<Bucket> {
                                                 decoration: InputDecoration(
                                                   contentPadding:
                                                       EdgeInsets.symmetric(
-                                                        vertical: 4,
-                                                      ),
+                                                          vertical: 4),
                                                   isDense: true,
                                                   border: OutlineInputBorder(),
                                                 ),
                                               ),
                                             ),
-
                                             const SizedBox(width: 10),
-
                                             // เพิ่มจำนวน
                                             InkWell(
                                               onTap: () {
@@ -307,30 +307,28 @@ class _BucketState extends State<Bucket> {
                                                 });
                                               },
                                               child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                  2.0,
-                                                ),
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
                                                 child: Image.asset(
                                                   "assets/icons/Regular.png",
                                                   scale: 30,
                                                 ),
                                               ),
                                             ),
-
                                             const SizedBox(width: 10),
-
                                             // ปุ่มถังขยะ
                                             InkWell(
                                               onTap: () async {
-                                                final out = await showDialog<bool>(
+                                                final out =
+                                                    await showDialog<bool>(
                                                   barrierDismissible: true,
                                                   context: context,
                                                   builder: (context) =>
                                                       AlertDialogYesNo(
-                                                        description:
-                                                            'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                        title: 'แจ้งเตือน',
-                                                      ),
+                                                    description:
+                                                        'ต้องการลบสินค้ารายการนี้หรือไม่',
+                                                    title: 'แจ้งเตือน',
+                                                  ),
                                                 );
 
                                                 if (out == true) {
@@ -360,47 +358,49 @@ class _BucketState extends State<Bucket> {
                     },
                   ),
                 ),
+
+                /// ส่วนแสดงจำนวนสินค้าของแต่ละแบรนด์
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-               
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: Colors.white,
                     ),
-                    // height: size.height * 0.13,
                     width: double.infinity,
-                         child:Padding(
-                           padding: const EdgeInsets.all(8.0),
-                           child: Column(
-                             children: [
-                               Row(
-                                 children: [
-                                   Text("จำนวนสินค้าของเเบร์น Anidar"),
-                                    Text(" 0 "),
-                                     Text("ชิ้น"),
-                                 ],
-                               ),
-                                Row(
-                                 children: [
-                                   Text("จำนวนสินค้าของเเบร์น Baseus"),
-                                    Text(" 0 "),
-                                     Text("ชิ้น"),
-                                 ],
-                               ),
-                                Row(
-                                 children: [
-                                   Text("จำนวนสินค้าของเเบร์น Alldocube"),
-                                    Text(" 0 "),
-                                     Text("ชิ้น"),
-                                 ],
-                               ),
-                             ],
-                           ),
-                         ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text("จำนวนสินค้าของแบรนด์ Anidary "),
+                              Text("${brandQty["Anidary"] ?? 0} "),
+                              Text("ชิ้น"),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text("จำนวนสินค้าของแบรนด์ Baseus "),
+                              Text("${brandQty["Baseus"] ?? 0} "),
+                              Text("ชิ้น"),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text("จำนวนสินค้าของแบรนด์ Alldocube "),
+                              Text("${brandQty["Alldocube"] ?? 0} "),
+                              Text("ชิ้น"),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-                // ราคารวม + ปุ่มถัดไป
+
+                /// ส่วนราคารวม + ปุ่มถัดไป
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -443,20 +443,20 @@ class _BucketState extends State<Bucket> {
                                         totalPrice: totalPrice,
                                         status: false,
                                         selectedItems: selectedItems,
-                                        slipe_status:
-                                            false, // ส่งไปหน้า Compleated
+                                        slipe_status: false,
                                       ),
                                     ),
                                   );
                                 }
                               },
-
                               child: Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
-                                    color: totalPrice > 0 ? kButtonColor : kbgf,
+                                    color: totalPrice > 0
+                                        ? kButtonColor
+                                        : kbgf,
                                   ),
                                   height: size.height * 0.05,
                                   width: double.infinity,

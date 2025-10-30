@@ -16,11 +16,13 @@ class Catagory extends StatefulWidget {
     required this.title,
     required this.productTypid,
     required this.statusPage,
+    required this.namebrand,
   });
   final int brandid;
   final String title;
   final int productTypid;
   final String statusPage;
+  final String  namebrand;
 
   @override
   State<Catagory> createState() => _CatagoryState();
@@ -403,7 +405,7 @@ class _CatagoryState extends State<Catagory> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Detailpro(
+                            builder: (context) => Detailpro(                            
                               sameproduct: sameproduct,
                               image: product.product?.image_url,
                               productId: product.product?.id.toString() ?? "",
@@ -417,7 +419,7 @@ class _CatagoryState extends State<Catagory> {
                                   .product
                                   ?.name_th, // ส่ง list สีทั้งหมด
                               sku: product.sku,
-                              warehouse_skus: product.warehouse_skus ?? [],
+                              warehouse_skus: product.warehouse_skus ?? [], namebrand: widget.namebrand,
                               // selectedProduct: product,
                             ),
                           ),

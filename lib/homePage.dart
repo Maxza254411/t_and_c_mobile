@@ -501,7 +501,7 @@ class _HomePageState extends State<HomePage> {
                                                         warehouse_skus:
                                                             selectedProduct
                                                                 .warehouse_skus ??
-                                                            [],
+                                                            [], namebrand: 'Anidary',
                                                         //  selectedProduct: product[index],
                                                       ),
                                                     ),
@@ -917,11 +917,11 @@ class _HomePageState extends State<HomePage> {
                             proPice: formatNumber(
                               selectedProduct.product?.srp_inc_vat ?? "",
                             ),
-                            detail: '',
+                            detail: 'Anidary',
                             color: colors,
                             proNameTh: selectedProduct.product?.name_th ?? "",
                             warehouse_skus:
-                                selectedProduct.warehouse_skus ?? [],
+                                selectedProduct.warehouse_skus ?? [], namebrand: 'Ad',
                             //  selectedProduct: selectedProduct,
                           ),
                         ),

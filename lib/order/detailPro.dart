@@ -27,6 +27,7 @@ class Detailpro extends StatefulWidget {
     this.sameproduct,
     this.sku,
     required this.warehouse_skus,
+    required this.namebrand
     // required this.selectedProduct,
   });
 
@@ -40,6 +41,7 @@ class Detailpro extends StatefulWidget {
   String? proNameTh;
   String? sku;
   List<Warehouse> warehouse_skus = [];
+  String namebrand;
   // Data selectedProduct;
 
   @override
@@ -316,6 +318,31 @@ class _DetailproState extends State<Detailpro> {
                   SizedBox(
                     width: 80, // กำหนดความกว้างของ Label "Name-En"
                     child: Text(
+                      "ชื่อเเบร์น :",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      widget.namebrand ,
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start, // ชิดด้านบน
+                children: [
+                  SizedBox(
+                    width: 80, // กำหนดความกว้างของ Label "Name-En"
+                    child: Text(
                       "SKU:",
                       style: TextStyle(
                         fontSize: 14,
@@ -405,6 +432,7 @@ class _DetailproState extends State<Detailpro> {
                   Consumer<FavoriteProvider>(
                     builder: (context, favProvider, child) {
                       final currentProduct = Shoping(
+                        namebrand: widget.namebrand,
                         sku: widget.sku!,
                         sameproduct: widget.sameproduct,
                         image: widget.image,
@@ -522,6 +550,7 @@ class _DetailproState extends State<Detailpro> {
                           return;
                         }
                         final shoping = Shoping(
+                          namebrand: widget.namebrand,
                           product_id: widget.productId,
                           sku: widget.sku!,
                           image: widget.image,
