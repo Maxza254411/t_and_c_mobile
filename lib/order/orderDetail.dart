@@ -398,7 +398,7 @@ class _OrderdetailState extends State<Orderdetail> {
                                 orderData?.payment_method == "cash"
                                     ? "จ่ายผ่านบัญชี"
                                     : orderData?.payment_method == "qrcode"
-                                    ? "จ่ายผ่านQrcode"
+                                    ? "จ่ายผ่าน Qr code"
                                     : "จ่ายผ่านเครดิต",
                                 style: TextStyle(fontSize: 16),
                               ),
@@ -462,10 +462,10 @@ class _OrderdetailState extends State<Orderdetail> {
                                                 children: [
                                                   ContainerHeader(
                                                     size: size,
-                                                    text: 'จ่ายผ่านQrcode',
+                                                    text: 'จ่ายผ่าน QR Code',
                                                   ),
                                                   Text(
-                                                    "บัญชีQrcode ธนาคาร",
+                                                    "บัญชี QR Code ธนาคาร",
                                                     style: TextStyle(
                                                       fontSize: 18,
                                                       fontWeight:

@@ -280,7 +280,7 @@ class _BillPageState extends State<BillPage> {
                                           ? "จ่ายผ่านบัญชี"
                                           : widget.orderData.payment_method ==
                                                 "qrcode"
-                                          ? "จ่ายผ่านQrcode"
+                                          ? "จ่ายผ่าน QR Code"
                                           : "จ่ายผ่านเครดิต",
                                     ),
                                   ],

@@ -752,10 +752,10 @@ class _CompleatedState extends State<Compleated> {
                                   children: [
                                     ContainerHeader(
                                       size: size,
-                                      text: 'จ่ายผ่านQrcode ธนาคาร',
+                                      text: 'จ่ายผ่าน QR Code ธนาคาร',
                                     ),
                                     Text(
-                                      "บัญชีQrcode ธนาคาร ธนาคาร",
+                                      "บัญชี QR Code ธนาคาร ธนาคาร",
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
