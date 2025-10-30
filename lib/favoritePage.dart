@@ -198,7 +198,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                   child: item.image == null
                                       ? Image.asset(
                                           "assets/images/NoImage.jpg",
-                                          fit: BoxFit.cover,
+                                        fit: BoxFit.fitHeight,
                                         )
                                       : Image.network(
                                           item.image!,

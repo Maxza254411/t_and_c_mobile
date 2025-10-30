@@ -25,6 +25,7 @@ class Shoping {
   final String? sku;
   String?qty;
 final List<Warehouse>warehouse_skus;
+String?namebrand;
 
   Shoping({
     required this.nameTh,
@@ -44,6 +45,7 @@ final List<Warehouse>warehouse_skus;
     this.sku,
     this.qty,
     required this.warehouse_skus,
+    this.namebrand,
   });
 
   factory Shoping.fromJson(Map<String, dynamic> json) => _$ShopingFromJson(json);

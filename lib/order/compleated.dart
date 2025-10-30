@@ -501,44 +501,44 @@ class _CompleatedState extends State<Compleated> {
                                 style: TextStyle(color: kButtonColor),
                               ),
                             ),
-                            Divider(),
+                            // Divider(),
 
-                            ListTile(
-                              leading: Image.asset(
-                                "assets/icons/ChatCircleDots.png",
-                                scale: 15,
-                              ),
-                              title: Text("ข้อความถึงหนักงาน"),
-                              subtitle: widget.status == true
-                                  ? Container(
-                                      height: size.height * 0.05,
-                                      width: size.width * 1,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: const Color.fromARGB(
-                                          255,
-                                          241,
-                                          241,
-                                          241,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("ถึงแล้วโทรมานะครับ"),
-                                      ),
-                                    )
-                                  : InputTextFormField(
-                                      maxLines: 1,
-                                      fontsize: 16,
-                                      controller: talk,
-                                      size: size,
-                                      heights: size.height * 0.05,
-                                      imagestatus: false,
-                                      whatfield: true,
-                                      hintText: "พิมพ์ข้อความ",
-                                      width: size.width * 1,
-                                    ),
-                            ),
+                            // ListTile(
+                            //   leading: Image.asset(
+                            //     "assets/icons/ChatCircleDots.png",
+                            //     scale: 15,
+                            //   ),
+                            //   title: Text("ข้อความถึงหนักงาน"),
+                            //   subtitle: widget.status == true
+                            //       ? Container(
+                            //           height: size.height * 0.05,
+                            //           width: size.width * 1,
+                            //           decoration: BoxDecoration(
+                            //             borderRadius: BorderRadius.circular(8),
+                            //             color: const Color.fromARGB(
+                            //               255,
+                            //               241,
+                            //               241,
+                            //               241,
+                            //             ),
+                            //           ),
+                            //           child: Padding(
+                            //             padding: const EdgeInsets.all(8.0),
+                            //             child: Text("ถึงแล้วโทรมานะครับ"),
+                            //           ),
+                            //         )
+                            //       : InputTextFormField(
+                            //           maxLines: 1,
+                            //           fontsize: 16,
+                            //           controller: talk,
+                            //           size: size,
+                            //           heights: size.height * 0.05,
+                            //           imagestatus: false,
+                            //           whatfield: true,
+                            //           hintText: "พิมพ์ข้อความ",
+                            //           width: size.width * 1,
+                            //         ),
+                            // ),
                           ],
                         ),
                       ],

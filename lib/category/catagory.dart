@@ -294,7 +294,7 @@ class _CatagoryState extends State<Catagory> {
                         )
                       : Image.network(
                           product.product!.image_url!,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fitHeight,
                           width: double.infinity,
                           height: double.infinity,
                         ),

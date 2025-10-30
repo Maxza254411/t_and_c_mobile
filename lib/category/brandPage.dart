@@ -19,9 +19,10 @@ import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
 class BrandPage extends StatefulWidget {
-  BrandPage({super.key, required this.title, required this.brandId});
+  BrandPage({super.key, required this.title, required this.brandId,required this.namebrand});
   String title;
   int brandId;
+  String namebrand;
 
   @override
   State<BrandPage> createState() => _BrandPageState();
@@ -46,6 +47,7 @@ class _BrandPageState extends State<BrandPage> {
   Future<void> getapi() async {
     try {
       LoadingDialog.open(context);
+      print(widget. namebrand);
       await context.read<ProductController>().getproductypBybrandId(
         brandid: widget.brandId,
       );
@@ -346,7 +348,7 @@ class _BrandPageState extends State<BrandPage> {
                                                       .product
                                                       ?.image_url ??
                                                   "",
-                                              fit: BoxFit.cover,
+                                             fit: BoxFit.fitHeight,
                                             ),
                                     ),
                                   ),

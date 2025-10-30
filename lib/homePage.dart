@@ -136,43 +136,44 @@ class _HomePageState extends State<HomePage> {
                                       MaterialPageRoute(
                                         builder: (_) => BrandPage(
                                           title: brand.name ?? "",
-                                          brandId: brand.id,
+                                          brandId: brand.id, namebrand: '${brand.name}',
                                         ),
                                       ),
                                     );
                                   },
-                                  child: Container(
-                                    width: 100,
-                                    margin: EdgeInsets.only(right: 12),
-                                    child: Column(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          child: brand.img_path == null
-                                              ? Image.asset(
-                                                  "assets/images/Ani.png",
-                                                  width: 80,
-                                                  height: 80,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Image.network(
-                                                  brand.img_path!,
-                                                  width: 80,
-                                                  height: 80,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                        ),
-                                        SizedBox(height: 6),
-                                        Text(
-                                          brand.name ?? "",
-                                          style: TextStyle(fontSize: 12),
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
+                                  child: Column(
+                                    children: [
+                                     Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      
                                     ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: brand.img_path == null
+                                          ? Image.asset(
+                                              "assets/images/Anidary.WEBP",
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Image.network(
+                                              brand.img_path!,
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.cover,
+                                            ),
+                                    ),
+                                  ),
+                                  
+                                      SizedBox(height: 6),
+                                      Text(
+                                        brand.name ?? "",
+                                        style: TextStyle(fontSize: 12),
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
                                   ),
                                 );
                               },
@@ -267,9 +268,10 @@ class _HomePageState extends State<HomePage> {
                                                       selectedProduct
                                                           .product!
                                                           .image_url!,
-                                                      fit: BoxFit.cover,
+                                                      fit: BoxFit.fitHeight,
                                                       width: double.infinity,
                                                       height: double.infinity,
+                                                      
                                                     ),
                                             ),
                           

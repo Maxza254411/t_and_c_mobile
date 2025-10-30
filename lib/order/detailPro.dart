@@ -100,7 +100,7 @@ class _DetailproState extends State<Detailpro> {
                   "assets/images/NoImage.jpg",
                   width: 40,
                   height: 40,
-                  fit: BoxFit.cover,
+                fit: BoxFit.fitHeight,
                 ),
         );
       },
@@ -196,7 +196,7 @@ class _DetailproState extends State<Detailpro> {
                                             "",
                                       ),
 
-                                      fit: BoxFit.cover,
+                                   fit: BoxFit.fitHeight,
                                     ),
                                   ),
                                 )
