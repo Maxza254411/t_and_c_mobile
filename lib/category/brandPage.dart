@@ -19,7 +19,12 @@ import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
 class BrandPage extends StatefulWidget {
-  BrandPage({super.key, required this.title, required this.brandId,required this.namebrand});
+  BrandPage({
+    super.key,
+    required this.title,
+    required this.brandId,
+    required this.namebrand,
+  });
   String title;
   int brandId;
   String namebrand;
@@ -47,7 +52,7 @@ class _BrandPageState extends State<BrandPage> {
   Future<void> getapi() async {
     try {
       LoadingDialog.open(context);
-      print(widget. namebrand);
+      print(widget.namebrand);
       await context.read<ProductController>().getproductypBybrandId(
         brandid: widget.brandId,
       );
@@ -58,9 +63,7 @@ class _BrandPageState extends State<BrandPage> {
         page: 1,
       );
       product = producs;
-      setState(() {
-
-      });
+      setState(() {});
 
       // uniqueProducts = product.map((e) => e.product).toSet().toList();
 
@@ -236,38 +239,43 @@ class _BrandPageState extends State<BrandPage> {
                 ],
               ),
               Padding(
-      padding: EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Allproduct(status: 'brand',brandId:  widget.brandId,)),
-          );
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: kButtonColor, width: 2),
-          ),
-          child: Row(
-            children: [
-              Image.asset("assets/icons/Search.png", scale: 20),
-              SizedBox(width: 8),
-              Text(
-                "ค้นหาประเภทสินค้า ...",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: 'IBMPlexSansThai',
-                  color: kbgM,
+                padding: EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Allproduct(
+                          status: 'brand',
+                          brandId: widget.brandId,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: kButtonColor, width: 2),
+                    ),
+                    child: Row(
+                      children: [
+                        Image.asset("assets/icons/Search.png", scale: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          "ค้นหาประเภทสินค้า ...",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'IBMPlexSansThai',
+                            color: kbgM,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-         ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -286,18 +294,18 @@ class _BrandPageState extends State<BrandPage> {
               ),
               uniqueProducts.isEmpty
                   ? Column(
-                  children: [
-                    SizedBox(height: size.height * 0.1),
-                    Text(
-                      "ไม่พบสินค้าแนะนำ",
-                      style: TextStyle(
-                        color: kbgM,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                )
+                      children: [
+                        SizedBox(height: size.height * 0.1),
+                        Text(
+                          "ไม่พบสินค้าแนะนำ",
+                          style: TextStyle(
+                            color: kbgM,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    )
                   : Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
@@ -348,7 +356,7 @@ class _BrandPageState extends State<BrandPage> {
                                                       .product
                                                       ?.image_url ??
                                                   "",
-                                             fit: BoxFit.fitHeight,
+                                              fit: BoxFit.fitHeight,
                                             ),
                                     ),
                                   ),
@@ -374,13 +382,37 @@ class _BrandPageState extends State<BrandPage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              "฿ ${formatNumber(selectedProduct?.product?.srp_inc_vat ?? "0")}",
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
+                                            selectedProduct.promotions!.isNotEmpty
+                                                ? Row(
+                                                    children: [
+                                                      Text(
+                                                        "฿ ${formatNumber(selectedProduct?.promotions![0].fixed_price ?? "0")}",
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600, 
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 10,),
+                                                      Text(
+                                                        formatNumber(selectedProduct!.base_price!),
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors.grey,
+                                                          decoration: TextDecoration
+                                                              .lineThrough, // ✅ ขีดฆ่าราคาเดิม
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Text(
+                                                    "฿ ${formatNumber(selectedProduct?.base_price ?? "0")}",
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
 
                                             Consumer<FavoriteProvider>(
                                               builder: (context, favProvider, child) {
@@ -394,7 +426,7 @@ class _BrandPageState extends State<BrandPage> {
                                                     .toList();
 
                                                 final currentProduct = Shoping(
-                                                  namebrand:widget.namebrand,
+                                                  namebrand: widget.namebrand,
                                                   sku: selectedProduct.sku!,
                                                   product_id: selectedProduct!
                                                       .id
@@ -404,13 +436,15 @@ class _BrandPageState extends State<BrandPage> {
                                                           .product
                                                           ?.name_en ??
                                                       "",
-                                                  price: formatNumber(
+                                                  price: 
+                                                  selectedProduct.promotions!.isNotEmpty
+                                                  ?formatNumber(selectedProduct.promotions![0].fixed_price ?? "0")
+                                                 : formatNumber(
                                                     selectedProduct
-                                                            ?.product
-                                                            ?.srp_inc_vat ??
+                                                            .base_price ??
                                                         "0",
                                                   ),
-                                                  detail: "",
+
                                                   colors: colors,
                                                   color: '',
                                                   nameTh:
@@ -477,7 +511,6 @@ class _BrandPageState extends State<BrandPage> {
                                                   .map((e) => e.product)
                                                   .toList();
 
-                                                  
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -495,12 +528,13 @@ class _BrandPageState extends State<BrandPage> {
                                                             .product
                                                             ?.name_en ??
                                                         "",
-                                                    proPice: formatNumber(
-                                                      selectedProduct
-                                                              .product
-                                                              ?.srp_inc_vat ??
-                                                          "",
-                                                    ),
+                                                    proPice: selectedProduct.promotions!.length > 1
+                                                  ?formatNumber(selectedProduct.promotions![0].fixed_price ?? "0")
+                                                 : formatNumber(
+                                                    selectedProduct
+                                                            .base_price ??
+                                                        "0",
+                                                  ),
                                                     detail: '',
                                                     color: colors,
                                                     proNameTh:
@@ -511,8 +545,9 @@ class _BrandPageState extends State<BrandPage> {
                                                     warehouse_skus:
                                                         selectedProduct
                                                             .warehouse_skus ??
-                                                        [], namebrand: widget.namebrand,
-                                                  //  selectedProduct: product[index],
+                                                        [],
+                                                    namebrand: widget.namebrand, promotion:selectedProduct.promotions??[],
+                                                    //  selectedProduct: product[index],
                                                   ),
                                                 ),
                                               );

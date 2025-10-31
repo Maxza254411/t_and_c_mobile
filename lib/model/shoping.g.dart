@@ -17,7 +17,6 @@ Shoping _$ShopingFromJson(Map<String, dynamic> json) => Shoping(
   product_id: json['product_id'] as String?,
   name: json['name'] as String,
   price: json['price'] as String,
-  detail: json['detail'] as String,
   color: json['color'] as String,
   colors: (json['colors'] as List<dynamic>?)
       ?.map(
@@ -46,7 +45,6 @@ Map<String, dynamic> _$ShopingToJson(Shoping instance) => <String, dynamic>{
   'name': instance.name,
   'nameTh': instance.nameTh,
   'price': instance.price,
-  'detail': instance.detail,
   'color': instance.color,
   'product_sku_id': instance.product_sku_id,
   'warehouse_id': instance.warehouse_id,

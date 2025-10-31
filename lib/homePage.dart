@@ -372,7 +372,7 @@ class _HomePageState extends State<HomePage> {
                                                                 ?.srp_inc_vat ??
                                                             "0",
                                                       ),
-                                                      detail: "",
+                                                      
                                                       colors: colors,
                                                       color: '',
                                                       nameTh:
@@ -501,7 +501,7 @@ class _HomePageState extends State<HomePage> {
                                                         warehouse_skus:
                                                             selectedProduct
                                                                 .warehouse_skus ??
-                                                            [], namebrand: 'Anidary',
+                                                            [], namebrand: 'Anidary', promotion: [],
                                                         //  selectedProduct: product[index],
                                                       ),
                                                     ),
@@ -872,7 +872,7 @@ class _HomePageState extends State<HomePage> {
                           price: formatNumber(
                             selectedProduct.product?.srp_inc_vat ?? "0",
                           ),
-                          detail: "",
+                         
                           colors: colors,
                           color: '',
                           nameTh: selectedProduct.product?.name_th ?? "",
@@ -921,7 +921,7 @@ class _HomePageState extends State<HomePage> {
                             color: colors,
                             proNameTh: selectedProduct.product?.name_th ?? "",
                             warehouse_skus:
-                                selectedProduct.warehouse_skus ?? [], namebrand: 'Ad',
+                                selectedProduct.warehouse_skus ?? [], namebrand: 'Ad', promotion: [],
                             //  selectedProduct: selectedProduct,
                           ),
                         ),

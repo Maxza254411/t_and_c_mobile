@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +7,7 @@ import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
+import 'package:t_and_c_mobile/model/promotione.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/model/warehouse.dart';
 import 'package:t_and_c_mobile/order/bucket.dart';
@@ -27,7 +30,8 @@ class Detailpro extends StatefulWidget {
     this.sameproduct,
     this.sku,
     required this.warehouse_skus,
-    required this.namebrand
+    required this.namebrand,
+    required this.promotion,
     // required this.selectedProduct,
   });
 
@@ -42,6 +46,7 @@ class Detailpro extends StatefulWidget {
   String? sku;
   List<Warehouse> warehouse_skus = [];
   String namebrand;
+  List<Promotione> promotion;
   // Data selectedProduct;
 
   @override
@@ -61,6 +66,16 @@ class _DetailproState extends State<Detailpro> {
     if (widget.color != null && widget.color!.isNotEmpty) {
       selectedColor = widget.color![0]?.name_en ?? "";
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (widget.promotion != []) {
+        await testPromo();
+      }
+      //  await testPromo();
+    });
+  }
+
+  Future<void> testPromo() async {
+    inspect(widget.promotion);
   }
 
   void _goToPage(int index) {
@@ -102,7 +117,7 @@ class _DetailproState extends State<Detailpro> {
                   "assets/images/NoImage.jpg",
                   width: 40,
                   height: 40,
-                fit: BoxFit.fitHeight,
+                  fit: BoxFit.fitHeight,
                 ),
         );
       },
@@ -198,7 +213,7 @@ class _DetailproState extends State<Detailpro> {
                                             "",
                                       ),
 
-                                   fit: BoxFit.fitHeight,
+                                      fit: BoxFit.fitHeight,
                                     ),
                                   ),
                                 )
@@ -318,7 +333,7 @@ class _DetailproState extends State<Detailpro> {
                   SizedBox(
                     width: 80, // กำหนดความกว้างของ Label "Name-En"
                     child: Text(
-                      "ชื่อเเบร์น :",
+                      "ชื่อแบร์น :",
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -328,7 +343,7 @@ class _DetailproState extends State<Detailpro> {
                   ),
                   Expanded(
                     child: Text(
-                      widget.namebrand ,
+                      widget.namebrand,
                       style: TextStyle(fontSize: 14, color: Colors.black),
                     ),
                   ),
@@ -439,7 +454,6 @@ class _DetailproState extends State<Detailpro> {
                         product_id: widget.productId,
                         name: widget.proName,
                         price: widget.proPice,
-                        detail: widget.detail,
                         colors: widget.color,
                         color: selectedColor ?? "",
                         nameTh: widget.proNameTh ?? "",
@@ -504,7 +518,8 @@ class _DetailproState extends State<Detailpro> {
                                         curve: Curves.easeInOut,
                                       );
                                     }
-                                  }, typ: 'color',
+                                  },
+                                  typ: 'color',
                                 ),
                               ),
                             );
@@ -556,10 +571,10 @@ class _DetailproState extends State<Detailpro> {
                           image: widget.image,
                           name: widget.proName,
                           price: widget.proPice,
-                          detail: widget.detail,
                           color: selectedColor!,
                           nameTh: widget.proNameTh ?? "",
                           warehouse_skus: widget.warehouse_skus,
+                          promotion: widget.promotion
                         );
                         Provider.of<CartProvider>(
                           context,
@@ -929,7 +944,6 @@ class _DetailproState extends State<Detailpro> {
                                                           image: widget.image,
                                                           name: widget.proName,
                                                           price: widget.proPice,
-                                                          detail: widget.detail,
                                                           color:
                                                               selectedColor ??
                                                               "",

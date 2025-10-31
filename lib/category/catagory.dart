@@ -22,7 +22,7 @@ class Catagory extends StatefulWidget {
   final String title;
   final int productTypid;
   final String statusPage;
-  final String  namebrand;
+  final String namebrand;
 
   @override
   State<Catagory> createState() => _CatagoryState();
@@ -343,13 +343,45 @@ class _CatagoryState extends State<Catagory> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "฿ ${formatNumber(product.product?.srp_inc_vat ?? "0")}",
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                     product.promotions==null
+                     ? Text(
+                                formatNumber(product!.base_price??""),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                  decoration: TextDecoration
+                                      .lineThrough, // ✅ ขีดฆ่าราคาเดิม
+                                ),
+                              )
+                   : product.promotions!.isNotEmpty
+                        ? Row(
+                            children: [
+                              Text(
+                                "฿ ${formatNumber(product?.promotions![0].fixed_price ?? "0")}",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                formatNumber(product!.base_price!),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                  decoration: TextDecoration
+                                      .lineThrough, // ✅ ขีดฆ่าราคาเดิม
+                                ),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            "฿ ${formatNumber(product.base_price ?? "0")}",
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
 
                     Consumer<FavoriteProvider>(
                       builder: (context, favProvider, child) {
@@ -359,10 +391,8 @@ class _CatagoryState extends State<Catagory> {
                           image: product.product?.image_url,
                           product_id: product.product?.id.toString(),
                           name: product.product?.name_en ?? "",
-                          price: formatNumber(
-                            product.product?.srp_inc_vat ?? "0",
-                          ),
-                          detail: "",
+                          price: formatNumber(product.base_price ?? "0"),
+
                           colors: productColors,
                           color: '',
                           nameTh: product.product?.name_th ?? "",
@@ -405,21 +435,26 @@ class _CatagoryState extends State<Catagory> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Detailpro(                            
+                            builder: (context) => Detailpro(
                               sameproduct: sameproduct,
                               image: product.product?.image_url,
                               productId: product.product?.id.toString() ?? "",
                               proName: product.product?.name_en ?? "",
-                              proPice: formatNumber(
-                                product.product?.srp_inc_vat ?? "0",
-                              ),
+                              proPice: product.promotions!.isNotEmpty
+                                  ? formatNumber(
+                                      product?.promotions![0].fixed_price ??
+                                          "0",
+                                    )
+                                  : formatNumber(product.base_price ?? "0"),
                               detail: '',
                               color: productColors,
                               proNameTh: product
                                   .product
                                   ?.name_th, // ส่ง list สีทั้งหมด
                               sku: product.sku,
-                              warehouse_skus: product.warehouse_skus ?? [], namebrand: widget.namebrand,
+                              warehouse_skus: product.warehouse_skus ?? [],
+                              namebrand: widget.namebrand,
+                              promotion: product.promotions ?? [],
                               // selectedProduct: product,
                             ),
                           ),

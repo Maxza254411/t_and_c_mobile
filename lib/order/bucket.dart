@@ -19,6 +19,8 @@ class _BucketState extends State<Bucket> {
   List<bool> checked = [];
   List<int> quantities = [];
 
+  
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -73,6 +75,13 @@ class _BucketState extends State<Bucket> {
     final formatter = NumberFormat("#,##0.00");
     return formatter.format(number);
   }
+Future<void> test() async {
+  final cart = Provider.of<CartProvider>(context, listen: false);
+  for (var i = 0; i < cart.items.length; i++) {
+    inspect(cart.items[i].promotion);
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +102,14 @@ class _BucketState extends State<Bucket> {
         ),
         title: Row(
           children: [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Image.asset("assets/icons/BucketIcon.png", scale: 15),
+            GestureDetector(
+              onTap: () async{
+               await test();
+              },
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Image.asset("assets/icons/BucketIcon.png", scale: 15),
+              ),
             ),
             SizedBox(width: 10),
             Text(

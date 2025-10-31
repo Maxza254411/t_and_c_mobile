@@ -239,7 +239,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                               product_id: item.product_id,
                                               name: item.name,
                                               price: item.price,
-                                              detail: "",
+                                        
                                               colors: item.colors,
                                               color: '',
                                               nameTh: item.nameTh, warehouse_skus: [],
@@ -289,7 +289,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                                 proPice: item.price,
                                                 detail: '',
                                                 color: item.colors,
-                                                proNameTh: item.nameTh, warehouse_skus: item.warehouse_skus, namebrand: item.namebrand??"",
+                                                proNameTh: item.nameTh, warehouse_skus: item.warehouse_skus, namebrand: item.namebrand??"", promotion: [],
                                                 // selectedProduct:item.skulist?? ,
                                               ),
                                             ),

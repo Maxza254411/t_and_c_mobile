@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
+import 'package:t_and_c_mobile/model/promotione.dart';
 import 'package:t_and_c_mobile/model/warehouse.dart';
 
 part 'data.g.dart';
@@ -14,6 +15,8 @@ class Data {
   int? color_id;
   int? status;
   String? cardType;
+  int?base_price;
+  List<Promotione>?promotions;
   ProductTyp? product;
   Colorp? color;
   List<Warehouse>? warehouse_skus;
@@ -26,6 +29,8 @@ class Data {
     this.color_id,
     this.status,
     this.cardType,
+    this.base_price,
+    this.promotions,
     this.product,
     this.warehouse_skus,
   );

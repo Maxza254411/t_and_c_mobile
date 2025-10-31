@@ -211,7 +211,8 @@ class _CompleatedState extends State<Compleated> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               custommer?.customer == null
-                                  ? Column(
+                                  ? 
+                                  Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       mainAxisAlignment:
