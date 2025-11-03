@@ -13,7 +13,7 @@ class Shoping {
   String? image;
   final String name;
   final String nameTh;
-  final String price;
+  String? price;
   final String color;
   String? product_sku_id;
   String? warehouse_id;
@@ -26,9 +26,10 @@ class Shoping {
   String? qty;
   final List<Warehouse> warehouse_skus;
   String? namebrand;
-  List<Promotione>?promotion;
+  List<Promotione>? promotion;
   final String? sku;
   final int? skuid;
+  int?price_per_unit;
 
   Shoping({
     required this.nameTh,
@@ -50,7 +51,9 @@ class Shoping {
     this.namebrand,
     this.sku,
     this.skuid,
-    this.promotion
+    this.promotion,
+    this.price_per_unit,
+
   });
 
   factory Shoping.fromJson(Map<String, dynamic> json) =>

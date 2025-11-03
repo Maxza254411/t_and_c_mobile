@@ -41,6 +41,7 @@ Shoping _$ShopingFromJson(Map<String, dynamic> json) => Shoping(
   promotion: (json['promotion'] as List<dynamic>?)
       ?.map((e) => Promotione.fromJson(e as Map<String, dynamic>))
       .toList(),
+  price_per_unit: (json['price_per_unit'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$ShopingToJson(Shoping instance) => <String, dynamic>{
@@ -64,4 +65,5 @@ Map<String, dynamic> _$ShopingToJson(Shoping instance) => <String, dynamic>{
   'promotion': instance.promotion?.map((e) => e.toJson()).toList(),
   'sku': instance.sku,
   'skuid': instance.skuid,
+  'price_per_unit': instance.price_per_unit,
 };

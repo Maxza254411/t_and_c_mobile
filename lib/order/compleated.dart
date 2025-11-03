@@ -1241,13 +1241,7 @@ class _CompleatedState extends State<Compleated> {
                                         );
                                       }
                                     }
-                                    inspect(
-                                      convert.jsonEncode(
-                                        productModel
-                                            .map((p) => p.toJson())
-                                            .toList(),
-                                      ),
-                                    );
+                                 
 
                                     await ProductApi.createOrder(
                                       distributor_id:

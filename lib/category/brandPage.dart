@@ -475,8 +475,7 @@ class _BrandPageState extends State<BrandPage> {
                                               final skus_id = sameProductList
                                                   .map((e) => e.id)
                                                   .toList();
-                                              inspect(skus_id);
-
+                                            
                                                 final currentProduct = Shoping(
                                                   namebrand: widget.namebrand,
                                                   
@@ -577,7 +576,7 @@ class _BrandPageState extends State<BrandPage> {
                                               final skus_id = sameProductList
                                                   .map((e) => e.id)
                                                   .toList();
-                                              inspect(skus_id);
+                                          
 
                                               Navigator.push(
                                                 context,

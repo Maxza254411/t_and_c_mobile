@@ -54,7 +54,6 @@ class _OrderdetailState extends State<Orderdetail> {
       );
       orderData = listOrder;
       setState(() {});
-      inspect(orderData);
       LoadingDialog.close(context);
     } on Exception catch (e) {
       LoadingDialog.close(context);

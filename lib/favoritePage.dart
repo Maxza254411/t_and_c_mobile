@@ -287,8 +287,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                                 image: item.image,
                                                 productId: item.product_id!,
                                                 proName: item.name,
-                                                proPice: item.price,
-                                            
+                                                proPice: item.price!,                                          
                                                 color: item.colors,
                                                 proNameTh: item.nameTh,
                                                 warehouse_skus:

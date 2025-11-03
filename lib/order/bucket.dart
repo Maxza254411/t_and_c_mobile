@@ -18,20 +18,42 @@ class Bucket extends StatefulWidget {
 class _BucketState extends State<Bucket> {
   List<bool> checked = [];
   List<int> quantities = [];
+  List<TextEditingController> qtyControllers = [];
+  int promotionpice = 0;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final cart = Provider.of<CartProvider>(context);
+
+    // init checked & quantities
     checked = List.generate(cart.items.length, (_) => false);
     quantities = List.generate(cart.items.length, (_) => 1);
+
+    // init controllers
+    while (qtyControllers.length < cart.items.length) {
+      qtyControllers.add(TextEditingController());
+    }
+    for (int i = 0; i < cart.items.length; i++) {
+      qtyControllers[i].text = cart.items[i].quantity.toString();
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var c in qtyControllers) {
+      c.dispose();
+    }
+    super.dispose();
   }
 
   double calculateTotalPrice(CartProvider cart) {
     double total = 0;
     for (int i = 0; i < cart.items.length; i++) {
       if (checked[i]) {
-        total += parsePrice(cart.items[i].price) * cart.items[i].quantity;
+        total +=
+            parsePrice(cart.items[i].price_per_unit ?? cart.items[i].price) *
+                cart.items[i].quantity;
       }
     }
     return total;
@@ -47,7 +69,6 @@ class _BucketState extends State<Bucket> {
     }
   }
 
-  /// ✅ ฟังก์ชันคำนวณจำนวนสินค้าของแต่ละแบรนด์ที่ถูกติ๊ก
   Map<String, int> calculateBrandQty(CartProvider cart) {
     Map<String, int> brandCount = {"Anidary": 0, "Baseus": 0, "Alldocube": 0};
 
@@ -55,7 +76,6 @@ class _BucketState extends State<Bucket> {
       if (checked[i]) {
         final brand = cart.items[i].namebrand?.toString().trim() ?? "";
         final qty = cart.items[i].quantity;
-
         if (brandCount.containsKey(brand)) {
           brandCount[brand] = brandCount[brand]! + qty;
         }
@@ -70,12 +90,32 @@ class _BucketState extends State<Bucket> {
     return formatter.format(number);
   }
 
-  // Future<void> test() async {
-  //   final cart = Provider.of<CartProvider>(context, listen: false);
-  //   for (var i = 0; i < cart.items.length; i++) {
-  //     inspect(cart.items[i].promotion);
-  //   }
-  // }
+  void checkPromotionForProduct(Shoping product) {
+    if (product.promotion == null || product.promotion!.isEmpty) return;
+
+    for (var promo in product.promotion!) {
+      if (promo.promotion_type == 2) {
+        bool matched = false;
+        for (var tier in promo.tiers) {
+          if (product.quantity >= (tier.min_qty !) &&
+              product.quantity <= (tier.max_qty! )) {
+            setState(() {
+              product.price_per_unit =
+                  tier.price_per_unit ?? int.parse(product.price!);
+            });
+            matched = true;
+            break;
+          }
+        }
+        if (!matched) {
+          setState(() {
+           product.price = double.parse(product.price!).toInt().toString();
+
+          });
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,14 +136,9 @@ class _BucketState extends State<Bucket> {
         ),
         title: Row(
           children: [
-            GestureDetector(
-              onTap: () async {
-                // await test();
-              },
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Image.asset("assets/icons/BucketIcon.png", scale: 15),
-              ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Image.asset("assets/icons/BucketIcon.png", scale: 15),
             ),
             SizedBox(width: 10),
             Text(
@@ -135,6 +170,10 @@ class _BucketState extends State<Bucket> {
                         checked.add(false);
                         quantities.add(product.quantity);
                       }
+
+                      // sync controller text
+                      qtyControllers[index].text = product.quantity.toString();
+
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
@@ -145,7 +184,6 @@ class _BucketState extends State<Bucket> {
                           height: size.height * 0.16,
                           child: Row(
                             children: [
-                              // Checkbox
                               Checkbox(
                                 activeColor: kButtonColor,
                                 value: checked[index],
@@ -206,7 +244,7 @@ class _BucketState extends State<Bucket> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                       Text(
+                                      Text(
                                         "SKU: ${product.sku}",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -216,7 +254,9 @@ class _BucketState extends State<Bucket> {
                                       ),
                                       Row(
                                         children: [
-                                          Text("${product.price} บาท"),
+                                          Text(
+                                            "${formatNumber(double.parse("${product.price_per_unit ?? product.price}"))} บาท",
+                                          ),
                                         ],
                                       ),
                                       Padding(
@@ -230,35 +270,31 @@ class _BucketState extends State<Bucket> {
                                                   setState(() {
                                                     product.quantity--;
                                                   });
+                                                  checkPromotionForProduct(product);
                                                 } else {
                                                   final out =
                                                       await showDialog<bool>(
-                                                        barrierDismissible:
-                                                            true,
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            AlertDialogYesNo(
-                                                              description:
-                                                                  'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                              title:
-                                                                  'แจ้งเตือน',
-                                                            ),
-                                                      );
+                                                    barrierDismissible: true,
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        AlertDialogYesNo(
+                                                      description:
+                                                          'ต้องการลบสินค้ารายการนี้หรือไม่',
+                                                      title: 'แจ้งเตือน',
+                                                    ),
+                                                  );
                                                   if (out == true) {
                                                     setState(() {
                                                       cart.removeItem(product);
                                                       checked.removeAt(index);
-                                                      quantities.removeAt(
-                                                        index,
-                                                      );
+                                                      quantities.removeAt(index);
+                                                      qtyControllers.removeAt(index);
                                                     });
                                                   }
                                                 }
                                               },
                                               child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                  2.0,
-                                                ),
+                                                padding: const EdgeInsets.all(2.0),
                                                 child: Image.asset(
                                                   "assets/icons/minus.png",
                                                   scale: 30,
@@ -266,6 +302,7 @@ class _BucketState extends State<Bucket> {
                                               ),
                                             ),
                                             const SizedBox(width: 10),
+                                            // TextField
                                             SizedBox(
                                               width: 50,
                                               height: 30,
@@ -273,52 +310,43 @@ class _BucketState extends State<Bucket> {
                                                 textAlign: TextAlign.center,
                                                 keyboardType:
                                                     TextInputType.number,
-                                                controller:
-                                                    TextEditingController(
-                                                      text: product.quantity
-                                                          .toString(),
-                                                    ),
+                                                controller: qtyControllers[index],
                                                 onSubmitted: (value) {
                                                   final intValue =
                                                       int.tryParse(value) ??
-                                                      product.quantity;
-                                                  setState(() {
-                                                    if (intValue <= 0) {
-                                                      showDialog<bool>(
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            AlertDialogYesNo(
-                                                              title:
-                                                                  'แจ้งเตือน',
-                                                              description:
-                                                                  'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                            ),
-                                                      ).then((out) {
-                                                        if (out == true) {
-                                                          setState(() {
-                                                            cart.removeItem(
-                                                              product,
-                                                            );
-                                                            checked.removeAt(
-                                                              index,
-                                                            );
-                                                            quantities.removeAt(
-                                                              index,
-                                                            );
-                                                          });
-                                                        }
-                                                      });
-                                                    } else {
-                                                      product.quantity =
-                                                          intValue;
-                                                    }
-                                                  });
+                                                          product.quantity;
+                                                  if (intValue <= 0) {
+                                                    showDialog<bool>(
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          AlertDialogYesNo(
+                                                        title: 'แจ้งเตือน',
+                                                        description:
+                                                            'ต้องการลบสินค้ารายการนี้หรือไม่',
+                                                      ),
+                                                    ).then((out) {
+                                                      if (out == true) {
+                                                        setState(() {
+                                                          cart.removeItem(product);
+                                                          checked.removeAt(index);
+                                                          quantities.removeAt(index);
+                                                          qtyControllers.removeAt(index);
+                                                        });
+                                                      }
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      product.quantity = intValue;
+                                                      checkPromotionForProduct(product);
+                                                      qtyControllers[index].text =
+                                                          intValue.toString();
+                                                    });
+                                                  }
                                                 },
                                                 decoration: InputDecoration(
                                                   contentPadding:
                                                       EdgeInsets.symmetric(
-                                                        vertical: 4,
-                                                      ),
+                                                          vertical: 4),
                                                   isDense: true,
                                                   border: OutlineInputBorder(),
                                                 ),
@@ -331,11 +359,12 @@ class _BucketState extends State<Bucket> {
                                                 setState(() {
                                                   product.quantity++;
                                                 });
+                                                checkPromotionForProduct(product);
+                                                qtyControllers[index].text =
+                                                    product.quantity.toString();
                                               },
                                               child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                  2.0,
-                                                ),
+                                                padding: const EdgeInsets.all(2.0),
                                                 child: Image.asset(
                                                   "assets/icons/Regular.png",
                                                   scale: 30,
@@ -343,7 +372,7 @@ class _BucketState extends State<Bucket> {
                                               ),
                                             ),
                                             const SizedBox(width: 10),
-                                            // ปุ่มถังขยะ
+                                            // ถังขยะ
                                             InkWell(
                                               onTap: () async {
                                                 final out = await showDialog<bool>(
@@ -351,10 +380,10 @@ class _BucketState extends State<Bucket> {
                                                   context: context,
                                                   builder: (context) =>
                                                       AlertDialogYesNo(
-                                                        description:
-                                                            'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                        title: 'แจ้งเตือน',
-                                                      ),
+                                                    description:
+                                                        'ต้องการลบสินค้ารายการนี้หรือไม่',
+                                                    title: 'แจ้งเตือน',
+                                                  ),
                                                 );
 
                                                 if (out == true) {
@@ -362,6 +391,7 @@ class _BucketState extends State<Bucket> {
                                                     cart.removeItem(product);
                                                     checked.removeAt(index);
                                                     quantities.removeAt(index);
+                                                    qtyControllers.removeAt(index);
                                                   });
                                                 }
                                               },
@@ -384,8 +414,7 @@ class _BucketState extends State<Bucket> {
                     },
                   ),
                 ),
-
-                /// ส่วนแสดงจำนวนสินค้าของแต่ละแบรนด์
+                // แสดงจำนวนสินค้าของแต่ละแบรนด์
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
@@ -402,22 +431,19 @@ class _BucketState extends State<Bucket> {
                           Row(
                             children: [
                               Text("จำนวนสินค้าของแบรนด์ Anidary "),
-                              Text("${brandQty["Anidary"] ?? 0} "),
-                              Text("ชิ้น"),
+                              Text("${brandQty["Anidary"] ?? 0} ชิ้น"),
                             ],
                           ),
                           Row(
                             children: [
                               Text("จำนวนสินค้าของแบรนด์ Baseus "),
-                              Text("${brandQty["Baseus"] ?? 0} "),
-                              Text("ชิ้น"),
+                              Text("${brandQty["Baseus"] ?? 0} ชิ้น"),
                             ],
                           ),
                           Row(
                             children: [
                               Text("จำนวนสินค้าของแบรนด์ Alldocube "),
-                              Text("${brandQty["Alldocube"] ?? 0} "),
-                              Text("ชิ้น"),
+                              Text("${brandQty["Alldocube"] ?? 0} ชิ้น"),
                             ],
                           ),
                         ],
@@ -425,8 +451,7 @@ class _BucketState extends State<Bucket> {
                     ),
                   ),
                 ),
-
-                /// ส่วนราคารวม + ปุ่มถัดไป
+                // ราคารวม + ปุ่มถัดไป
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -461,7 +486,7 @@ class _BucketState extends State<Bucket> {
                                       selectedItems.add(cart.items[i]);
                                     }
                                   }
-                                  inspect(selectedItems);
+
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

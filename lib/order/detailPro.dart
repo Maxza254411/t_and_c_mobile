@@ -275,23 +275,7 @@ class _DetailproState extends State<Detailpro> {
                           },
                         ),
                       ),
-                      // SizedBox(height: 10),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: widget.sameproduct!.asMap().entries.map((entry) {
-                      //     return Container(
-                      //       width: 12,
-                      //       height: 12,
-                      //       margin: const EdgeInsets.symmetric(horizontal: 4),
-                      //       decoration: BoxDecoration(
-                      //         shape: BoxShape.circle,
-                      //         color: _currentIndex == entry.key
-                      //             ? Colors.blueAccent
-                      //             : Colors.grey,
-                      //       ),
-                      //     );
-                      //   }).toList(),
-                      // ),
+                  
                     ],
                   )
                 : Center(
@@ -500,63 +484,66 @@ class _DetailproState extends State<Detailpro> {
               ),
             ),
             if (widget.color != null && widget.color!.isNotEmpty)
-  Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Row(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: widget.color!.asMap().entries.map((entry) {
-                final index = entry.key;
-                final colorItem = entry.value;
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: widget.color!.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final colorItem = entry.value;
 
-                if (colorItem?.name_en == null ||
-                    colorItem!.name_en!.isEmpty) {
-                  return const SizedBox.shrink();
-                }
+                            if (colorItem?.name_en == null ||
+                                colorItem!.name_en!.isEmpty) {
+                              return const SizedBox.shrink();
+                            }
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: SizedBox(
-                    width: size.width * 0.4,
-                    child: BuildRadioOption(
-                      title: colorItem.name_en!,
-                      value: colorItem.name_en!,
-                      groupValue: selectedColor,
-                      onChanged: (val) {
-                        setState(() {
-                          selectedColor = val;
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
+                              child: SizedBox(
+                                width: size.width * 0.4,
+                                child: BuildRadioOption(
+                                  title: colorItem.name_en!,
+                                  value: colorItem.name_en!,
+                                  groupValue: selectedColor,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      selectedColor = val;
 
-                          // เปลี่ยน sku ตาม index ของสีที่เลือก
-                          if (index < widget.skulist.length) {
-                            sku = widget.skulist[index];
-                          }
-                          if (index < widget.skuid.length) {
-                            skuid = widget.skuid[index];
-                          }
-                        });
+                                      // เปลี่ยน sku ตาม index ของสีที่เลือก
+                                      if (index < widget.skulist.length) {
+                                        sku = widget.skulist[index];
+                                      }
+                                      if (index < widget.skuid.length) {
+                                        skuid = widget.skuid[index];
+                                      }
+                                    });
 
-                        // ถ้ามี PageView ให้เลื่อนตามสี
-                        _controller.animateToPage(
-                          index,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                      typ: 'color',
+                                    // ถ้ามี PageView ให้เลื่อนตามสี
+                                    _controller.animateToPage(
+                                      index,
+                                      duration: const Duration(
+                                        milliseconds: 500,
+                                      ),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  },
+                                  typ: 'color',
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ),
-      ],
-    ),
-  ),
-
+                  ],
+                ),
+              ),
           ],
         ),
       ),
@@ -594,7 +581,7 @@ class _DetailproState extends State<Detailpro> {
                         final shoping = Shoping(
                           namebrand: widget.namebrand,
                           product_id: widget.productId,
-                          sku:sku,
+                          sku: sku,
                           skuid: skuid,
                           image: widget.image,
                           name: widget.proName,
@@ -774,7 +761,7 @@ class _DetailproState extends State<Detailpro> {
                                                                         .bold,
                                                               ),
                                                             ),
-                                                             Text(
+                                                            Text(
                                                               "SKU: $sku",
                                                               maxLines: 1,
                                                               overflow:
