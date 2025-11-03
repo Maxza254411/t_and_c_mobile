@@ -23,12 +23,15 @@ class Detailpro extends StatefulWidget {
     required this.productId,
     required this.proName,
     required this.proPice,
-    required this.detail,
+
     this.color,
     this.image,
     required this.proNameTh,
     this.sameproduct,
-    this.sku,
+    //Sku อย่างเดียว
+    // this.sku,
+    required this.skulist,
+    required this.skuid,
     required this.warehouse_skus,
     required this.namebrand,
     required this.promotion,
@@ -38,12 +41,16 @@ class Detailpro extends StatefulWidget {
   String productId;
   String proName;
   String proPice;
-  String detail;
+
   List<Colorp?>? color;
-  List<ProductTyp?>? sameproduct;
+  List<Data>? sameproduct;
   String? image;
   String? proNameTh;
-  String? sku;
+  ////
+  // String? sku;
+  List<String?> skulist;
+  List<int> skuid;
+  ////
   List<Warehouse> warehouse_skus = [];
   String namebrand;
   List<Promotione> promotion;
@@ -59,6 +66,8 @@ class _DetailproState extends State<Detailpro> {
   final CarouselSliderController _controller = CarouselSliderController();
   int _currentIndex = 0;
   String? selectedColor;
+  String? sku;
+  int? skuid;
 
   @override
   void initState() {
@@ -70,12 +79,21 @@ class _DetailproState extends State<Detailpro> {
       if (widget.promotion != []) {
         await testPromo();
       }
-      //  await testPromo();
+      await selectsku();
     });
   }
 
   Future<void> testPromo() async {
     inspect(widget.promotion);
+  }
+
+  Future<void> selectsku() async {
+    // inspect(widget.promotion);
+    sku = widget.skulist[0];
+    skuid = widget.skuid[0];
+    setState(() {
+      print("ชื่อ ${sku} ไอดีที่ ${skuid}");
+    });
   }
 
   void _goToPage(int index) {
@@ -202,14 +220,21 @@ class _DetailproState extends State<Detailpro> {
                         carouselController: _controller,
                         itemCount: widget.sameproduct!.length,
                         itemBuilder: (context, index, realIndex) {
-                          return widget.sameproduct![index]?.image_url != null
+                          return widget
+                                      .sameproduct![index]
+                                      ?.product!
+                                      .image_url !=
+                                  null
                               ? Container(
                                   margin: const EdgeInsets.all(6.0),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8.0),
                                     image: DecorationImage(
                                       image: NetworkImage(
-                                        widget.sameproduct![index]!.image_url ??
+                                        widget
+                                                .sameproduct![index]!
+                                                .product!
+                                                .image_url ??
                                             "",
                                       ),
 
@@ -368,7 +393,7 @@ class _DetailproState extends State<Detailpro> {
                   ),
                   Expanded(
                     child: Text(
-                      widget.sku ?? "-",
+                      "${sku}",
                       style: TextStyle(fontSize: 14, color: Colors.black),
                     ),
                   ),
@@ -448,7 +473,7 @@ class _DetailproState extends State<Detailpro> {
                     builder: (context, favProvider, child) {
                       final currentProduct = Shoping(
                         namebrand: widget.namebrand,
-                        sku: widget.sku!,
+                        // sku:sku??"",
                         sameproduct: widget.sameproduct,
                         image: widget.image,
                         product_id: widget.productId,
@@ -475,61 +500,63 @@ class _DetailproState extends State<Detailpro> {
               ),
             ),
             if (widget.color != null && widget.color!.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: widget.color!.map((colorItem) {
-                            if (colorItem?.name_en == null ||
-                                colorItem!.name_en!.isEmpty) {
-                              return SizedBox.shrink();
-                            }
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                              ),
-                              child: SizedBox(
-                                width: size.width * 0.4,
-                                child: BuildRadioOption(
-                                  title: colorItem.name_en!,
-                                  value: colorItem.name_en!,
-                                  groupValue: selectedColor,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      selectedColor = val;
-                                    });
+  Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Row(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: widget.color!.asMap().entries.map((entry) {
+                final index = entry.key;
+                final colorItem = entry.value;
 
-                                    // หา index ของสีที่เลือก
-                                    final index = widget.color!.indexWhere(
-                                      (c) => c?.name_en == val,
-                                    );
+                if (colorItem?.name_en == null ||
+                    colorItem!.name_en!.isEmpty) {
+                  return const SizedBox.shrink();
+                }
 
-                                    if (index != -1 &&
-                                        index < widget.sameproduct!.length) {
-                                      _controller.animateToPage(
-                                        index,
-                                        duration: const Duration(
-                                          milliseconds: 500,
-                                        ),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    }
-                                  },
-                                  typ: 'color',
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: SizedBox(
+                    width: size.width * 0.4,
+                    child: BuildRadioOption(
+                      title: colorItem.name_en!,
+                      value: colorItem.name_en!,
+                      groupValue: selectedColor,
+                      onChanged: (val) {
+                        setState(() {
+                          selectedColor = val;
+
+                          // เปลี่ยน sku ตาม index ของสีที่เลือก
+                          if (index < widget.skulist.length) {
+                            sku = widget.skulist[index];
+                          }
+                          if (index < widget.skuid.length) {
+                            skuid = widget.skuid[index];
+                          }
+                        });
+
+                        // ถ้ามี PageView ให้เลื่อนตามสี
+                        _controller.animateToPage(
+                          index,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      typ: 'color',
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ],
+    ),
+  ),
+
           ],
         ),
       ),
@@ -567,14 +594,15 @@ class _DetailproState extends State<Detailpro> {
                         final shoping = Shoping(
                           namebrand: widget.namebrand,
                           product_id: widget.productId,
-                          sku: widget.sku!,
+                          sku:sku,
+                          skuid: skuid,
                           image: widget.image,
                           name: widget.proName,
                           price: widget.proPice,
                           color: selectedColor!,
                           nameTh: widget.proNameTh ?? "",
                           warehouse_skus: widget.warehouse_skus,
-                          promotion: widget.promotion
+                          promotion: widget.promotion,
                         );
                         Provider.of<CartProvider>(
                           context,
@@ -659,7 +687,7 @@ class _DetailproState extends State<Detailpro> {
                                                       BorderRadius.circular(8),
                                                   color: Colors.white,
                                                 ),
-                                                height: size.height * 0.15,
+                                                height: size.height * 0.18,
                                                 child: Row(
                                                   children: [
                                                     Padding(
@@ -736,6 +764,18 @@ class _DetailproState extends State<Detailpro> {
                                                             ),
                                                             Text(
                                                               "สี $selectedColor",
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                             Text(
+                                                              "SKU: $sku",
                                                               maxLines: 1,
                                                               overflow:
                                                                   TextOverflow
@@ -938,6 +978,8 @@ class _DetailproState extends State<Detailpro> {
                                                       if (widget.proPice !=
                                                           "0.00") {
                                                         final shoping = Shoping(
+                                                          skuid: skuid,
+                                                          sku: sku,
                                                           product_id:
                                                               widget.productId,
                                                           quantity: quantity,

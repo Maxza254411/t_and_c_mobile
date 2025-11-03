@@ -63,7 +63,6 @@ class _CatagoryState extends State<Catagory> {
   Future<void> getapi({bool isLoadMore = false}) async {
     try {
       if (_isLoadingMore || !_hasMore) return;
-
       if (isLoadMore) setState(() => _isLoadingMore = true);
       if (widget.statusPage == "brand") {
         final newProducts = await ProductApi.getProBandId(
@@ -121,22 +120,23 @@ class _CatagoryState extends State<Catagory> {
     }
   }
 
-  void filterProducts(String keyword) {
+ void filterProducts(String keyword) {
     if (keyword.isEmpty) {
-      filteredProducts = List.from(allProducts);
-    } else {
-      filteredProducts = allProducts
-          .where(
-            (item) =>
-                item.product?.name_en?.toLowerCase().contains(
-                  keyword.toLowerCase(),
-                ) ??
-                false,
-          )
-          .toList();
-    }
-    setState(() {});
-  }
+    filteredProducts = List.from(allProducts);
+   } else {
+    final lowerKeyword = keyword.toLowerCase();
+    filteredProducts = allProducts.where((item) {
+      final nameEn = item.product?.name_en?.toLowerCase() ?? '';
+      final sku = item.sku?.toLowerCase() ?? '';
+
+      // ให้ฟิลเตอร์เจอทั้งชื่อสินค้า หรือ SKU
+      return nameEn.contains(lowerKeyword) || sku.contains(lowerKeyword);
+    }).toList();
+   }
+
+  setState(() {});
+}
+
 
   /// สร้าง list ไม่ซ้ำตาม product.id
   List<Data> get uniqueProducts {
@@ -252,15 +252,26 @@ class _CatagoryState extends State<Catagory> {
   }
 
   Widget _buildProductCard(Data product) {
-    // สร้าง list สีทั้งหมดของสินค้านี้
-    final productColors = allProducts
-        .where((item) => item.product!.id == product.product!.id)
-        .map((e) => e.color)
+    // // สร้าง list สีทั้งหมดของสินค้านี้
+    // final productColors = allProducts
+    //     .where((item) => item.product!.id == product.product!.id)
+    //     .map((e) => e.color)
+    //     .toList();
+    // final sameproduct = allProducts
+    //     .where((item) => item.product!.id == product.product!.id)
+    //     .map((e) => e.product)
+    //     .toList();
+    // หา colors ของ product ที่กด
+    final sameProductList = allProducts
+        .where((e) => e.product!.id == product.product!.id)
         .toList();
-    final sameproduct = allProducts
-        .where((item) => item.product!.id == product.product!.id)
-        .map((e) => e.product)
-        .toList();
+
+    // ดึงเฉพาะสีของสินค้าที่มี product_id เดียวกัน
+    final productColors = sameProductList.map((e) => e.color).toList();
+
+    // ดึงเฉพาะ sku (ตัวเลือกย่อยของ product เดียวกัน)
+    final skus = sameProductList.map((e) => e.sku).toList();
+    final skus_id = sameProductList.map((e) => e.id).toList();
 
     return Container(
       decoration: BoxDecoration(
@@ -343,17 +354,17 @@ class _CatagoryState extends State<Catagory> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                     product.promotions==null
-                     ? Text(
-                                formatNumber(product!.base_price??""),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                  decoration: TextDecoration
-                                      .lineThrough, // ✅ ขีดฆ่าราคาเดิม
-                                ),
-                              )
-                   : product.promotions!.isNotEmpty
+                    product.promotions == null
+                        ? Text(
+                            formatNumber(product!.base_price ?? ""),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                              decoration: TextDecoration
+                                  .lineThrough, // ✅ ขีดฆ่าราคาเดิม
+                            ),
+                          )
+                        : product.promotions!.isNotEmpty
                         ? Row(
                             children: [
                               Text(
@@ -436,7 +447,7 @@ class _CatagoryState extends State<Catagory> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => Detailpro(
-                              sameproduct: sameproduct,
+                              sameproduct: sameProductList,
                               image: product.product?.image_url,
                               productId: product.product?.id.toString() ?? "",
                               proName: product.product?.name_en ?? "",
@@ -446,15 +457,18 @@ class _CatagoryState extends State<Catagory> {
                                           "0",
                                     )
                                   : formatNumber(product.base_price ?? "0"),
-                              detail: '',
+
                               color: productColors,
                               proNameTh: product
                                   .product
                                   ?.name_th, // ส่ง list สีทั้งหมด
-                              sku: product.sku,
+                              // sku: product.sku,
                               warehouse_skus: product.warehouse_skus ?? [],
                               namebrand: widget.namebrand,
                               promotion: product.promotions ?? [],
+                              skulist: skus,
+                              skuid: skus_id,
+
                               // selectedProduct: product,
                             ),
                           ),

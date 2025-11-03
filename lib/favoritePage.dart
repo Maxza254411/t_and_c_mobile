@@ -133,7 +133,7 @@ class _FavoritePageState extends State<FavoritePage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: const Color.fromARGB(255, 241, 241, 241),
-                        border: Border.all(color: kButtonColor)
+                      border: Border.all(color: kButtonColor),
                     ),
                     width: double.infinity,
                     height: size.height * 0.05,
@@ -198,7 +198,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                   child: item.image == null
                                       ? Image.asset(
                                           "assets/images/NoImage.jpg",
-                                        fit: BoxFit.fitHeight,
+                                          fit: BoxFit.fitHeight,
                                         )
                                       : Image.network(
                                           item.image!,
@@ -226,7 +226,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "฿ ${item.price}" ,
+                                          "฿ ${item.price}",
                                           style: const TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
@@ -239,10 +239,11 @@ class _FavoritePageState extends State<FavoritePage> {
                                               product_id: item.product_id,
                                               name: item.name,
                                               price: item.price,
-                                        
+
                                               colors: item.colors,
                                               color: '',
-                                              nameTh: item.nameTh, warehouse_skus: [],
+                                              nameTh: item.nameTh,
+                                              warehouse_skus: [],
                                             );
                                             final isFav = favProvider
                                                 .isFavorite(currentProduct);
@@ -281,15 +282,19 @@ class _FavoritePageState extends State<FavoritePage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => Detailpro(
-                                                   sku:item.sku,
-                                                sameproduct:item. sameproduct,
+                                                // sku: item.sku,
+                                                sameproduct: item.sameproduct,
                                                 image: item.image,
                                                 productId: item.product_id!,
                                                 proName: item.name,
                                                 proPice: item.price,
-                                                detail: '',
+                                            
                                                 color: item.colors,
-                                                proNameTh: item.nameTh, warehouse_skus: item.warehouse_skus, namebrand: item.namebrand??"", promotion: [],
+                                                proNameTh: item.nameTh,
+                                                warehouse_skus:
+                                                    item.warehouse_skus,
+                                                namebrand: item.namebrand ?? "",
+                                                promotion: [], skulist: [], skuid: [],
                                                 // selectedProduct:item.skulist?? ,
                                               ),
                                             ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +54,7 @@ class _BrandPageState extends State<BrandPage> {
   Future<void> getapi() async {
     try {
       LoadingDialog.open(context);
-      print(widget.namebrand);
+      // print(widget.namebrand);
       await context.read<ProductController>().getproductypBybrandId(
         brandid: widget.brandId,
       );
@@ -382,29 +384,54 @@ class _BrandPageState extends State<BrandPage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            selectedProduct.promotions!.isNotEmpty
-                                                ? Row(
-                                                    children: [
-                                                      Text(
-                                                        "฿ ${formatNumber(selectedProduct?.promotions![0].fixed_price ?? "0")}",
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600, 
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 10,),
-                                                      Text(
-                                                        formatNumber(selectedProduct!.base_price!),
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          color: Colors.grey,
-                                                          decoration: TextDecoration
-                                                              .lineThrough, // ✅ ขีดฆ่าราคาเดิม
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
+                                            selectedProduct
+                                                    .promotions!
+                                                    .isNotEmpty
+                                                ? selectedProduct
+                                                              .promotions![0]
+                                                              .promotion_id ==
+                                                          2
+                                                      ? Text(
+                                                          formatNumber(
+                                                            selectedProduct!
+                                                                .base_price!,
+                                                          ),
+                                                          style: const TextStyle(
+                                                            fontSize: 14,
+                                                            color: Colors.grey,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .lineThrough, // ✅ ขีดฆ่าราคาเดิม
+                                                          ),
+                                                        )
+                                                      : Row(
+                                                          children: [
+                                                            Text(
+                                                              "฿ ${formatNumber(selectedProduct?.promotions![0].fixed_price ?? "0")}",
+                                                              style: const TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Text(
+                                                              formatNumber(
+                                                                selectedProduct!
+                                                                    .base_price!,
+                                                              ),
+                                                              style: const TextStyle(
+                                                                fontSize: 14,
+                                                                color:
+                                                                    Colors.grey,
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .lineThrough, // ✅ ขีดฆ่าราคาเดิม
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
                                                 : Text(
                                                     "฿ ${formatNumber(selectedProduct?.base_price ?? "0")}",
                                                     style: const TextStyle(
@@ -416,17 +443,43 @@ class _BrandPageState extends State<BrandPage> {
 
                                             Consumer<FavoriteProvider>(
                                               builder: (context, favProvider, child) {
-                                                final colors = product
-                                                    .where(
-                                                      (e) =>
-                                                          e.product!.id ==
-                                                          selectedProduct!.id,
-                                                    )
-                                                    .map((e) => e.color)
-                                                    .toList();
+                                                // final colors = product
+                                                //     .where(
+                                                //       (e) =>
+                                                //           e.product!.id ==
+                                                //           selectedProduct!.id,
+                                                //     )
+                                                //     .map((e) => e.color)
+                                                //     .toList();
+                                                  // หา colors ของ product ที่กด
+                                              final sameProductList = product
+                                                  .where(
+                                                    (e) =>
+                                                        e.product!.id ==
+                                                        selectedProduct!
+                                                            .product!
+                                                            .id,
+                                                  )
+                                                  .toList();
+
+                                              // ดึงเฉพาะสีของสินค้าที่มี product_id เดียวกัน
+                                              final colors = sameProductList
+                                                  .map((e) => e.color)
+                                                  .toList();
+
+                                              // ดึงเฉพาะ sku (ตัวเลือกย่อยของ product เดียวกัน)
+                                              final skus = sameProductList
+                                                  .map((e) => e.sku)
+                                                  .toList();
+
+                                              final skus_id = sameProductList
+                                                  .map((e) => e.id)
+                                                  .toList();
+                                              inspect(skus_id);
 
                                                 final currentProduct = Shoping(
                                                   namebrand: widget.namebrand,
+                                                  
                                                   sku: selectedProduct.sku!,
                                                   product_id: selectedProduct!
                                                       .id
@@ -436,14 +489,21 @@ class _BrandPageState extends State<BrandPage> {
                                                           .product
                                                           ?.name_en ??
                                                       "",
-                                                  price: 
-                                                  selectedProduct.promotions!.isNotEmpty
-                                                  ?formatNumber(selectedProduct.promotions![0].fixed_price ?? "0")
-                                                 : formatNumber(
-                                                    selectedProduct
-                                                            .base_price ??
-                                                        "0",
-                                                  ),
+                                                  price:
+                                                      selectedProduct
+                                                          .promotions!
+                                                          .isNotEmpty
+                                                      ? formatNumber(
+                                                          selectedProduct
+                                                                  .promotions![0]
+                                                                  .fixed_price ??
+                                                              "0",
+                                                        )
+                                                      : formatNumber(
+                                                          selectedProduct
+                                                                  .base_price ??
+                                                              "0",
+                                                        ),
 
                                                   colors: colors,
                                                   color: '',
@@ -494,29 +554,38 @@ class _BrandPageState extends State<BrandPage> {
                                             ),
                                             onPressed: () {
                                               // หา colors ของ product ที่กด
-                                              final colors = product
+                                              final sameProductList = product
                                                   .where(
                                                     (e) =>
                                                         e.product!.id ==
-                                                        selectedProduct!.id,
+                                                        selectedProduct!
+                                                            .product!
+                                                            .id,
                                                   )
+                                                  .toList();
+
+                                              // ดึงเฉพาะสีของสินค้าที่มี product_id เดียวกัน
+                                              final colors = sameProductList
                                                   .map((e) => e.color)
                                                   .toList();
-                                              final sameproduct = product
-                                                  .where(
-                                                    (e) =>
-                                                        e.product!.id ==
-                                                        selectedProduct!.id,
-                                                  )
-                                                  .map((e) => e.product)
+
+                                              // ดึงเฉพาะ sku (ตัวเลือกย่อยของ product เดียวกัน)
+                                              final skus = sameProductList
+                                                  .map((e) => e.sku)
                                                   .toList();
+
+                                              final skus_id = sameProductList
+                                                  .map((e) => e.id)
+                                                  .toList();
+                                              inspect(skus_id);
 
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) => Detailpro(
-                                                    sku: selectedProduct.sku,
-                                                    sameproduct: sameproduct,
+                                                    // sku: selectedProduct.sku,
+                                                    sameproduct:
+                                                        sameProductList,
                                                     image: selectedProduct!
                                                         .product
                                                         ?.image_url,
@@ -528,14 +597,22 @@ class _BrandPageState extends State<BrandPage> {
                                                             .product
                                                             ?.name_en ??
                                                         "",
-                                                    proPice: selectedProduct.promotions!.length > 1
-                                                  ?formatNumber(selectedProduct.promotions![0].fixed_price ?? "0")
-                                                 : formatNumber(
-                                                    selectedProduct
-                                                            .base_price ??
-                                                        "0",
-                                                  ),
-                                                    detail: '',
+                                                    proPice:
+                                                        selectedProduct
+                                                            .promotions!
+                                                            .isNotEmpty
+                                                        ? formatNumber(
+                                                            selectedProduct
+                                                                    .promotions![0]
+                                                                    .fixed_price ??
+                                                                "0",
+                                                          )
+                                                        : formatNumber(
+                                                            selectedProduct
+                                                                    .base_price ??
+                                                                "0",
+                                                          ),
+
                                                     color: colors,
                                                     proNameTh:
                                                         selectedProduct
@@ -546,7 +623,14 @@ class _BrandPageState extends State<BrandPage> {
                                                         selectedProduct
                                                             .warehouse_skus ??
                                                         [],
-                                                    namebrand: widget.namebrand, promotion:selectedProduct.promotions??[],
+                                                    namebrand: widget.namebrand,
+                                                    promotion:
+                                                        selectedProduct
+                                                            .promotions ??
+                                                        [],
+                                                    skulist: skus,
+                                                    skuid: skus_id,
+
                                                     //  selectedProduct: product[index],
                                                   ),
                                                 ),

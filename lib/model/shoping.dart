@@ -14,24 +14,26 @@ class Shoping {
   final String name;
   final String nameTh;
   final String price;
-
   final String color;
   String? product_sku_id;
   String? warehouse_id;
   int quantity;
   int? userId;
   List<Colorp?>? colors;
-  List<ProductTyp?>? sameproduct;
-  Data? skulist;
-  final String? sku;
+  List<Data>? sameproduct;
+  List<String?>? skulist;
+  List<int>?skuidlist;
   String? qty;
   final List<Warehouse> warehouse_skus;
   String? namebrand;
   List<Promotione>?promotion;
+  final String? sku;
+  final int? skuid;
 
   Shoping({
     required this.nameTh,
     this.skulist,
+    this.skuidlist,
     this.warehouse_id,
     this.product_sku_id,
     this.image,
@@ -43,10 +45,11 @@ class Shoping {
     this.quantity = 1,
     this.userId,
     this.sameproduct,
-    this.sku,
     this.qty,
     required this.warehouse_skus,
     this.namebrand,
+    this.sku,
+    this.skuid,
     this.promotion
   });
 

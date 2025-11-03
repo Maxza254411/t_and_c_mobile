@@ -19,8 +19,6 @@ class _BucketState extends State<Bucket> {
   List<bool> checked = [];
   List<int> quantities = [];
 
-  
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -51,11 +49,7 @@ class _BucketState extends State<Bucket> {
 
   /// ✅ ฟังก์ชันคำนวณจำนวนสินค้าของแต่ละแบรนด์ที่ถูกติ๊ก
   Map<String, int> calculateBrandQty(CartProvider cart) {
-    Map<String, int> brandCount = {
-      "Anidary": 0,
-      "Baseus": 0,
-      "Alldocube": 0,
-    };
+    Map<String, int> brandCount = {"Anidary": 0, "Baseus": 0, "Alldocube": 0};
 
     for (int i = 0; i < cart.items.length; i++) {
       if (checked[i]) {
@@ -75,13 +69,13 @@ class _BucketState extends State<Bucket> {
     final formatter = NumberFormat("#,##0.00");
     return formatter.format(number);
   }
-Future<void> test() async {
-  final cart = Provider.of<CartProvider>(context, listen: false);
-  for (var i = 0; i < cart.items.length; i++) {
-    inspect(cart.items[i].promotion);
-  }
-}
 
+  // Future<void> test() async {
+  //   final cart = Provider.of<CartProvider>(context, listen: false);
+  //   for (var i = 0; i < cart.items.length; i++) {
+  //     inspect(cart.items[i].promotion);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -103,8 +97,8 @@ Future<void> test() async {
         title: Row(
           children: [
             GestureDetector(
-              onTap: () async{
-               await test();
+              onTap: () async {
+                // await test();
               },
               child: Padding(
                 padding: EdgeInsets.all(8.0),
@@ -148,7 +142,7 @@ Future<void> test() async {
                             borderRadius: BorderRadius.circular(8),
                             color: Colors.white,
                           ),
-                          height: size.height * 0.15,
+                          height: size.height * 0.16,
                           child: Row(
                             children: [
                               // Checkbox
@@ -201,14 +195,24 @@ Future<void> test() async {
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                       Text(
                                         "สี ${product.color}",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                       Text(
+                                        "SKU: ${product.sku}",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                       Row(
                                         children: [
@@ -229,28 +233,32 @@ Future<void> test() async {
                                                 } else {
                                                   final out =
                                                       await showDialog<bool>(
-                                                    barrierDismissible: true,
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        AlertDialogYesNo(
-                                                      description:
-                                                          'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                      title: 'แจ้งเตือน',
-                                                    ),
-                                                  );
+                                                        barrierDismissible:
+                                                            true,
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            AlertDialogYesNo(
+                                                              description:
+                                                                  'ต้องการลบสินค้ารายการนี้หรือไม่',
+                                                              title:
+                                                                  'แจ้งเตือน',
+                                                            ),
+                                                      );
                                                   if (out == true) {
                                                     setState(() {
                                                       cart.removeItem(product);
                                                       checked.removeAt(index);
                                                       quantities.removeAt(
-                                                          index);
+                                                        index,
+                                                      );
                                                     });
                                                   }
                                                 }
                                               },
                                               child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(2.0),
+                                                padding: const EdgeInsets.all(
+                                                  2.0,
+                                                ),
                                                 child: Image.asset(
                                                   "assets/icons/minus.png",
                                                   scale: 30,
@@ -267,33 +275,36 @@ Future<void> test() async {
                                                     TextInputType.number,
                                                 controller:
                                                     TextEditingController(
-                                                  text: product.quantity
-                                                      .toString(),
-                                                ),
+                                                      text: product.quantity
+                                                          .toString(),
+                                                    ),
                                                 onSubmitted: (value) {
                                                   final intValue =
                                                       int.tryParse(value) ??
-                                                          product.quantity;
+                                                      product.quantity;
                                                   setState(() {
                                                     if (intValue <= 0) {
                                                       showDialog<bool>(
                                                         context: context,
                                                         builder: (context) =>
                                                             AlertDialogYesNo(
-                                                          title: 'แจ้งเตือน',
-                                                          description:
-                                                              'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                        ),
+                                                              title:
+                                                                  'แจ้งเตือน',
+                                                              description:
+                                                                  'ต้องการลบสินค้ารายการนี้หรือไม่',
+                                                            ),
                                                       ).then((out) {
                                                         if (out == true) {
                                                           setState(() {
                                                             cart.removeItem(
-                                                                product);
+                                                              product,
+                                                            );
                                                             checked.removeAt(
-                                                                index);
-                                                            quantities
-                                                                .removeAt(
-                                                                    index);
+                                                              index,
+                                                            );
+                                                            quantities.removeAt(
+                                                              index,
+                                                            );
                                                           });
                                                         }
                                                       });
@@ -306,7 +317,8 @@ Future<void> test() async {
                                                 decoration: InputDecoration(
                                                   contentPadding:
                                                       EdgeInsets.symmetric(
-                                                          vertical: 4),
+                                                        vertical: 4,
+                                                      ),
                                                   isDense: true,
                                                   border: OutlineInputBorder(),
                                                 ),
@@ -321,8 +333,9 @@ Future<void> test() async {
                                                 });
                                               },
                                               child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(2.0),
+                                                padding: const EdgeInsets.all(
+                                                  2.0,
+                                                ),
                                                 child: Image.asset(
                                                   "assets/icons/Regular.png",
                                                   scale: 30,
@@ -333,16 +346,15 @@ Future<void> test() async {
                                             // ปุ่มถังขยะ
                                             InkWell(
                                               onTap: () async {
-                                                final out =
-                                                    await showDialog<bool>(
+                                                final out = await showDialog<bool>(
                                                   barrierDismissible: true,
                                                   context: context,
                                                   builder: (context) =>
                                                       AlertDialogYesNo(
-                                                    description:
-                                                        'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                    title: 'แจ้งเตือน',
-                                                  ),
+                                                        description:
+                                                            'ต้องการลบสินค้ารายการนี้หรือไม่',
+                                                        title: 'แจ้งเตือน',
+                                                      ),
                                                 );
 
                                                 if (out == true) {
@@ -468,9 +480,7 @@ Future<void> test() async {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
-                                    color: totalPrice > 0
-                                        ? kButtonColor
-                                        : kbgf,
+                                    color: totalPrice > 0 ? kButtonColor : kbgf,
                                   ),
                                   height: size.height * 0.05,
                                   width: double.infinity,

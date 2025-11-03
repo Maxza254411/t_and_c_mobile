@@ -211,8 +211,7 @@ class _CompleatedState extends State<Compleated> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               custommer?.customer == null
-                                  ? 
-                                  Column(
+                                  ? Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       mainAxisAlignment:
@@ -725,7 +724,8 @@ class _CompleatedState extends State<Compleated> {
                                     selectedPay = val;
                                     print(selectedPay);
                                   });
-                                }, typ: 'money',
+                                },
+                                typ: 'money',
                               ),
                             ),
                           ),
@@ -828,17 +828,17 @@ class _CompleatedState extends State<Compleated> {
                                       ),
                                     ),
 
-                                     SizedBox(height: 12),
-Text(
-                                                    "ที แอนด์ ซี",
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.black87,
-                                                      letterSpacing: 2,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 12),
+                                    SizedBox(height: 12),
+                                    Text(
+                                      "ที แอนด์ ซี",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                        letterSpacing: 2,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
                                     // 🔢 เลขบัญชี
                                     Text(
                                       "174-136-047-7",
@@ -1220,21 +1220,20 @@ Text(
                                       i++
                                     ) {
                                       final item = widget.selectedItems[i];
-
+                                    
                                       // วนซ้อนเพื่อเข้าถึง warehouse_skus ทุกตัวของ item นั้น ๆ
                                       for (
                                         var j = 0;
                                         j < item.warehouse_skus.length;
                                         j++
                                       ) {
-                                        final sku = item.warehouse_skus[j];
-
+                                        final sku = item.warehouse_skus[j];                                      
                                         productModel.add(
                                           Product(
                                             item.product_id ?? "",
                                             item.nameTh,
                                             item.sku,
-                                            sku.product_sku_id.toString(),
+                                            item.skuid.toString(),
                                             item.price,
                                             sku.warehouse_id.toString(),
                                             item.quantity.toString(),
@@ -1242,13 +1241,14 @@ Text(
                                         );
                                       }
                                     }
-                                    print(
+                                    inspect(
                                       convert.jsonEncode(
                                         productModel
                                             .map((p) => p.toJson())
                                             .toList(),
                                       ),
                                     );
+
                                     await ProductApi.createOrder(
                                       distributor_id:
                                           custommer!.customer == null
