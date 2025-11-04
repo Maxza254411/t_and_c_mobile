@@ -425,7 +425,7 @@ class _HistoryState extends State<History> {
                                           ],
                                         ),
                                       ),
-                                      filteredOrders[index].payment_method ==
+                                         filteredOrders[index].payment_method ==
                                               "credit"
                                           ? Padding(
                                               padding: const EdgeInsets.all(

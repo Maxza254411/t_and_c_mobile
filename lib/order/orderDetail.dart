@@ -372,6 +372,81 @@ class _OrderdetailState extends State<Orderdetail> {
                     ),
                   ),
                   Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                            ),
+                            child: Column(
+                              children: [
+                                ContainerHeader(
+                                  size: size,
+                                  text: 'เอกสาร',
+                                ),
+
+                                // Padding(
+                                //   padding: const EdgeInsets.all(8.0),
+                                //   child: Column(
+                                //     children: [
+                                //       Column(
+                                //         children: List.generate(
+                                //           orderData!.delivery_orders!.length,
+                                //           (index) => Padding(
+                                //             padding: const EdgeInsets.all(8.0),
+                                //             child: GestureDetector(
+                                //               onTap: () {
+                                //                 Navigator.push(
+                                //                   context,
+                                //                   MaterialPageRoute(
+                                //                     builder: (context) =>
+                                //                         DeliveryDetail(
+                                //                           delivery_id: orderData!
+                                //                               .delivery_orders![index]
+                                //                               .id,
+                                //                         ),
+                                //                   ),
+                                //                 );
+                                //               },
+                                //               child: Container(
+                                //                 height: size.height * 0.07,
+                                //                 padding: EdgeInsets.all(8.0),
+                                //                 decoration: BoxDecoration(
+                                //                   border: Border.all(
+                                //                     color: kButtonColor,
+                                //                     width: 2,
+                                //                   ),
+                                //                   borderRadius:
+                                //                       BorderRadius.circular(8),
+                                //                 ),
+                                //                 child: Row(
+                                //                   mainAxisAlignment:
+                                //                       MainAxisAlignment
+                                //                           .spaceBetween,
+                                //                   children: [
+                                //                     Text(
+                                //                       "${orderData!.delivery_orders![index].dn_code}",
+                                //                     ),
+                                //                     Icon(
+                                //                       Icons
+                                //                           .arrow_forward_ios_sharp,
+                                //                       color: kButtonColor,
+                                //                     ),
+                                //                   ],
+                                //                 ),
+                                //               ),
+                                //             ),
+                                //           ),
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                          ),
+                        ),
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       decoration: BoxDecoration(

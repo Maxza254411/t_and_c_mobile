@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/AllProduct.dart';
 import 'package:t_and_c_mobile/category/brandPage.dart';
+import 'package:t_and_c_mobile/claim.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/fristPage.dart';
 import 'package:t_and_c_mobile/login.dart';
@@ -649,6 +650,18 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
+          ListTile(
+            leading: Icon(Icons.replay),
+            title: Text('เคลมสินค้า'),
+            onTap: (){
+                Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ClaimPage()),
+              );
+            }
+          ),
+          
         ],
       ),
     );
