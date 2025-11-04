@@ -347,14 +347,14 @@ class _BrandPageState extends State<BrandPage> {
                                         top: Radius.circular(16),
                                       ),
                                       child:
-                                          selectedProduct?.product?.image_url ==
+                                          selectedProduct.product?.image_url ==
                                               null
                                           ? Image.asset(
                                               "assets/images/NoImage.jpg",
                                               fit: BoxFit.cover,
                                             )
                                           : Image.network(
-                                              selectedProduct!
+                                              selectedProduct
                                                       .product
                                                       ?.image_url ??
                                                   "",
@@ -433,7 +433,7 @@ class _BrandPageState extends State<BrandPage> {
                                                           ],
                                                         )
                                                 : Text(
-                                                    "฿ ${formatNumber(selectedProduct?.base_price ?? "0")}",
+                                                    "฿ ${formatNumber(selectedProduct.base_price ?? "0")}",
                                                     style: const TextStyle(
                                                       fontSize: 14,
                                                       fontWeight:
@@ -451,37 +451,38 @@ class _BrandPageState extends State<BrandPage> {
                                                 //     )
                                                 //     .map((e) => e.color)
                                                 //     .toList();
-                                                  // หา colors ของ product ที่กด
-                                              final sameProductList = product
-                                                  .where(
-                                                    (e) =>
-                                                        e.product!.id ==
-                                                        selectedProduct!
-                                                            .product!
-                                                            .id,
-                                                  )
-                                                  .toList();
+                                                // หา colors ของ product ที่กด
+                                                final sameProductList = product
+                                                    .where(
+                                                      (e) =>
+                                                          e.product!.id ==
+                                                          selectedProduct!
+                                                              .product!
+                                                              .id,
+                                                    )
+                                                    .toList();
 
-                                              // ดึงเฉพาะสีของสินค้าที่มี product_id เดียวกัน
-                                              final colors = sameProductList
-                                                  .map((e) => e.color)
-                                                  .toList();
+                                                final colors = sameProductList
+                                                    .map((e) => e.color)
+                                                    .toList();
 
-                                              // ดึงเฉพาะ sku (ตัวเลือกย่อยของ product เดียวกัน)
-                                              final skus = sameProductList
-                                                  .map((e) => e.sku)
-                                                  .toList();
+                                                final skus = sameProductList
+                                                    .map((e) => e.sku)
+                                                    .toList();
 
-                                              final skus_id = sameProductList
-                                                  .map((e) => e.id)
-                                                  .toList();
-                                            
+                                                final skus_id = sameProductList
+                                                    .map((e) => e.id)
+                                                    .toList();
+
                                                 final currentProduct = Shoping(
+                                                  promotion:
+                                                      selectedProduct
+                                                          .promotions ??
+                                                      [],
+                                                  skuidlist: skus_id,
+                                                  skulist: skus,
                                                   namebrand: widget.namebrand,
-                                                  
-                                                  sku: selectedProduct.sku!,
-                                                  product_id: selectedProduct!
-                                                      .id
+                                                  product_id: selectedProduct.id
                                                       .toString(),
                                                   name:
                                                       selectedProduct
@@ -505,13 +506,13 @@ class _BrandPageState extends State<BrandPage> {
                                                         ),
 
                                                   colors: colors,
-                                                  color: '',
+
                                                   nameTh:
                                                       selectedProduct
                                                           .product
                                                           ?.name_th ??
                                                       "",
-                                                  image: selectedProduct!
+                                                  image: selectedProduct
                                                       .product
                                                       ?.image_url,
                                                   warehouse_skus:
@@ -525,6 +526,7 @@ class _BrandPageState extends State<BrandPage> {
 
                                                 return GestureDetector(
                                                   onTap: () {
+                                               
                                                     favProvider.toggleFavorite(
                                                       currentProduct,
                                                     );
@@ -576,7 +578,6 @@ class _BrandPageState extends State<BrandPage> {
                                               final skus_id = sameProductList
                                                   .map((e) => e.id)
                                                   .toList();
-                                          
 
                                               Navigator.push(
                                                 context,
@@ -585,10 +586,10 @@ class _BrandPageState extends State<BrandPage> {
                                                     // sku: selectedProduct.sku,
                                                     sameproduct:
                                                         sameProductList,
-                                                    image: selectedProduct!
+                                                    image: selectedProduct
                                                         .product
                                                         ?.image_url,
-                                                    productId: selectedProduct!
+                                                    productId: selectedProduct
                                                         .id
                                                         .toString(),
                                                     proName:

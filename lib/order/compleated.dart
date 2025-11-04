@@ -31,10 +31,14 @@ class Compleated extends StatefulWidget {
     this.totalPrice,
     this.image,
     required this.slipe_status,
+    required this.discountAmount,
+    required this.originalTotal,
   });
   bool status;
   List<Shoping> selectedItems = []; // รับสินค้าที่ติ๊ก
   double? totalPrice;
+  double? discountAmount;
+  double?originalTotal;
   String? image;
   bool slipe_status;
 
@@ -658,17 +662,22 @@ class _CompleatedState extends State<Compleated> {
                                                       Text(
                                                         widget
                                                             .selectedItems![index]
-                                                            .color,
+                                                            .color!,
                                                       ),
                                                     ],
                                                   ),
                                                   Row(
                                                     children: [
                                                       Text(
+
                                                         widget
                                                             .selectedItems![index]
                                                             .price
                                                             .toString(),
+                                                      ),
+                                                        Text(
+                                                        
+                                                       "  บาท"
                                                       ),
                                                     ],
                                                   ),
@@ -1002,6 +1011,46 @@ class _CompleatedState extends State<Compleated> {
                   mainAxisSize: MainAxisSize.min, // ให้ Container สูงตามเนื้อหา
                   children: [
                     // --- แถวราคารวม ---
+                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "ราคาสินค้า",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          " ฿ ${formatNumber(widget.originalTotal??0.00)} ",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color:  kButtonColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "ส่วนลดทั้งหมด",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          " ฿ ${formatNumber(widget.discountAmount??0.00)} ",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

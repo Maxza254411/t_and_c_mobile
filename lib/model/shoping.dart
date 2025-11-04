@@ -14,7 +14,7 @@ class Shoping {
   final String name;
   final String nameTh;
   String? price;
-  final String color;
+  String? color;
   String? product_sku_id;
   String? warehouse_id;
   int quantity;
@@ -41,7 +41,7 @@ class Shoping {
     this.product_id,
     required this.name,
     required this.price,
-    required this.color,
+    this.color,
     this.colors,
     this.quantity = 1,
     this.userId,

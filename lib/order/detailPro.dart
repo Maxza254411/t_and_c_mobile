@@ -275,7 +275,6 @@ class _DetailproState extends State<Detailpro> {
                           },
                         ),
                       ),
-                  
                     ],
                   )
                 : Center(
@@ -457,7 +456,6 @@ class _DetailproState extends State<Detailpro> {
                     builder: (context, favProvider, child) {
                       final currentProduct = Shoping(
                         namebrand: widget.namebrand,
-                        // sku:sku??"",
                         sameproduct: widget.sameproduct,
                         image: widget.image,
                         product_id: widget.productId,
@@ -467,6 +465,9 @@ class _DetailproState extends State<Detailpro> {
                         color: selectedColor ?? "",
                         nameTh: widget.proNameTh ?? "",
                         warehouse_skus: widget.warehouse_skus,
+                        promotion: widget.promotion,
+                        skulist: widget.skulist,
+                        skuidlist: widget.skuid,                    
                       );
                       final isFav = favProvider.isFavorite(currentProduct);
                       return GestureDetector(
@@ -991,27 +992,27 @@ class _DetailproState extends State<Detailpro> {
                                                           ),
                                                         );
 
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (_) => Compleated(
-                                                              totalPrice: double.parse(
-                                                                totalPriceBottom
-                                                                    .toString()
-                                                                    .replaceAll(
-                                                                      ',',
-                                                                      '',
-                                                                    ),
-                                                              ),
-                                                              status: false,
-                                                              selectedItems: [
-                                                                shoping,
-                                                              ],
-                                                              slipe_status:
-                                                                  false,
-                                                            ),
-                                                          ),
-                                                        );
+                                                        // Navigator.push(
+                                                        //   context,
+                                                        //   MaterialPageRoute(
+                                                        //     builder: (_) => Compleated(
+                                                        //       totalPrice: double.parse(
+                                                        //         totalPriceBottom
+                                                        //             .toString()
+                                                        //             .replaceAll(
+                                                        //               ',',
+                                                        //               '',
+                                                        //             ),
+                                                        //       ),
+                                                        //       status: false,
+                                                        //       selectedItems: [
+                                                        //         shoping,
+                                                        //       ],
+                                                        //       slipe_status:
+                                                        //           false,
+                                                        //     ),
+                                                        //   ),
+                                                        // );
                                                       } else {
                                                         await showDialog(
                                                           context: context,
