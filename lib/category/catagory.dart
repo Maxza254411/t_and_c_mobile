@@ -356,12 +356,11 @@ class _CatagoryState extends State<Catagory> {
                   children: [
                     product.promotions == null
                         ? Text(
-                            formatNumber(product!.base_price ?? ""),
+                            formatNumber(product!.base_price ?? product.product!.srp_inc_vat),
                             style: const TextStyle(
                               fontSize: 14,
-                              color: Colors.grey,
-                              decoration: TextDecoration
-                                  .lineThrough, // ✅ ขีดฆ่าราคาเดิม
+                             
+                            
                             ),
                           )
                         : product.promotions!.isNotEmpty
@@ -453,10 +452,10 @@ class _CatagoryState extends State<Catagory> {
                               proName: product.product?.name_en ?? "",
                               proPice: product.promotions!.isNotEmpty
                                   ? formatNumber(
-                                      product?.promotions![0].fixed_price ??
+                                      product.promotions![0].fixed_price ??
                                           "0",
                                     )
-                                  : formatNumber(product.base_price ?? "0"),
+                                  : formatNumber(product.base_price ?? product.product!.srp_inc_vat),
 
                               color: productColors,
                               proNameTh: product

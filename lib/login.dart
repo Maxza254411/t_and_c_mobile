@@ -245,41 +245,41 @@ class _LoginpageState extends State<Loginpage> {
                         ),
                       ),
                       SizedBox(height: size.height * 0.02),
-                      Center(child: Text("---------- หรือ ----------")),
-                      SizedBox(height: size.height * 0.02),
-                      Center(
-                        child: GestureDetector(
-                          onTap: () async {
-                            await loginWithLine();
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: kline,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            // width: size.width * 0.7,
-                            height: size.height * 0.06,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/icons/LINE_Brand_icon 2 1.png",
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  "เข้าสู่ระบบผ่าน Line",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Center(child: Text("---------- หรือ ----------")),
+                      // SizedBox(height: size.height * 0.02),
+                      // Center(
+                      //   child: GestureDetector(
+                      //     onTap: () async {
+                      //       await loginWithLine();
+                      //     },
+                      //     child: Container(
+                      //       padding: EdgeInsets.all(16),
+                      //       decoration: BoxDecoration(
+                      //         color: kline,
+                      //         borderRadius: BorderRadius.circular(12),
+                      //       ),
+                      //       // width: size.width * 0.7,
+                      //       height: size.height * 0.06,
+                      //       child: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.center,
+                      //         children: [
+                      //           Image.asset(
+                      //             "assets/icons/LINE_Brand_icon 2 1.png",
+                      //           ),
+                      //           SizedBox(width: 10),
+                      //           Text(
+                      //             "เข้าสู่ระบบผ่าน Line",
+                      //             style: TextStyle(
+                      //               fontWeight: FontWeight.bold,
+                      //               fontSize: 16,
+                      //               color: Colors.white,
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(height: size.height * 0.02),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
