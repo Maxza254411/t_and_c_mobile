@@ -35,12 +35,14 @@ class Detailpro extends StatefulWidget {
     required this.warehouse_skus,
     required this.namebrand,
     required this.promotion,
+    this.listimage,
     // required this.selectedProduct,
   });
 
   String productId;
   String proName;
   String proPice;
+  List<String?>? listimage;
 
   List<Colorp?>? color;
   List<Data>? sameproduct;
@@ -220,10 +222,7 @@ class _DetailproState extends State<Detailpro> {
                         carouselController: _controller,
                         itemCount: widget.sameproduct!.length,
                         itemBuilder: (context, index, realIndex) {
-                          return widget
-                                      .sameproduct![index]
-                                      ?.product!
-                                      .image_url !=
+                          return  widget.listimage !=
                                   null
                               ? Container(
                                   margin: const EdgeInsets.all(6.0),
@@ -231,10 +230,8 @@ class _DetailproState extends State<Detailpro> {
                                     borderRadius: BorderRadius.circular(8.0),
                                     image: DecorationImage(
                                       image: NetworkImage(
-                                        widget
-                                                .sameproduct![index]!
-                                                .product!
-                                                .image_url ??
+                                        widget.listimage?[index]??
+                                              
                                             "",
                                       ),
 

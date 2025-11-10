@@ -142,42 +142,53 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     );
                                   },
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            child: brand.img_path == null
+                                                // ? brand.name=="Anidary"
+                                                ?Image.asset(
+                                                   brand.name=="Anidary"
+                                                   ? "assets/images/Anidary.WEBP"
+                                                   :brand.name=="Allducube"
+                                                   ?"assets/images/Alldocope.WEBP"
+                                                   :brand.name=="Baseus"
+                                                   ?"assets/images/Baseus.WEBP"
+                                                   :"assets/images/NoImage.jpg",
+                                                    width: 80,
+                                                    height: 80,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                    
+                                                : Image.network(
+                                                    brand.img_path!,
+                                                    width: 80,
+                                                    height: 80,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                           ),
                                         ),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          child: brand.img_path == null
-                                              ? Image.asset(
-                                                  "assets/images/Anidary.WEBP",
-                                                  width: 80,
-                                                  height: 80,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Image.network(
-                                                  brand.img_path!,
-                                                  width: 80,
-                                                  height: 80,
-                                                  fit: BoxFit.cover,
-                                                ),
+                                    
+                                        SizedBox(height: 6),
+                                        Text(
+                                          brand.name ?? "",
+                                          style: TextStyle(fontSize: 12),
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
                                         ),
-                                      ),
-
-                                      SizedBox(height: 6),
-                                      Text(
-                                        brand.name ?? "",
-                                        style: TextStyle(fontSize: 12),
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 );
                               },
@@ -223,31 +234,7 @@ class _HomePageState extends State<HomePage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.stretch,
                                       children: [
-                                        // รูปสินค้า
-                                        // Expanded(
-                                        //   child: ClipRRect(
-                                        //     borderRadius:
-                                        //         const BorderRadius.vertical(
-                                        //           top: Radius.circular(16),
-                                        //         ),
-                                        //     child:
-                                        //         selectedProduct
-                                        //                 .product
-                                        //                 ?.image_url ==
-                                        //             null
-                                        //         ? Image.asset(
-                                        //             "assets/images/NoImage.jpg",
-                                        //             fit: BoxFit.cover,
-                                        //           )
-                                        //         : Image.network(
-                                        //             selectedProduct!
-                                        //                     .product
-                                        //                     ?.image_url ??
-                                        //                 "",
-                                        //             fit: BoxFit.cover,
-                                        //           ),
-                                        //   ),
-                                        // ),
+                                       
                                         Expanded(
                                           child: Stack(
                                             children: [
@@ -263,6 +250,7 @@ class _HomePageState extends State<HomePage> {
                                                             ?.image_url ==
                                                         null
                                                     ? Image.asset(
+
                                                         "assets/images/NoImage.jpg",
                                                         fit: BoxFit.cover,
                                                         width: double.infinity,
@@ -447,25 +435,7 @@ class _HomePageState extends State<HomePage> {
                                                         ),
                                                       );
                                                     } else {
-                                                      // final colors = product
-                                                      //     .where(
-                                                      //       (e) =>
-                                                      //           e.product!.id ==
-                                                      //           selectedProduct!
-                                                      //               .id,
-                                                      //     )
-                                                      //     .map((e) => e.color)
-                                                      //     .toList();
-                                                      // final sameproduct = product
-                                                      //     .where(
-                                                      //       (e) =>
-                                                      //           e.product!.id ==
-                                                      //           selectedProduct!
-                                                      //               .id,
-                                                      //     )
-                                                      //     .map((e) => e.product)
-                                                      //     .toList();
-                                                      // หา colors ของ product ที่กด
+                                                    
                                                       final sameProductList = product
                                                           .where(
                                                             (e) =>
@@ -536,7 +506,7 @@ class _HomePageState extends State<HomePage> {
                                                                 'Anidary',
                                                             promotion: [],
                                                             skulist: skus,
-                                                            skuid: skus_id,
+                                                            skuid: skus_id, listimage: [],
                                                             //  selectedProduct: product[index],
                                                           ),
                                                         ),

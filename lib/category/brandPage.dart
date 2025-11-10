@@ -473,7 +473,15 @@ class _BrandPageState extends State<BrandPage> {
                                                 final skus_id = sameProductList
                                                     .map((e) => e.id)
                                                     .toList();
-
+                                                // final imagelist =
+                                                //     sameProductList
+                                                //         .map(
+                                                //           (e) => e
+                                                //               .product
+                                                //               ?.image_url,
+                                                //         )
+                                                //         .toList();
+                                                        // inspect(imagelist);
                                                 final currentProduct = Shoping(
                                                   promotion:
                                                       selectedProduct
@@ -504,9 +512,7 @@ class _BrandPageState extends State<BrandPage> {
                                                                   .base_price ??
                                                               "0",
                                                         ),
-
                                                   colors: colors,
-
                                                   nameTh:
                                                       selectedProduct
                                                           .product
@@ -526,7 +532,6 @@ class _BrandPageState extends State<BrandPage> {
 
                                                 return GestureDetector(
                                                   onTap: () {
-                                               
                                                     favProvider.toggleFavorite(
                                                       currentProduct,
                                                     );
@@ -578,6 +583,11 @@ class _BrandPageState extends State<BrandPage> {
                                               final skus_id = sameProductList
                                                   .map((e) => e.id)
                                                   .toList();
+                                              final imagelist = sameProductList
+                                                  .map((e) => e.product?.image_url!)
+                                                  .toList();
+
+                                              inspect(imagelist);
 
                                               Navigator.push(
                                                 context,
@@ -630,8 +640,9 @@ class _BrandPageState extends State<BrandPage> {
                                                         [],
                                                     skulist: skus,
                                                     skuid: skus_id,
+                                                    listimage: imagelist,
 
-                                                    //  selectedProduct: product[index],
+                                               
                                                   ),
                                                 ),
                                               );

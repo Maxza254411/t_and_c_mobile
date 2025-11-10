@@ -44,6 +44,6 @@ String formatNumber(dynamic value, {int decimal = 2}) {
 
   return formatter.format(number).trim();
 }
-String formatDate(DateTime date) {
+ String formatDate(DateTime date) {
   return DateFormat('yyyy-MM-dd').format(date);
 }
