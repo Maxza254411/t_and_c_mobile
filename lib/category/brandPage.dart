@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/allProduct.dart';
 import 'package:t_and_c_mobile/category/catagory.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/model/NewProductModel/newdata.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
@@ -39,7 +40,7 @@ class _BrandPageState extends State<BrandPage> {
   int _currentIndex = 0;
   String? idPro;
   String? namePro;
-  List<Data> product = [];
+  List<Newdata> product = [];
   final CarouselSliderController _controller = CarouselSliderController();
 
   void _goToPage(int index) {
@@ -86,15 +87,15 @@ class _BrandPageState extends State<BrandPage> {
     }
   }
 
-  List<Data> get uniqueProducts {
-    final Map<int, Data> map = {};
-    for (var item in product) {
-      if (!map.containsKey(item.product!.id)) {
-        map[item.product!.id] = item;
-      }
-    }
-    return map.values.toList();
-  }
+  // List<Data> get uniqueProducts {
+  //   final Map<int, Data> map = {};
+  //   for (var item in product) {
+  //     if (!map.containsKey(item.product!.id)) {
+  //       map[item.product!.id] = item;
+  //     }
+  //   }
+  //   return map.values.toList();
+  // }
 
   @override
   void initState() {
@@ -176,7 +177,6 @@ class _BrandPageState extends State<BrandPage> {
       ),
       body: Consumer<ProductController>(
         builder: (context, controller, child) {
-          final productBandTyp = controller.productBandTyp;
           return Column(
             children: [
               Column(
@@ -294,379 +294,379 @@ class _BrandPageState extends State<BrandPage> {
                   ],
                 ),
               ),
-              uniqueProducts.isEmpty
-                  ? Column(
-                      children: [
-                        SizedBox(height: size.height * 0.1),
-                        Text(
-                          "ไม่พบสินค้าแนะนำ",
-                          style: TextStyle(
-                            color: kbgM,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    )
-                  : Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: GridView.builder(
-                          itemCount: uniqueProducts.length < 4 ? 1 : 4,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 12,
-                                mainAxisSpacing: 12,
-                                childAspectRatio: 0.75,
-                              ),
-                          itemBuilder: (context, index) {
-                            final selectedProduct =
-                                uniqueProducts[index]; // <-- นี่คือ selectedProduct
+              // uniqueProducts.isEmpty
+              //     ? Column(
+              //         children: [
+              //           SizedBox(height: size.height * 0.1),
+              //           Text(
+              //             "ไม่พบสินค้าแนะนำ",
+              //             style: TextStyle(
+              //               color: kbgM,
+              //               fontSize: 22,
+              //               fontWeight: FontWeight.bold,
+              //             ),
+              //           ),
+              //         ],
+              //       )
+                  // : Expanded(
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.all(12.0),
+                  //       child: GridView.builder(
+                  //         itemCount: uniqueProducts.length < 4 ? 1 : 4,
+                  //         gridDelegate:
+                  //             SliverGridDelegateWithFixedCrossAxisCount(
+                  //               crossAxisCount: 2,
+                  //               crossAxisSpacing: 12,
+                  //               mainAxisSpacing: 12,
+                  //               childAspectRatio: 0.75,
+                  //             ),
+                  //         itemBuilder: (context, index) {
+                  //           final selectedProduct =
+                  //               uniqueProducts[index]; // <-- นี่คือ selectedProduct
 
-                            return Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 6,
-                                    spreadRadius: 2,
-                                    offset: Offset(2, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  // รูปสินค้า
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(16),
-                                      ),
-                                      child:
-                                          selectedProduct.product?.image_url ==
-                                              null
-                                          ? Image.asset(
-                                              "assets/images/NoImage.jpg",
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Image.network(
-                                              selectedProduct
-                                                      .product
-                                                      ?.image_url ??
-                                                  "",
-                                              fit: BoxFit.fitHeight,
-                                            ),
-                                    ),
-                                  ),
+                  //           return Container(
+                  //             decoration: BoxDecoration(
+                  //               color: Colors.white,
+                  //               borderRadius: BorderRadius.circular(16),
+                  //               boxShadow: [
+                  //                 BoxShadow(
+                  //                   color: Colors.black12,
+                  //                   blurRadius: 6,
+                  //                   spreadRadius: 2,
+                  //                   offset: Offset(2, 4),
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //             child: Column(
+                  //               crossAxisAlignment: CrossAxisAlignment.stretch,
+                  //               children: [
+                  //                 // รูปสินค้า
+                  //                 Expanded(
+                  //                   child: ClipRRect(
+                  //                     borderRadius: const BorderRadius.vertical(
+                  //                       top: Radius.circular(16),
+                  //                     ),
+                  //                     child:
+                  //                         selectedProduct.product?.image_url ==
+                  //                             null
+                  //                         ? Image.asset(
+                  //                             "assets/images/NoImage.jpg",
+                  //                             fit: BoxFit.cover,
+                  //                           )
+                  //                         : Image.network(
+                  //                             selectedProduct
+                  //                                     .product
+                  //                                     ?.image_url ??
+                  //                                 "",
+                  //                             fit: BoxFit.fitHeight,
+                  //                           ),
+                  //                   ),
+                  //                 ),
 
-                                  // ข้อมูล
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          selectedProduct?.product?.name_en ??
-                                              "",
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            selectedProduct
-                                                    .promotions!
-                                                    .isNotEmpty
-                                                ? selectedProduct
-                                                              .promotions![0]
-                                                              .promotion_id ==
-                                                          2
-                                                      ? Text(
-                                                          formatNumber(
-                                                            selectedProduct!
-                                                                .base_price!,
-                                                          ),
-                                                          style: const TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors.grey,
-                                                            decoration:
-                                                                TextDecoration
-                                                                    .lineThrough, // ✅ ขีดฆ่าราคาเดิม
-                                                          ),
-                                                        )
-                                                      : Row(
-                                                          children: [
-                                                            Text(
-                                                              "฿ ${formatNumber(selectedProduct?.promotions![0].fixed_price ?? "0")}",
-                                                              style: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 10),
-                                                            Text(
-                                                              formatNumber(
-                                                                selectedProduct!
-                                                                    .base_price!,
-                                                              ),
-                                                              style: const TextStyle(
-                                                                fontSize: 14,
-                                                                color:
-                                                                    Colors.grey,
-                                                                decoration:
-                                                                    TextDecoration
-                                                                        .lineThrough, // ✅ ขีดฆ่าราคาเดิม
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                : Text(
-                                                    "฿ ${formatNumber(selectedProduct.base_price ?? "0")}",
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                                  ),
+                  //                 // ข้อมูล
+                  //                 Padding(
+                  //                   padding: const EdgeInsets.all(8.0),
+                  //                   child: Column(
+                  //                     crossAxisAlignment:
+                  //                         CrossAxisAlignment.start,
+                  //                     children: [
+                  //                       Text(
+                  //                         selectedProduct?.product?.name_en ??
+                  //                             "",
+                  //                         maxLines: 1,
+                  //                         overflow: TextOverflow.ellipsis,
+                  //                         style: const TextStyle(
+                  //                           fontWeight: FontWeight.bold,
+                  //                         ),
+                  //                       ),
+                  //                       SizedBox(height: 4),
+                  //                       Row(
+                  //                         mainAxisAlignment:
+                  //                             MainAxisAlignment.spaceBetween,
+                  //                         children: [
+                  //                           selectedProduct
+                  //                                   .promotions!
+                  //                                   .isNotEmpty
+                  //                               ? selectedProduct
+                  //                                             .promotions![0]
+                  //                                             .promotion_id ==
+                  //                                         2
+                  //                                     ? Text(
+                  //                                         formatNumber(
+                  //                                           selectedProduct!
+                  //                                               .base_price!,
+                  //                                         ),
+                  //                                         style: const TextStyle(
+                  //                                           fontSize: 14,
+                  //                                           color: Colors.grey,
+                  //                                           decoration:
+                  //                                               TextDecoration
+                  //                                                   .lineThrough, // ✅ ขีดฆ่าราคาเดิม
+                  //                                         ),
+                  //                                       )
+                  //                                     : Row(
+                  //                                         children: [
+                  //                                           Text(
+                  //                                             "฿ ${formatNumber(selectedProduct?.promotions![0].fixed_price ?? "0")}",
+                  //                                             style: const TextStyle(
+                  //                                               fontSize: 14,
+                  //                                               fontWeight:
+                  //                                                   FontWeight
+                  //                                                       .w600,
+                  //                                             ),
+                  //                                           ),
+                  //                                           SizedBox(width: 10),
+                  //                                           Text(
+                  //                                             formatNumber(
+                  //                                               selectedProduct!
+                  //                                                   .base_price!,
+                  //                                             ),
+                  //                                             style: const TextStyle(
+                  //                                               fontSize: 14,
+                  //                                               color:
+                  //                                                   Colors.grey,
+                  //                                               decoration:
+                  //                                                   TextDecoration
+                  //                                                       .lineThrough, // ✅ ขีดฆ่าราคาเดิม
+                  //                                             ),
+                  //                                           ),
+                  //                                         ],
+                  //                                       )
+                  //                               : Text(
+                  //                                   "฿ ${formatNumber(selectedProduct.base_price ?? "0")}",
+                  //                                   style: const TextStyle(
+                  //                                     fontSize: 14,
+                  //                                     fontWeight:
+                  //                                         FontWeight.w600,
+                  //                                   ),
+                  //                                 ),
 
-                                            Consumer<FavoriteProvider>(
-                                              builder: (context, favProvider, child) {
-                                                // final colors = product
-                                                //     .where(
-                                                //       (e) =>
-                                                //           e.product!.id ==
-                                                //           selectedProduct!.id,
-                                                //     )
-                                                //     .map((e) => e.color)
-                                                //     .toList();
-                                                // หา colors ของ product ที่กด
-                                                final sameProductList = product
-                                                    .where(
-                                                      (e) =>
-                                                          e.product!.id ==
-                                                          selectedProduct!
-                                                              .product!
-                                                              .id,
-                                                    )
-                                                    .toList();
+                  //                           Consumer<FavoriteProvider>(
+                  //                             builder: (context, favProvider, child) {
+                  //                               // final colors = product
+                  //                               //     .where(
+                  //                               //       (e) =>
+                  //                               //           e.product!.id ==
+                  //                               //           selectedProduct!.id,
+                  //                               //     )
+                  //                               //     .map((e) => e.color)
+                  //                               //     .toList();
+                  //                               // หา colors ของ product ที่กด
+                  //                               final sameProductList = product
+                  //                                   .where(
+                  //                                     (e) =>
+                  //                                         e.product!.id ==
+                  //                                         selectedProduct!
+                  //                                             .product!
+                  //                                             .id,
+                  //                                   )
+                  //                                   .toList();
 
-                                                final colors = sameProductList
-                                                    .map((e) => e.color)
-                                                    .toList();
+                  //                               final colors = sameProductList
+                  //                                   .map((e) => e.color)
+                  //                                   .toList();
 
-                                                final skus = sameProductList
-                                                    .map((e) => e.sku)
-                                                    .toList();
+                  //                               final skus = sameProductList
+                  //                                   .map((e) => e.sku)
+                  //                                   .toList();
 
-                                                final skus_id = sameProductList
-                                                    .map((e) => e.id)
-                                                    .toList();
-                                                // final imagelist =
-                                                //     sameProductList
-                                                //         .map(
-                                                //           (e) => e
-                                                //               .product
-                                                //               ?.image_url,
-                                                //         )
-                                                //         .toList();
-                                                        // inspect(imagelist);
-                                                final currentProduct = Shoping(
-                                                  promotion:
-                                                      selectedProduct
-                                                          .promotions ??
-                                                      [],
-                                                  skuidlist: skus_id,
-                                                  skulist: skus,
-                                                  namebrand: widget.namebrand,
-                                                  product_id: selectedProduct.id
-                                                      .toString(),
-                                                  name:
-                                                      selectedProduct
-                                                          .product
-                                                          ?.name_en ??
-                                                      "",
-                                                  price:
-                                                      selectedProduct
-                                                          .promotions!
-                                                          .isNotEmpty
-                                                      ? formatNumber(
-                                                          selectedProduct
-                                                                  .promotions![0]
-                                                                  .fixed_price ??
-                                                              "0",
-                                                        )
-                                                      : formatNumber(
-                                                          selectedProduct
-                                                                  .base_price ??
-                                                              "0",
-                                                        ),
-                                                  colors: colors,
-                                                  nameTh:
-                                                      selectedProduct
-                                                          .product
-                                                          ?.name_th ??
-                                                      "",
-                                                  image: selectedProduct
-                                                      .product
-                                                      ?.image_url,
-                                                  warehouse_skus:
-                                                      selectedProduct
-                                                          .warehouse_skus ??
-                                                      [],
-                                                );
+                  //                               final skus_id = sameProductList
+                  //                                   .map((e) => e.id)
+                  //                                   .toList();
+                  //                               // final imagelist =
+                  //                               //     sameProductList
+                  //                               //         .map(
+                  //                               //           (e) => e
+                  //                               //               .product
+                  //                               //               ?.image_url,
+                  //                               //         )
+                  //                               //         .toList();
+                  //                                       // inspect(imagelist);
+                  //                               final currentProduct = Shoping(
+                  //                                 promotion:
+                  //                                     selectedProduct
+                  //                                         .promotions ??
+                  //                                     [],
+                  //                                 skuidlist: skus_id,
+                  //                                 skulist: skus,
+                  //                                 namebrand: widget.namebrand,
+                  //                                 product_id: selectedProduct.id
+                  //                                     .toString(),
+                  //                                 name:
+                  //                                     selectedProduct
+                  //                                         .product
+                  //                                         ?.name_en ??
+                  //                                     "",
+                  //                                 price:
+                  //                                     selectedProduct
+                  //                                         .promotions!
+                  //                                         .isNotEmpty
+                  //                                     ? formatNumber(
+                  //                                         selectedProduct
+                  //                                                 .promotions![0]
+                  //                                                 .fixed_price ??
+                  //                                             "0",
+                  //                                       )
+                  //                                     : formatNumber(
+                  //                                         selectedProduct
+                  //                                                 .base_price ??
+                  //                                             "0",
+                  //                                       ),
+                  //                                 colors: colors,
+                  //                                 nameTh:
+                  //                                     selectedProduct
+                  //                                         .product
+                  //                                         ?.name_th ??
+                  //                                     "",
+                  //                                 image: selectedProduct
+                  //                                     .product
+                  //                                     ?.image_url,
+                  //                                 warehouse_skus:
+                  //                                     selectedProduct
+                  //                                         .warehouse_skus ??
+                  //                                     [],
+                  //                               );
 
-                                                final isFav = favProvider
-                                                    .isFavorite(currentProduct);
+                  //                               final isFav = favProvider
+                  //                                   .isFavorite(currentProduct);
 
-                                                return GestureDetector(
-                                                  onTap: () {
-                                                    favProvider.toggleFavorite(
-                                                      currentProduct,
-                                                    );
-                                                  },
-                                                  child: Image.asset(
-                                                    isFav
-                                                        ? "assets/icons/HertOn.png"
-                                                        : "assets/icons/HertOff.png",
-                                                    scale: 15,
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 8),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: kButtonColor,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              // หา colors ของ product ที่กด
-                                              final sameProductList = product
-                                                  .where(
-                                                    (e) =>
-                                                        e.product!.id ==
-                                                        selectedProduct!
-                                                            .product!
-                                                            .id,
-                                                  )
-                                                  .toList();
+                  //                               return GestureDetector(
+                  //                                 onTap: () {
+                  //                                   favProvider.toggleFavorite(
+                  //                                     currentProduct,
+                  //                                   );
+                  //                                 },
+                  //                                 child: Image.asset(
+                  //                                   isFav
+                  //                                       ? "assets/icons/HertOn.png"
+                  //                                       : "assets/icons/HertOff.png",
+                  //                                   scale: 15,
+                  //                                 ),
+                  //                               );
+                  //                             },
+                  //                           ),
+                  //                         ],
+                  //                       ),
+                  //                       SizedBox(height: 8),
+                  //                       SizedBox(
+                  //                         width: double.infinity,
+                  //                         child: ElevatedButton(
+                  //                           style: ElevatedButton.styleFrom(
+                  //                             backgroundColor: kButtonColor,
+                  //                             shape: RoundedRectangleBorder(
+                  //                               borderRadius:
+                  //                                   BorderRadius.circular(8),
+                  //                             ),
+                  //                           ),
+                  //                           onPressed: () {
+                  //                             // หา colors ของ product ที่กด
+                  //                             final sameProductList = product
+                  //                                 .where(
+                  //                                   (e) =>
+                  //                                       e.product!.id ==
+                  //                                       selectedProduct!
+                  //                                           .product!
+                  //                                           .id,
+                  //                                 )
+                  //                                 .toList();
 
-                                              // ดึงเฉพาะสีของสินค้าที่มี product_id เดียวกัน
-                                              final colors = sameProductList
-                                                  .map((e) => e.color)
-                                                  .toList();
+                  //                             // ดึงเฉพาะสีของสินค้าที่มี product_id เดียวกัน
+                  //                             final colors = sameProductList
+                  //                                 .map((e) => e.color)
+                  //                                 .toList();
 
-                                              // ดึงเฉพาะ sku (ตัวเลือกย่อยของ product เดียวกัน)
-                                              final skus = sameProductList
-                                                  .map((e) => e.sku)
-                                                  .toList();
+                  //                             // ดึงเฉพาะ sku (ตัวเลือกย่อยของ product เดียวกัน)
+                  //                             final skus = sameProductList
+                  //                                 .map((e) => e.sku)
+                  //                                 .toList();
 
-                                              final skus_id = sameProductList
-                                                  .map((e) => e.id)
-                                                  .toList();
-                                              final imagelist = sameProductList
-                                                  .map((e) => e.product?.image_url!)
-                                                  .toList();
+                  //                             final skus_id = sameProductList
+                  //                                 .map((e) => e.id)
+                  //                                 .toList();
+                  //                             final imagelist = sameProductList
+                  //                                 .map((e) => e.product?.image_url!)
+                  //                                 .toList();
 
-                                              inspect(imagelist);
+                  //                             inspect(imagelist);
 
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => Detailpro(
-                                                    // sku: selectedProduct.sku,
-                                                    sameproduct:
-                                                        sameProductList,
-                                                    image: selectedProduct
-                                                        .product
-                                                        ?.image_url,
-                                                    productId: selectedProduct
-                                                        .id
-                                                        .toString(),
-                                                    proName:
-                                                        selectedProduct
-                                                            .product
-                                                            ?.name_en ??
-                                                        "",
-                                                    proPice:
-                                                        selectedProduct
-                                                            .promotions!
-                                                            .isNotEmpty
-                                                        ? formatNumber(
-                                                            selectedProduct
-                                                                    .promotions![0]
-                                                                    .fixed_price ??
-                                                                "0",
-                                                          )
-                                                        : formatNumber(
-                                                            selectedProduct
-                                                                    .base_price ??
-                                                                "0",
-                                                          ),
+                  //                             Navigator.push(
+                  //                               context,
+                  //                               MaterialPageRoute(
+                  //                                 builder: (context) => Detailpro(
+                  //                                   // sku: selectedProduct.sku,
+                  //                                   sameproduct:
+                  //                                       sameProductList,
+                  //                                   image: selectedProduct
+                  //                                       .product
+                  //                                       ?.image_url,
+                  //                                   productId: selectedProduct
+                  //                                       .id
+                  //                                       .toString(),
+                  //                                   proName:
+                  //                                       selectedProduct
+                  //                                           .product
+                  //                                           ?.name_en ??
+                  //                                       "",
+                  //                                   proPice:
+                  //                                       selectedProduct
+                  //                                           .promotions!
+                  //                                           .isNotEmpty
+                  //                                       ? formatNumber(
+                  //                                           selectedProduct
+                  //                                                   .promotions![0]
+                  //                                                   .fixed_price ??
+                  //                                               "0",
+                  //                                         )
+                  //                                       : formatNumber(
+                  //                                           selectedProduct
+                  //                                                   .base_price ??
+                  //                                               "0",
+                  //                                         ),
 
-                                                    color: colors,
-                                                    proNameTh:
-                                                        selectedProduct
-                                                            .product
-                                                            ?.name_th ??
-                                                        "",
-                                                    warehouse_skus:
-                                                        selectedProduct
-                                                            .warehouse_skus ??
-                                                        [],
-                                                    namebrand: widget.namebrand,
-                                                    promotion:
-                                                        selectedProduct
-                                                            .promotions ??
-                                                        [],
-                                                    skulist: skus,
-                                                    skuid: skus_id,
-                                                    listimage: imagelist,
+                  //                                   color: colors,
+                  //                                   proNameTh:
+                  //                                       selectedProduct
+                  //                                           .product
+                  //                                           ?.name_th ??
+                  //                                       "",
+                  //                                   warehouse_skus:
+                  //                                       selectedProduct
+                  //                                           .warehouse_skus ??
+                  //                                       [],
+                  //                                   namebrand: widget.namebrand,
+                  //                                   promotion:
+                  //                                       selectedProduct
+                  //                                           .promotions ??
+                  //                                       [],
+                  //                                   skulist: skus,
+                  //                                   skuid: skus_id,
+                  //                                   listimage: imagelist,
 
                                                
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            child: Text(
-                                              "สั่งซื้อ",
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: kbgf,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                  //                                 ),
+                  //                               ),
+                  //                             );
+                  //                           },
+                  //                           child: Text(
+                  //                             "สั่งซื้อ",
+                  //                             style: TextStyle(
+                  //                               fontSize: 12,
+                  //                               fontWeight: FontWeight.bold,
+                  //                               color: kbgf,
+                  //                             ),
+                  //                           ),
+                  //                         ),
+                  //                       ),
+                  //                     ],
+                  //                   ),
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           );
+                  //         },
+                  //       ),
+                  //     ),
+                  //   ),
             ],
           );
         },

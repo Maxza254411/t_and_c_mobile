@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:t_and_c_mobile/model/NewProductModel/newdata.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
@@ -30,6 +31,10 @@ class Shoping {
   final String? sku;
   final int? skuid;
   int?price_per_unit;
+  Newdata? newData;
+  int? base_price;
+  int? fixed_price;
+   
 
   Shoping({
     required this.nameTh,
@@ -53,6 +58,9 @@ class Shoping {
     this.skuid,
     this.promotion,
     this.price_per_unit,
+    this.newData,
+    this.base_price,
+    this.fixed_price,
 
   });
 

@@ -19,8 +19,8 @@ Shoping _$ShopingFromJson(Map<String, dynamic> json) => Shoping(
   image: json['image'] as String?,
   product_id: json['product_id'] as String?,
   name: json['name'] as String,
-  price: json['price'] as String,
-  color: json['color'] as String,
+  price: json['price'] as String?,
+  color: json['color'] as String?,
   colors: (json['colors'] as List<dynamic>?)
       ?.map(
         (e) => e == null ? null : Colorp.fromJson(e as Map<String, dynamic>),
@@ -42,6 +42,11 @@ Shoping _$ShopingFromJson(Map<String, dynamic> json) => Shoping(
       ?.map((e) => Promotione.fromJson(e as Map<String, dynamic>))
       .toList(),
   price_per_unit: (json['price_per_unit'] as num?)?.toInt(),
+  newData: json['newData'] == null
+      ? null
+      : Newdata.fromJson(json['newData'] as Map<String, dynamic>),
+  base_price: (json['base_price'] as num?)?.toInt(),
+  fixed_price: (json['fixed_price'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$ShopingToJson(Shoping instance) => <String, dynamic>{
@@ -66,4 +71,7 @@ Map<String, dynamic> _$ShopingToJson(Shoping instance) => <String, dynamic>{
   'sku': instance.sku,
   'skuid': instance.skuid,
   'price_per_unit': instance.price_per_unit,
+  'newData': instance.newData?.toJson(),
+  'base_price': instance.base_price,
+  'fixed_price': instance.fixed_price,
 };

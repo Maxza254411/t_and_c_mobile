@@ -282,7 +282,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                             MaterialPageRoute(
                                               builder: (context) => Detailpro(
                                                 // sku: item.sku,
-                                                sameproduct: item.sameproduct,
+                                              
                                                 image: item.image,
                                                 productId: item.product_id!,
                                                 proName: item.name,
@@ -294,7 +294,8 @@ class _FavoritePageState extends State<FavoritePage> {
                                                 namebrand: item.namebrand ?? "",
                                                 promotion:item.promotion??[] ,
                                                  skulist:item.skulist??[], 
-                                                 skuid: item.skuidlist??[],
+                                                 skuid: item.skuidlist??[], 
+                                                 newdata: null,
                                                 // selectedProduct:item.skulist?? ,
                                               ),
                                             ),

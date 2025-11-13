@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/model/NewProductModel/newdata.dart';
 import 'package:t_and_c_mobile/model/address.dart';
 import 'package:t_and_c_mobile/model/brands.dart';
 import 'package:t_and_c_mobile/model/data.dart';
@@ -64,7 +65,7 @@ class ProductApi {
   }
 
   // โปรดัคบาย ID
-  static Future<List<Data>> getProBandId({
+  static Future<List<Newdata>> getProBandId({
     required int brandid,
     int? page,
     required int productTypid,
@@ -85,7 +86,7 @@ class ProductApi {
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = convert.jsonDecode(response.body);
       final list = data["data"] as List;
-      return list.map((e) => Data.fromJson(e)).toList();
+      return list.map((e) => Newdata.fromJson(e)).toList();
     } else {
       final data = convert.jsonDecode(response.body);
       throw ApiException(data['message']);
@@ -340,7 +341,7 @@ class ProductApi {
       throw ApiException(data['message']);
     }
   }
-static Future<List<Data>> getproducttypesbyid({required int id, int? page}) async {
+static Future<List<Newdata>> getproducttypesbyid({required int id, int? page}) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('token');
   var headers = {
@@ -359,7 +360,7 @@ static Future<List<Data>> getproducttypesbyid({required int id, int? page}) asyn
   if (response.statusCode == 200 || response.statusCode == 201) {
     final data = convert.jsonDecode(response.body);
     final list = data["data"] as List;
-    return list.map((e) => Data.fromJson(e)).toList();
+    return list.map((e) => Newdata.fromJson(e)).toList();
   } else {
     final data = convert.jsonDecode(response.body);
     throw ApiException(data['message']);

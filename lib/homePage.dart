@@ -47,10 +47,10 @@ class _HomePageState extends State<HomePage> {
       await context.read<ProductController>().getproducttypes();
       // final producs = await ProductApi.getproduct();
       final producs = await ProductApi.getproducttypesbyid(page: 1, id: 1);
-      product = producs;
+      // product = producs;
       allbands = await ProductApi.listbrands();
       custommer = await ProductApi.getUser();
-      filteredBand = List.from(allbands);
+      // filteredBand = List.from(allbands);
       // if (mounted) {
       setState(() {});
       //  LoadingDialog.close(context);
@@ -116,19 +116,19 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildSearchBar(context),
-                    filteredBand.isEmpty
+                    allbands.isEmpty
                         ? SizedBox.shrink()
                         : _buildSectionTitle("แบรนด์สินค้า"),
-                    filteredBand.isEmpty
+                    allbands.isEmpty
                         ? SizedBox.shrink()
                         : SizedBox(
                             height: 120,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: filteredBand.length,
+                              itemCount: allbands.length,
                               padding: EdgeInsets.symmetric(horizontal: 12),
                               itemBuilder: (context, index) {
-                                final brand = filteredBand[index];
+                                final brand = allbands[index];
                                 return GestureDetector(
                                   onTap: () {
                                     Navigator.push(
@@ -468,10 +468,8 @@ class _HomePageState extends State<HomePage> {
                                                         context,
                                                         MaterialPageRoute(
                                                           builder: (context) => Detailpro(
-                                                            // sku: selectedProduct
-                                                            //     .sku,
-                                                            sameproduct:
-                                                                sameProductList,
+                                                         
+                                                           
                                                             image:
                                                                 selectedProduct!
                                                                     .product
@@ -939,7 +937,6 @@ class _HomePageState extends State<HomePage> {
                         MaterialPageRoute(
                           builder: (_) => Detailpro(
                             // sku: selectedProduct.sku,
-                            sameproduct: sameProductList,
                             image: selectedProduct.product?.image_url,
                             productId: selectedProduct.id.toString(),
                             proName: selectedProduct.product?.name_en ?? "",

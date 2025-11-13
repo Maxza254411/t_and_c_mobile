@@ -4,38 +4,40 @@ import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/model/promotione.dart';
 import 'package:t_and_c_mobile/model/warehouse.dart';
 
-part 'data.g.dart';
+part 'skus.g.dart';
 
 @JsonSerializable()
-class Data {
+class Skus {
   int id;
-  String? sku;
-  String? barcode;
+  int? product_sku_id;
   int? product_id;
+  String? sku;
   int? color_id;
   int? status;
-  String? cardType;
-  int?base_price;   
-  List<Promotione>?promotions;
-  ProductTyp? product;
+  String? path_image;
+  String? image_url;
+  int? base_price;
+  List<Promotione>? promotions;
   Colorp? color;
-  List<Warehouse>? warehouse_skus;
+  List<Warehouse>?warehouse_skus;
 
-  Data(
+
+  Skus(
     this.id,
-    this.sku,
-    this.barcode,
+    this.product_sku_id,
     this.product_id,
+    this.sku,
     this.color_id,
     this.status,
-    this.cardType,
+    this.path_image,
+    this.image_url,
     this.base_price,
     this.promotions,
-    this.product,
+    this.color,
     this.warehouse_skus,
   );
 
-  factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+  factory Skus.fromJson(Map<String, dynamic> json) => _$SkusFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DataToJson(this);
+  Map<String, dynamic> toJson() => _$SkusToJson(this);
 }

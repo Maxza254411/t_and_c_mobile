@@ -54,6 +54,7 @@ dependencies:
   permission_handler: ^11.2.0
   flutter_datetime_picker_plus: ^2.1.0
   url_launcher: ^6.3.0
+  cached_network_image: ^3.3.1
 
 
 

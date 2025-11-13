@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
+import 'package:t_and_c_mobile/model/NewProductModel/newdata.dart';
 import 'package:t_and_c_mobile/model/colorp.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/productTyp.dart';
@@ -23,40 +24,33 @@ class Detailpro extends StatefulWidget {
     required this.productId,
     required this.proName,
     required this.proPice,
-
     this.color,
     this.image,
     required this.proNameTh,
-    this.sameproduct,
-    //Sku อย่างเดียว
-    // this.sku,
+    // this.sameproduct,
     required this.skulist,
     required this.skuid,
     required this.warehouse_skus,
     required this.namebrand,
-    required this.promotion,
+    this.promotion,
     this.listimage,
-    // required this.selectedProduct,
+    this.newdata,
   });
 
   String productId;
   String proName;
   String proPice;
   List<String?>? listimage;
-
   List<Colorp?>? color;
-  List<Data>? sameproduct;
+  // List<Data>? sameproduct;
   String? image;
   String? proNameTh;
-  ////
-  // String? sku;
   List<String?> skulist;
   List<int> skuid;
-  ////
   List<Warehouse> warehouse_skus = [];
   String namebrand;
-  List<Promotione> promotion;
-  // Data selectedProduct;
+  List<Promotione>? promotion;
+  Newdata? newdata;
 
   @override
   State<Detailpro> createState() => _DetailproState();
@@ -68,33 +62,47 @@ class _DetailproState extends State<Detailpro> {
   final CarouselSliderController _controller = CarouselSliderController();
   int _currentIndex = 0;
   String? selectedColor;
+  int? warehouse_skus;
   String? sku;
   int? skuid;
+  String? image;
+  int? price;
+  int? pice_promotion;
+  List<Promotione>? promotion;
 
   @override
   void initState() {
     super.initState();
-    if (widget.color != null && widget.color!.isNotEmpty) {
-      selectedColor = widget.color![0]?.name_en ?? "";
-    }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (widget.promotion != []) {
-        await testPromo();
-      }
       await selectsku();
     });
   }
 
-  Future<void> testPromo() async {
-    inspect(widget.promotion);
-  }
+  // Future<void> testPromo() async {
+  //   inspect(widget.promotion);
+  // }
 
   Future<void> selectsku() async {
     // inspect(widget.promotion);
-    sku = widget.skulist[0];
-    skuid = widget.skuid[0];
+    sku = widget.newdata!.skus![0].sku;
+    skuid = widget.newdata!.skus![0].product_sku_id;
+    selectedColor = widget.newdata!.skus![0].color!.name_th;
+    image = widget.newdata!.skus![0].image_url;
+    if (widget.newdata!.skus![0].warehouse_skus!.isNotEmpty) {
+      warehouse_skus =
+          widget.newdata?.skus?[0].warehouse_skus?[0].available ?? 0;
+    } else {
+      warehouse_skus = 0;
+    }
+    price = widget.newdata!.skus![0].base_price;
+    if (widget.newdata!.skus![0].promotions?[0].promotion_id != 2) {
+    pice_promotion = widget.newdata!.skus![0].promotions?[0].fixed_price;
+    }
+    promotion = widget.newdata?.skus?[0].promotions;
+
     setState(() {
-      print("ชื่อ ${sku} ไอดีที่ ${skuid}");
+      // print("ราคา ${promotion}");
+      inspect(promotion);
     });
   }
 
@@ -215,23 +223,24 @@ class _DetailproState extends State<Detailpro> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            widget.sameproduct != null
+            widget.newdata?.skus != null
                 ? Column(
                     children: [
                       CarouselSlider.builder(
                         carouselController: _controller,
-                        itemCount: widget.sameproduct!.length,
+                        itemCount: widget.newdata?.skus?.length,
                         itemBuilder: (context, index, realIndex) {
-                          return  widget.listimage !=
-                                  null
+                          return widget.newdata?.skus != null
                               ? Container(
                                   margin: const EdgeInsets.all(6.0),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8.0),
                                     image: DecorationImage(
                                       image: NetworkImage(
-                                        widget.listimage?[index]??
-                                              
+                                        widget
+                                                .newdata
+                                                ?.skus?[index]
+                                                .image_url ??
                                             "",
                                       ),
 
@@ -267,7 +276,7 @@ class _DetailproState extends State<Detailpro> {
                           onPageChanged: (index, reason) {
                             setState(() {
                               _currentIndex = index;
-                              //  widget.selectedProduct.sku;
+                              image = widget.newdata?.skus?[index].image_url;
                             });
                           },
                         ),
@@ -404,7 +413,7 @@ class _DetailproState extends State<Detailpro> {
                       widget.warehouse_skus.isNotEmpty
                           ? Expanded(
                               child: Text(
-                                "${widget.warehouse_skus[0].available ?? 0.toString()} ชิ้น",
+                                "${warehouse_skus ?? 0.toString()} ชิ้น",
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.black,
@@ -444,16 +453,38 @@ class _DetailproState extends State<Detailpro> {
                     ),
                   ),
                   Expanded(
-                    child: Text(
-                      "฿ ${widget.proPice}",
-                      style: TextStyle(fontSize: 14),
-                    ),
+                    child: pice_promotion != null
+                        ? Row(
+                            children: [
+                              Text(
+                                "฿ ${formatNumber(pice_promotion ?? 0)}",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "฿ ${formatNumber(price ?? 0)}",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              // แสดงราคาฟอร์แมต
+                              Text("฿ ${formatNumber(price)}"),
+                            ],
+                          ),
                   ),
                   Consumer<FavoriteProvider>(
                     builder: (context, favProvider, child) {
                       final currentProduct = Shoping(
                         namebrand: widget.namebrand,
-                        sameproduct: widget.sameproduct,
                         image: widget.image,
                         product_id: widget.productId,
                         name: widget.proName,
@@ -462,9 +493,10 @@ class _DetailproState extends State<Detailpro> {
                         color: selectedColor ?? "",
                         nameTh: widget.proNameTh ?? "",
                         warehouse_skus: widget.warehouse_skus,
-                        promotion: widget.promotion,
+                        promotion: promotion,
                         skulist: widget.skulist,
-                        skuidlist: widget.skuid,                    
+                        skuidlist: widget.skuid,
+                        newData: widget.newdata,
                       );
                       final isFav = favProvider.isFavorite(currentProduct);
                       return GestureDetector(
@@ -481,7 +513,7 @@ class _DetailproState extends State<Detailpro> {
                 ],
               ),
             ),
-            if (widget.color != null && widget.color!.isNotEmpty)
+            if (widget.newdata!.skus != null)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -490,12 +522,13 @@ class _DetailproState extends State<Detailpro> {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          children: widget.color!.asMap().entries.map((entry) {
+                          children: widget.newdata!.skus!.asMap().entries.map((
+                            entry,
+                          ) {
                             final index = entry.key;
                             final colorItem = entry.value;
 
-                            if (colorItem?.name_en == null ||
-                                colorItem!.name_en!.isEmpty) {
+                            if (colorItem.color!.name_th == null) {
                               return const SizedBox.shrink();
                             }
 
@@ -506,19 +539,55 @@ class _DetailproState extends State<Detailpro> {
                               child: SizedBox(
                                 width: size.width * 0.4,
                                 child: BuildRadioOption(
-                                  title: colorItem.name_en!,
-                                  value: colorItem.name_en!,
+                                  title: colorItem.color!.name_th!,
+                                  value: colorItem.color!.name_th!,
                                   groupValue: selectedColor,
                                   onChanged: (val) {
                                     setState(() {
                                       selectedColor = val;
 
                                       // เปลี่ยน sku ตาม index ของสีที่เลือก
-                                      if (index < widget.skulist.length) {
-                                        sku = widget.skulist[index];
+                                      if (index <
+                                          widget.newdata!.skus!.length) {
+                                        sku = widget.newdata!.skus![index].sku;
                                       }
-                                      if (index < widget.skuid.length) {
-                                        skuid = widget.skuid[index];
+                                      if (index <
+                                          widget.newdata!.skus!.length) {
+                                        skuid = widget
+                                            .newdata!
+                                            .skus![index]
+                                            .product_sku_id;
+                                      }
+                                      if (index <
+                                          widget.newdata!.skus!.length) {
+                                        warehouse_skus = widget
+                                            .newdata!
+                                            .skus![index]
+                                            .warehouse_skus![0]
+                                            .available;
+                                      }
+                                      if (index <
+                                          widget.newdata!.skus!.length) {
+                                        price = widget
+                                            .newdata!
+                                            .skus![index]
+                                            .base_price;
+                                      }
+                                      if (index <
+                                          widget.newdata!.skus!.length) {
+                                        if (widget
+                                                .newdata!
+                                                .skus![index]
+                                                .promotions?[0]
+                                                .promotion_id !=
+                                            2) {
+                                          pice_promotion = widget
+                                              .newdata!
+                                              .skus![index]
+                                              .promotions?[0]
+                                              .fixed_price;
+                                        }
+                                          promotion = widget.newdata?.skus?[index].promotions;
                                       }
                                     });
 
@@ -564,13 +633,12 @@ class _DetailproState extends State<Detailpro> {
                       ),
                     ),
                     onPressed: () {
-                      if (widget.warehouse_skus.isEmpty ||
-                          widget.warehouse_skus[0].available == null) {
+                      if (warehouse_skus == 0) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
                         );
                       } else {
-                        if (selectedColor == null || selectedColor!.isEmpty) {
+                        if (selectedColor == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
                           );
@@ -581,13 +649,17 @@ class _DetailproState extends State<Detailpro> {
                           product_id: widget.productId,
                           sku: sku,
                           skuid: skuid,
-                          image: widget.image,
+                          image: image,
                           name: widget.proName,
                           price: widget.proPice,
-                          color: selectedColor!,
+                          color: selectedColor,
                           nameTh: widget.proNameTh ?? "",
                           warehouse_skus: widget.warehouse_skus,
-                          promotion: widget.promotion,
+                          promotion: promotion,
+                          newData: widget.newdata,
+                          fixed_price: pice_promotion,
+                          base_price:price,
+                          
                         );
                         Provider.of<CartProvider>(
                           context,
@@ -621,13 +693,12 @@ class _DetailproState extends State<Detailpro> {
                       ),
                     ),
                     onPressed: () async {
-                      if (widget.warehouse_skus.isEmpty ||
-                          widget.warehouse_skus[0].available == null) {
+                      if (warehouse_skus == 0) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
                         );
                       } else {
-                        if (selectedColor == null || selectedColor!.isEmpty) {
+                        if (selectedColor == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
                           );
@@ -644,7 +715,6 @@ class _DetailproState extends State<Detailpro> {
                           isScrollControlled: true, // ให้เลื่อนขึ้นลงได้
                           builder: (BuildContext context) {
                             int quantity = 1;
-                            int totalPriceBottom = 0;
                             return StatefulBuilder(
                               builder: (BuildContext context, StateSetter setState) {
                                 return Stack(
@@ -692,16 +762,14 @@ class _DetailproState extends State<Detailpro> {
                                                               BorderRadius.circular(
                                                                 8,
                                                               ), // ถ้าอยากให้มุมโค้ง
-                                                          child:
-                                                              widget.image ==
-                                                                  null
+                                                          child: image == null
                                                               ? Image.asset(
                                                                   "assets/images/NoImage.jpg",
                                                                   fit: BoxFit
                                                                       .cover,
                                                                 )
                                                               : Image.network(
-                                                                  widget.image!,
+                                                                  image!,
                                                                   fit: BoxFit
                                                                       .cover,
                                                                 ),
@@ -771,14 +839,44 @@ class _DetailproState extends State<Detailpro> {
                                                                         .bold,
                                                               ),
                                                             ),
-                                                            Row(
-                                                              children: [
-                                                                // แสดงราคาฟอร์แมต
-                                                                Text(
-                                                                  "฿ ${widget.proPice}",
-                                                                ),
-                                                              ],
-                                                            ),
+                                                            pice_promotion !=
+                                                                    null
+                                                                ? Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        "฿ ${formatNumber(pice_promotion ?? 0)}",
+                                                                        style: const TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          fontWeight:
+                                                                              FontWeight.w600,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            10,
+                                                                      ),
+                                                                      Text(
+                                                                        "฿ ${formatNumber(price ?? 0)}",
+                                                                        style: const TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          color:
+                                                                              Colors.grey,
+                                                                          decoration:
+                                                                              TextDecoration.lineThrough,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                : Row(
+                                                                    children: [
+                                                                      // แสดงราคาฟอร์แมต
+                                                                      Text(
+                                                                        "฿ ${formatNumber(price)}",
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                             Padding(
                                                               padding:
                                                                   const EdgeInsets.all(
@@ -924,17 +1022,16 @@ class _DetailproState extends State<Detailpro> {
 
                                                       TextSpan(
                                                         text: formatNumber(
-                                                          totalPriceBottom =
-                                                              (double.parse(
-                                                                        widget
-                                                                            .proPice
-                                                                            .replaceAll(
-                                                                              ',',
-                                                                              '',
-                                                                            ),
-                                                                      ) *
-                                                                      quantity)
-                                                                  .toInt(),
+                                                          (double.parse(
+                                                                    widget
+                                                                        .proPice
+                                                                        .replaceAll(
+                                                                          ',',
+                                                                          '',
+                                                                        ),
+                                                                  ) *
+                                                                  quantity)
+                                                              .toInt(),
                                                         ),
                                                         style: TextStyle(
                                                           color: kButtonColor,
@@ -962,54 +1059,11 @@ class _DetailproState extends State<Detailpro> {
                                                     onPressed: () async {
                                                       if (widget.proPice !=
                                                           "0.00") {
-                                                        final shoping = Shoping(
-                                                          skuid: skuid,
-                                                          sku: sku,
-                                                          product_id:
-                                                              widget.productId,
-                                                          quantity: quantity,
-                                                          image: widget.image,
-                                                          name: widget.proName,
-                                                          price: widget.proPice,
-                                                          color:
-                                                              selectedColor ??
-                                                              "",
-                                                          nameTh:
-                                                              widget
-                                                                  .proNameTh ??
-                                                              "",
-                                                          warehouse_skus: widget
-                                                              .warehouse_skus,
-                                                        );
-
-                                                        // รอให้ bottom sheet ปิดเสร็จแล้วค่อย push หน้าใหม่
                                                         await Future.delayed(
                                                           Duration(
                                                             milliseconds: 200,
                                                           ),
                                                         );
-
-                                                        // Navigator.push(
-                                                        //   context,
-                                                        //   MaterialPageRoute(
-                                                        //     builder: (_) => Compleated(
-                                                        //       totalPrice: double.parse(
-                                                        //         totalPriceBottom
-                                                        //             .toString()
-                                                        //             .replaceAll(
-                                                        //               ',',
-                                                        //               '',
-                                                        //             ),
-                                                        //       ),
-                                                        //       status: false,
-                                                        //       selectedItems: [
-                                                        //         shoping,
-                                                        //       ],
-                                                        //       slipe_status:
-                                                        //           false,
-                                                        //     ),
-                                                        //   ),
-                                                        // );
                                                       } else {
                                                         await showDialog(
                                                           context: context,

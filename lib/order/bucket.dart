@@ -70,7 +70,7 @@ class _BucketState extends State<Bucket> {
               product.quantity <= (tier.max_qty!)) {
             setState(() {
               product.price_per_unit =
-                  tier.price_per_unit ?? int.parse(product.price!);
+                  tier.price_per_unit ?? product.base_price!;
             });
             matched = true;
             break;
@@ -78,7 +78,7 @@ class _BucketState extends State<Bucket> {
         }
         if (!matched) {
           setState(() {
-            product.price = double.parse(product.price!).toInt().toString();
+            product.base_price = product.base_price;
           });
         }
       }
@@ -94,8 +94,12 @@ class _BucketState extends State<Bucket> {
       if (checked[i]) {
         final product = cart.items[i];
         final qty = product.quantity;
-        final original = parsePrice(product.price);
-        final discounted = parsePrice(product.price_per_unit ?? product.price);
+        final original = product.fixed_price == 0
+            ? parsePrice(product.base_price)
+            : parsePrice(product.fixed_price);
+        final discounted = parsePrice(
+          product.price_per_unit ?? product.base_price,
+        );
         originalTotal += original * qty;
         discountedTotal += discounted * qty;
       }
@@ -136,7 +140,6 @@ class _BucketState extends State<Bucket> {
     double discountAmount = totals["discount"]!;
     double totalPrice = totals["discounted"]!;
     final brandQty = calculateBrandQty(cart);
-
     return Scaffold(
       backgroundColor: kbgH,
       appBar: AppBar(
@@ -263,13 +266,36 @@ class _BucketState extends State<Bucket> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "${formatNumber(double.parse("${product.price_per_unit ?? product.price}"))} บาท",
-                                          ),
-                                        ],
-                                      ),
+                                      product.fixed_price != 0
+                                          ? Row(
+                                              children: [
+                                                Text(
+                                                  "฿ ${formatNumber(double.parse(product.fixed_price.toString()) )}",
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Text(
+                                                  "฿ ${formatNumber(double.parse(product.base_price.toString()) )}",
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Row(
+                                              children: [
+                                                // แสดงราคาฟอร์แมต
+                                                Text(
+                                                  "฿ ${formatNumber(double.parse(product.base_price.toString()))}",
+                                                ),
+                                              ],
+                                            ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Row(
@@ -450,45 +476,6 @@ class _BucketState extends State<Bucket> {
                     },
                   ),
                 ),
-
-                // ✅ แสดงสรุปยอดราคาก่อนลด ส่วนลด และหลังลด
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text("จำนวนสินค้าของแบรนด์ Anidary "),
-                              Text("${brandQty["Anidary"] ?? 0} ชิ้น"),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text("จำนวนสินค้าของแบรนด์ Baseus "),
-                              Text("${brandQty["Baseus"] ?? 0} ชิ้น"),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text("จำนวนสินค้าของแบรนด์ Alldocube "),
-                              Text("${brandQty["Alldocube"] ?? 0} ชิ้น"),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
