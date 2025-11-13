@@ -70,6 +70,13 @@ class _DetailproState extends State<Detailpro> {
   int? pice_promotion;
   List<Promotione>? promotion;
 
+  int? dilog_pice;
+  int? dialog_promotion;
+
+  double totalBeforeDiscount = 0;
+  double totalAfterDiscount = 0;
+  double discountAmount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -96,7 +103,7 @@ class _DetailproState extends State<Detailpro> {
     }
     price = widget.newdata!.skus![0].base_price;
     if (widget.newdata!.skus![0].promotions?[0].promotion_id != 2) {
-    pice_promotion = widget.newdata!.skus![0].promotions?[0].fixed_price;
+      pice_promotion = widget.newdata!.skus![0].promotions?[0].fixed_price;
     }
     promotion = widget.newdata?.skus?[0].promotions;
 
@@ -113,6 +120,62 @@ class _DetailproState extends State<Detailpro> {
     } else {
       debugPrint("CarouselSlider ยังไม่พร้อม");
     }
+  }
+
+  double parsePrice(dynamic price) {
+    if (price is String) {
+      return double.tryParse(price.replaceAll(',', '')) ?? 0;
+    } else if (price is num) {
+      return price.toDouble();
+    } else {
+      return 0;
+    }
+  }
+
+  void checkPromotionForProduct(
+    List<Promotione> promotion,
+    int quantity,
+    int prices,
+    Function(double newPrice) onPriceCalculated, // ✅ เพิ่ม callback ส่งค่ากลับ
+  ) {
+    if (promotion.isEmpty) {
+      onPriceCalculated(prices.toDouble());
+      return;
+    }
+
+    double basePrice = parsePrice(prices);
+    double newPrice = basePrice;
+    double newPriceFromOtherPromo = basePrice;
+    bool tierMatched = false;
+
+    for (var promo in promotion) {
+      if (promo.promotion_id == 1 || promo.promotion_id == 3) {
+        if (promo.percent != null && promo.percent! > 0) {
+          newPriceFromOtherPromo =
+              basePrice - (basePrice * (promo.percent! / 100));
+        }
+        if (promo.fixed_price != null && promo.fixed_price! > 0) {
+          newPriceFromOtherPromo = promo.fixed_price!.toDouble();
+        }
+      } else if (promo.promotion_id == 2) {
+        tierMatched = false;
+        for (var tier in promo.tiers) {
+          if (quantity >= (tier.min_qty ?? 0) &&
+              quantity <= (tier.max_qty ?? double.infinity)) {
+            newPrice = (tier.price_per_unit ?? newPriceFromOtherPromo)
+                .toDouble();
+            tierMatched = true;
+            break;
+          }
+        }
+        if (!tierMatched) {
+          newPrice = newPriceFromOtherPromo;
+        }
+      }
+    }
+
+    // ✅ ส่งราคาสุดท้ายกลับไปให้ส่วน UI ใช้งาน
+    onPriceCalculated(newPrice);
   }
 
   void _runAddToCartAnimation() {
@@ -527,15 +590,11 @@ class _DetailproState extends State<Detailpro> {
                           ) {
                             final index = entry.key;
                             final colorItem = entry.value;
-
                             if (colorItem.color!.name_th == null) {
-                              return const SizedBox.shrink();
+                              return SizedBox.shrink();
                             }
-
                             return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
                               child: SizedBox(
                                 width: size.width * 0.4,
                                 child: BuildRadioOption(
@@ -572,6 +631,7 @@ class _DetailproState extends State<Detailpro> {
                                             .newdata!
                                             .skus![index]
                                             .base_price;
+                                        print(price);
                                       }
                                       if (index <
                                           widget.newdata!.skus!.length) {
@@ -587,16 +647,17 @@ class _DetailproState extends State<Detailpro> {
                                               .promotions?[0]
                                               .fixed_price;
                                         }
-                                          promotion = widget.newdata?.skus?[index].promotions;
+                                        promotion = widget
+                                            .newdata
+                                            ?.skus?[index]
+                                            .promotions;
                                       }
                                     });
 
                                     // ถ้ามี PageView ให้เลื่อนตามสี
                                     _controller.animateToPage(
                                       index,
-                                      duration: const Duration(
-                                        milliseconds: 500,
-                                      ),
+                                      duration: Duration(milliseconds: 500),
                                       curve: Curves.easeInOut,
                                     );
                                   },
@@ -616,7 +677,7 @@ class _DetailproState extends State<Detailpro> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -651,15 +712,17 @@ class _DetailproState extends State<Detailpro> {
                           skuid: skuid,
                           image: image,
                           name: widget.proName,
-                          price: widget.proPice,
+                          price: price.toString(),
                           color: selectedColor,
                           nameTh: widget.proNameTh ?? "",
                           warehouse_skus: widget.warehouse_skus,
                           promotion: promotion,
                           newData: widget.newdata,
                           fixed_price: pice_promotion,
-                          base_price:price,
-                          
+                          base_price: price,
+                          price_per_unit: pice_promotion == 0
+                              ? price
+                              : pice_promotion,
                         );
                         Provider.of<CartProvider>(
                           context,
@@ -704,6 +767,10 @@ class _DetailproState extends State<Detailpro> {
                           );
                           return;
                         }
+                        setState(() {
+                          dilog_pice = price;
+                          dialog_promotion = pice_promotion;
+                        });
                         showModalBottomSheet(
                           backgroundColor: Colors.white,
                           context: context,
@@ -715,27 +782,24 @@ class _DetailproState extends State<Detailpro> {
                           isScrollControlled: true, // ให้เลื่อนขึ้นลงได้
                           builder: (BuildContext context) {
                             int quantity = 1;
+
                             return StatefulBuilder(
                               builder: (BuildContext context, StateSetter setState) {
                                 return Stack(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.all(16.0),
+                                      padding: EdgeInsets.all(16.0),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Container(
-                                            // width: size.width * 1,
-                                            // height: size.height * 0.15,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius:
                                                   BorderRadius.circular(10),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.all(
-                                                8.0,
-                                              ),
+                                              padding: EdgeInsets.all(8.0),
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   borderRadius:
@@ -746,10 +810,9 @@ class _DetailproState extends State<Detailpro> {
                                                 child: Row(
                                                   children: [
                                                     Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                            left: 2,
-                                                          ),
+                                                      padding: EdgeInsets.only(
+                                                        left: 2,
+                                                      ),
                                                       child: SizedBox(
                                                         width:
                                                             size.width *
@@ -778,10 +841,9 @@ class _DetailproState extends State<Detailpro> {
                                                     ),
 
                                                     Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                            8.0,
-                                                          ),
+                                                      padding: EdgeInsets.all(
+                                                        8.0,
+                                                      ),
                                                       child: Container(
                                                         width: 1,
                                                         height:
@@ -791,10 +853,9 @@ class _DetailproState extends State<Detailpro> {
                                                     ),
                                                     Expanded(
                                                       child: Padding(
-                                                        padding:
-                                                            const EdgeInsets.all(
-                                                              8.0,
-                                                            ),
+                                                        padding: EdgeInsets.all(
+                                                          8.0,
+                                                        ),
                                                         child: Column(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
@@ -809,7 +870,7 @@ class _DetailproState extends State<Detailpro> {
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
-                                                              style: const TextStyle(
+                                                              style: TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
@@ -821,7 +882,7 @@ class _DetailproState extends State<Detailpro> {
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
-                                                              style: const TextStyle(
+                                                              style: TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
@@ -833,7 +894,7 @@ class _DetailproState extends State<Detailpro> {
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
-                                                              style: const TextStyle(
+                                                              style: TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
@@ -844,21 +905,21 @@ class _DetailproState extends State<Detailpro> {
                                                                 ? Row(
                                                                     children: [
                                                                       Text(
-                                                                        "฿ ${formatNumber(pice_promotion ?? 0)}",
-                                                                        style: const TextStyle(
+                                                                        "฿ ${formatNumber(dialog_promotion ?? 0)}",
+                                                                        style: TextStyle(
                                                                           fontSize:
                                                                               14,
                                                                           fontWeight:
                                                                               FontWeight.w600,
                                                                         ),
                                                                       ),
-                                                                      const SizedBox(
+                                                                      SizedBox(
                                                                         width:
                                                                             10,
                                                                       ),
                                                                       Text(
-                                                                        "฿ ${formatNumber(price ?? 0)}",
-                                                                        style: const TextStyle(
+                                                                        "฿ ${formatNumber(dilog_pice ?? 0)}",
+                                                                        style: TextStyle(
                                                                           fontSize:
                                                                               14,
                                                                           color:
@@ -873,13 +934,13 @@ class _DetailproState extends State<Detailpro> {
                                                                     children: [
                                                                       // แสดงราคาฟอร์แมต
                                                                       Text(
-                                                                        "฿ ${formatNumber(price)}",
+                                                                        "฿ ${formatNumber(dilog_pice)}",
                                                                       ),
                                                                     ],
                                                                   ),
                                                             Padding(
                                                               padding:
-                                                                  const EdgeInsets.all(
+                                                                  EdgeInsets.all(
                                                                     8.0,
                                                                   ),
                                                               child: Row(
@@ -889,11 +950,53 @@ class _DetailproState extends State<Detailpro> {
                                                                     onTap: () async {
                                                                       if (quantity >
                                                                           1) {
-                                                                        setState(
-                                                                          () {
-                                                                            quantity--;
-                                                                          },
-                                                                        );
+                                                                        setState(() {
+                                                                          quantity--;
+                                                                          dialog_promotion ==
+                                                                                  null
+                                                                              ? checkPromotionForProduct(
+                                                                                  promotion!,
+                                                                                  quantity,
+                                                                                  dilog_pice!,
+                                                                                  (
+                                                                                    newPrice,
+                                                                                  ) {
+                                                                                    totalBeforeDiscount =
+                                                                                        double.parse(
+                                                                                          dilog_pice.toString(),
+                                                                                        ) *
+                                                                                        quantity;
+                                                                                    totalAfterDiscount =
+                                                                                        newPrice *
+                                                                                        quantity;
+                                                                                    discountAmount =
+                                                                                        totalBeforeDiscount -
+                                                                                        totalAfterDiscount;
+                                                                                    dialog_promotion = newPrice.toInt();
+                                                                                  },
+                                                                                )
+                                                                              : checkPromotionForProduct(
+                                                                                  promotion!,
+                                                                                  quantity,
+                                                                                  dialog_promotion!,
+                                                                                  (
+                                                                                    newPrice,
+                                                                                  ) {
+                                                                                    totalBeforeDiscount =
+                                                                                        double.parse(
+                                                                                          dilog_pice.toString(),
+                                                                                        ) *
+                                                                                        quantity;
+                                                                                    totalAfterDiscount =
+                                                                                        newPrice *
+                                                                                        quantity;
+                                                                                    discountAmount =
+                                                                                        totalBeforeDiscount -
+                                                                                        totalAfterDiscount;
+                                                                                    dialog_promotion = newPrice.toInt();
+                                                                                  },
+                                                                                );
+                                                                        });
                                                                       } else {
                                                                         debugPrint(
                                                                           "ต้องการลบสินค้า",
@@ -902,7 +1005,7 @@ class _DetailproState extends State<Detailpro> {
                                                                     },
                                                                     child: Padding(
                                                                       padding:
-                                                                          const EdgeInsets.all(
+                                                                          EdgeInsets.all(
                                                                             2.0,
                                                                           ),
                                                                       child: Image.asset(
@@ -913,7 +1016,7 @@ class _DetailproState extends State<Detailpro> {
                                                                     ),
                                                                   ),
 
-                                                                  const SizedBox(
+                                                                  SizedBox(
                                                                     width: 10,
                                                                   ),
 
@@ -968,11 +1071,53 @@ class _DetailproState extends State<Detailpro> {
                                                                   // เพิ่มจำนวน
                                                                   InkWell(
                                                                     onTap: () {
-                                                                      setState(
-                                                                        () {
-                                                                          quantity++;
-                                                                        },
-                                                                      );
+                                                                      setState(() {
+                                                                        quantity++;
+                                                                        dialog_promotion ==
+                                                                                null
+                                                                            ? checkPromotionForProduct(
+                                                                                promotion!,
+                                                                                quantity,
+                                                                                dilog_pice!,
+                                                                                (
+                                                                                  newPrice,
+                                                                                ) {
+                                                                                  totalBeforeDiscount =
+                                                                                      double.parse(
+                                                                                        dilog_pice.toString(),
+                                                                                      ) *
+                                                                                      quantity;
+                                                                                  totalAfterDiscount =
+                                                                                      newPrice *
+                                                                                      quantity;
+                                                                                  discountAmount =
+                                                                                      totalBeforeDiscount -
+                                                                                      totalAfterDiscount;
+                                                                                  dialog_promotion = newPrice.toInt();
+                                                                                },
+                                                                              )
+                                                                            : checkPromotionForProduct(
+                                                                                promotion!,
+                                                                                quantity,
+                                                                                dialog_promotion!,
+                                                                                (
+                                                                                  newPrice,
+                                                                                ) {
+                                                                                  totalBeforeDiscount =
+                                                                                      double.parse(
+                                                                                        dilog_pice.toString(),
+                                                                                      ) *
+                                                                                      quantity;
+                                                                                  totalAfterDiscount =
+                                                                                      newPrice *
+                                                                                      quantity;
+                                                                                  discountAmount =
+                                                                                      totalBeforeDiscount -
+                                                                                      totalAfterDiscount;
+                                                                                  dialog_promotion = newPrice.toInt();
+                                                                                },
+                                                                              );
+                                                                      });
                                                                     },
                                                                     child: Padding(
                                                                       padding:
@@ -1000,51 +1145,143 @@ class _DetailproState extends State<Detailpro> {
                                           ),
                                           Divider(),
                                           Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                            padding: const EdgeInsets.all(12.0),
                                             child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               mainAxisAlignment:
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                Text.rich(
-                                                  TextSpan(
+                                                // ✅ สรุปยอดรวมทั้งหมด
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      TextSpan(
-                                                        text: "ราคารวม ฿ ",
-                                                        style: TextStyle(
-                                                          color: Colors
-                                                              .black, // สีตัวอักษรปกติ
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+                                                      // 🔹 ราคารวมก่อนส่วนลด
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          const Text(
+                                                            "ราคารวม",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            "฿ ${dialog_promotion == null ? formatNumber((double.parse(dilog_pice.toString().replaceAll(',', '')) * quantity).toInt()) : formatNumber((double.parse(dialog_promotion.toString().replaceAll(',', '')) * quantity).toInt())}",
+                                                            style:
+                                                                const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                          ),
+                                                        ],
                                                       ),
+                                                      const SizedBox(height: 4),
 
-                                                      TextSpan(
-                                                        text: formatNumber(
-                                                          (double.parse(
-                                                                    widget
-                                                                        .proPice
-                                                                        .replaceAll(
-                                                                          ',',
-                                                                          '',
-                                                                        ),
-                                                                  ) *
-                                                                  quantity)
-                                                              .toInt(),
-                                                        ),
-                                                        style: TextStyle(
-                                                          color: kButtonColor,
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                      // 🔹 ส่วนลด
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          const Text(
+                                                            "ส่วนลด",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            "- ฿ ${formatNumber(discountAmount)}",
+                                                            style:
+                                                                const TextStyle(
+                                                                  color: Colors
+                                                                      .red,
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 6),
+
+                                                      // 🔹 ยอดหลังส่วนลด
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              vertical: 4,
+                                                            ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                              border: Border(
+                                                                top: BorderSide(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade300,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            const Text(
+                                                              "ยอดหลังส่วนลด",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              "฿ ${formatNumber((dialog_promotion == null ? double.parse(dilog_pice.toString().replaceAll(',', '')) : double.parse(dialog_promotion.toString().replaceAll(',', ''))) * quantity - discountAmount)}",
+                                                              style: TextStyle(
+                                                                color:
+                                                                    kButtonColor,
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w900,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ),
                                                     ],
                                                   ),
                                                 ),
+
+                                                const SizedBox(width: 12),
+
+                                                // ✅ ปุ่มสั่งซื้อ
                                                 SizedBox(
                                                   height: 55,
+                                                  width: 120,
                                                   child: ElevatedButton(
                                                     style: ElevatedButton.styleFrom(
                                                       backgroundColor:
@@ -1052,16 +1289,70 @@ class _DetailproState extends State<Detailpro> {
                                                       shape: RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius.circular(
-                                                              8,
+                                                              10,
                                                             ),
                                                       ),
+                                                      elevation: 3,
                                                     ),
                                                     onPressed: () async {
-                                                      if (widget.proPice !=
-                                                          "0.00") {
+                                                      if (dilog_pice != 0 ||
+                                                          dialog_promotion !=
+                                                              0) {
+                                                        final shoping = Shoping(
+                                                          skuid: skuid,
+                                                          sku: sku,
+                                                          product_id:
+                                                              widget.productId,
+                                                          quantity: quantity,
+                                                          image: widget.image,
+                                                          name: widget.proName,
+                                                          price: widget.proPice,
+                                                          color:
+                                                              selectedColor ??
+                                                              "",
+                                                          nameTh:
+                                                              widget
+                                                                  .proNameTh ??
+                                                              "",
+                                                          warehouse_skus: widget
+                                                              .warehouse_skus,
+                                                        );
+
                                                         await Future.delayed(
-                                                          Duration(
+                                                          const Duration(
                                                             milliseconds: 200,
+                                                          ),
+                                                        );
+
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (_) => Compleated(
+                                                              totalPrice:
+                                                                  dialog_promotion ==
+                                                                      null
+                                                                  ? double.parse(
+                                                                      dilog_pice
+                                                                          .toString(),
+                                                                    )
+                                                                  : double.parse(
+                                                                      dialog_promotion
+                                                                          .toString(),
+                                                                    ),
+                                                              status: false,
+                                                              selectedItems: [
+                                                                shoping,
+                                                              ],
+                                                              slipe_status:
+                                                                  false,
+                                                              discountAmount:
+                                                                  discountAmount,
+                                                              originalTotal:
+                                                                  (dilog_pice ??
+                                                                      0) *
+                                                                  quantity
+                                                                      .toDouble(),
+                                                            ),
                                                           ),
                                                         );
                                                       } else {

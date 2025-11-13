@@ -666,21 +666,44 @@ class _CompleatedState extends State<Compleated> {
                                                       ),
                                                     ],
                                                   ),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-
-                                                        widget
-                                                            .selectedItems![index]
-                                                            .price
-                                                            .toString(),
-                                                      ),
-                                                        Text(
-                                                        
-                                                       "  บาท"
-                                                      ),
-                                                    ],
+                                                widget.selectedItems[index].fixed_price != 0
+                                          ? Row(
+                                              children: [
+                                              widget.selectedItems[index].price_per_unit==null
+                                               ? Text(
+                                                  "฿ ${formatNumber(double.parse(widget.selectedItems[index].fixed_price.toString()))}",
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
                                                   ),
+                                                )
+                                                :Text(
+                                                  "฿ ${formatNumber(double.parse( widget.selectedItems[index].price_per_unit.toString()))}",
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                 SizedBox(width: 10),
+                                                Text(
+                                                  "฿ ${formatNumber(double.parse(widget.selectedItems[index].base_price.toString()))}",
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Row(
+                                              children: [
+                                                // แสดงราคาฟอร์แมต
+                                                Text(
+                                                  "฿ ${formatNumber(double.parse(widget.selectedItems[index].base_price.toString()))}",
+                                                ),
+                                              ],
+                                            ),
                                                 ],
                                               ),
                                             ],
