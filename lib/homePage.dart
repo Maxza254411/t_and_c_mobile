@@ -775,7 +775,7 @@ class _HomePageState extends State<HomePage> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => Allproduct(status: 'product')),
+            MaterialPageRoute(builder: (_) => Allproduct(status: 'product', namebrand: '',)),
           );
         },
         child: Container(

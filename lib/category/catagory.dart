@@ -1,4 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -312,13 +311,43 @@ Widget _buildProductCard(Newdata product) {
                     ),
                   ),
                 ),
+                 Padding(
+                   padding: const EdgeInsets.all(8.0),
+                   child: Consumer<FavoriteProvider>(
+                      builder: (context, favProvider, child) {
+                        final currentProduct = Shoping(
+                          warehouse_skus: firstSku?.warehouse_skus ?? [],
+                          sku: firstSku?.sku ?? "",
+                          image: firstSku?.image_url,
+                          product_id: product.product_id.toString(),
+                          name: product.name_en ?? "",
+                          price: formatNumber(firstSku?.base_price ?? 0),
+                          color: firstSku?.color?.name_en ?? "",
+                          nameTh: product.name_th ?? "",
+                       
+                        );
+                   
+                        final isFav = favProvider.isFavorite(currentProduct);
+                   
+                        return GestureDetector(
+                          onTap: () => favProvider.toggleFavorite(currentProduct),
+                          child: Image.asset(
+                            isFav
+                                ? "assets/icons/HertOn.png"
+                                : "assets/icons/HertOff.png",
+                            scale: 15,
+                          ),
+                        );
+                      },
+                    ),
+                 ),
             ],
           ),
         ),
 
         // ---------------- ข้อมูลสินค้า ----------------
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding:  EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -326,20 +355,22 @@ Widget _buildProductCard(Newdata product) {
                 product.name_en ?? "",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style:  TextStyle(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 4),
+               SizedBox(height: 4),
 
               // -------- ราคา --------
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   if (firstSku != null)
-                    firstSku.promotions!.isNotEmpty
+                   firstSku.promotions!.isNotEmpty
                         ? Row(
                             children: [
                               Text(
                                 "฿ ${formatNumber(firstSku.promotions![0].fixed_price ?? 0)}",
+                                 maxLines: 1,
+                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -348,6 +379,8 @@ Widget _buildProductCard(Newdata product) {
                               const SizedBox(width: 10),
                               Text(
                                 "฿ ${formatNumber(firstSku.base_price ?? 0)}",
+                                 maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey,
@@ -365,35 +398,6 @@ Widget _buildProductCard(Newdata product) {
                           )
                   else
                     const Text("ไม่มีข้อมูลราคา"),
-
-                  // -------- ปุ่ม Favorite --------
-                  Consumer<FavoriteProvider>(
-                    builder: (context, favProvider, child) {
-                      final currentProduct = Shoping(
-                        warehouse_skus: firstSku?.warehouse_skus ?? [],
-                        sku: firstSku?.sku ?? "",
-                        image: firstSku?.image_url,
-                        product_id: product.product_id.toString(),
-                        name: product.name_en ?? "",
-                        price: formatNumber(firstSku?.base_price ?? 0),
-                        color: firstSku?.color?.name_en ?? "",
-                        nameTh: product.name_th ?? "",
-                     
-                      );
-
-                      final isFav = favProvider.isFavorite(currentProduct);
-
-                      return GestureDetector(
-                        onTap: () => favProvider.toggleFavorite(currentProduct),
-                        child: Image.asset(
-                          isFav
-                              ? "assets/icons/HertOn.png"
-                              : "assets/icons/HertOff.png",
-                          scale: 15,
-                        ),
-                      );
-                    },
-                  ),
                 ],
               ),
 
@@ -411,7 +415,7 @@ Widget _buildProductCard(Newdata product) {
                   ),
                   onPressed:
                        () {
-                        inspect(product);
+                    //  print( firstSku?.promotions![0].promotion_id);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

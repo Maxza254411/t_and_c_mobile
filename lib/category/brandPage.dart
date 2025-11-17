@@ -55,6 +55,7 @@ class _BrandPageState extends State<BrandPage> {
   Future<void> getapi() async {
     try {
       LoadingDialog.open(context);
+      print(widget.namebrand);
       // print(widget.namebrand);
       await context.read<ProductController>().getproductypBybrandId(
         brandid: widget.brandId,
@@ -249,7 +250,7 @@ class _BrandPageState extends State<BrandPage> {
                       MaterialPageRoute(
                         builder: (context) => Allproduct(
                           status: 'brand',
-                          brandId: widget.brandId,
+                          brandId: widget.brandId, namebrand: widget.namebrand,
                         ),
                       ),
                     );
@@ -481,7 +482,7 @@ class _BrandPageState extends State<BrandPage> {
                   //                               //               ?.image_url,
                   //                               //         )
                   //                               //         .toList();
-                  //                                       // inspect(imagelist);
+                  //                             
                   //                               final currentProduct = Shoping(
                   //                                 promotion:
                   //                                     selectedProduct
@@ -587,7 +588,7 @@ class _BrandPageState extends State<BrandPage> {
                   //                                 .map((e) => e.product?.image_url!)
                   //                                 .toList();
 
-                  //                             inspect(imagelist);
+                  //            
 
                   //                             Navigator.push(
                   //                               context,

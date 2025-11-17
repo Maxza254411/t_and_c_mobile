@@ -11,9 +11,10 @@ import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
 class Allproduct extends StatefulWidget {
-  Allproduct({super.key, required this.status, this.brandId});
+  Allproduct({super.key, required this.status, this.brandId,required this.namebrand});
   final String status;
   final int? brandId;
+  String namebrand;
 
   @override
   State<Allproduct> createState() => _AllproductState();
@@ -191,6 +192,7 @@ class _AllproductState extends State<Allproduct> {
                                     size: 16,
                                   ),
                                   onTap: () {
+                                    print( widget.namebrand);
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -198,7 +200,8 @@ class _AllproductState extends State<Allproduct> {
                                           brandid: widget.brandId ?? 1,
                                           title: product.name_en ?? "",
                                           productTypid: product.id,
-                                          statusPage:widget.status == "product"? "product":"brand", namebrand: 'Anidary',
+                                          statusPage:widget.status == "product"? "product":"brand", 
+                                          namebrand: widget.namebrand,
                                         ),
                                       ),
                                     );

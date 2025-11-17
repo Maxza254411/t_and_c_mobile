@@ -115,7 +115,6 @@ class _DetailproState extends State<Detailpro> {
 
     setState(() {
       // print("ราคา ${promotion}");
-      // inspect(promotion);
     });
   }
 
@@ -376,7 +375,7 @@ class _DetailproState extends State<Detailpro> {
                   ),
                   Expanded(
                     child: Text(
-                      name_en??'',
+                      name_en ?? '',
                       style: TextStyle(fontSize: 14, color: Colors.black),
                     ),
                   ),
@@ -401,7 +400,7 @@ class _DetailproState extends State<Detailpro> {
                   ),
                   Expanded(
                     child: Text(
-                      name_th??"",
+                      name_th ?? "",
                       style: TextStyle(fontSize: 14, color: Colors.black),
                     ),
                   ),
@@ -481,14 +480,14 @@ class _DetailproState extends State<Detailpro> {
                       ),
                       widget.warehouse_skus.isNotEmpty
                           ? Expanded(
-  child: Text(
-    "${(warehouse_skus ?? 0)} ชิ้น",
-    style: TextStyle(
-      fontSize: 14,
-      color: Colors.black,
-    ),
-  ),
-)
+                              child: Text(
+                                "${(warehouse_skus ?? 0)} ชิ้น",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            )
                           : Expanded(
                               child: Text(
                                 "สินค้าหมด",
@@ -522,7 +521,7 @@ class _DetailproState extends State<Detailpro> {
                     ),
                   ),
                   Expanded(
-                    child: pice_promotion != 0
+                    child: pice_promotion != 0 &&  pice_promotion != null
                         ? Row(
                             children: [
                               Text(
@@ -554,10 +553,10 @@ class _DetailproState extends State<Detailpro> {
                     builder: (context, favProvider, child) {
                       final currentProduct = Shoping(
                         namebrand: widget.namebrand,
-                        image: widget.image,
+                        image: image,
                         product_id: widget.productId,
                         name: widget.proName,
-                        price: widget.proPice,
+                        price:price.toString(),
                         colors: widget.color,
                         color: selectedColor ?? "",
                         nameTh: widget.proNameTh ?? "",
@@ -608,10 +607,12 @@ class _DetailproState extends State<Detailpro> {
                                   value: colorItem.color!.name_th!,
                                   groupValue: selectedColor,
                                   onChanged: (val) {
-                                    
                                     setState(() {
-                                      inspect(widget.newdata);
                                       selectedColor = val;
+                                      //  print(widget
+                                      //             .newdata!
+                                      //             .skus![index]
+                                      //             .promotions?[0].promotion_id);
 
                                       // เปลี่ยน sku ตาม index ของสีที่เลือก
                                       if (index <
@@ -632,20 +633,22 @@ class _DetailproState extends State<Detailpro> {
                                             .newdata!
                                             .skus![index]
                                             .base_price;
-                                      }                                   
-                                      if (index <
-                                          widget.newdata!.skus!.length) {
+
+                                        //โปรโมชั่น
+
                                         if (widget
                                             .newdata!
                                             .skus![index]
                                             .promotions!
-                                            .isNotEmpty ) {
+                                            .isNotEmpty) {
                                           if (widget
                                                   .newdata!
                                                   .skus![index]
                                                   .promotions?[0]
-                                                  .promotion_id !=
+                                                  .promotion_id ==
                                               2) {
+                                            pice_promotion = 0;
+                                          } else {
                                             pice_promotion = widget
                                                 .newdata!
                                                 .skus![index]
@@ -655,26 +658,6 @@ class _DetailproState extends State<Detailpro> {
                                         } else {
                                           pice_promotion = 0;
                                         }
-                                        // if (widget
-                                        //         .newdata!
-                                        //         .skus![index]
-                                        //         .promotions!.isNotEmpty) {
-                                        //     if (widget
-                                        //         .newdata!
-                                        //         .skus![index]
-                                        //         .promotions?[0]
-                                        //         .promotion_id !=
-                                        //     2) {
-                                        //   pice_promotion = widget
-                                        //       .newdata!
-                                        //       .skus![index]
-                                        //       .promotions?[0]
-                                        //       .fixed_price;
-                                        // }else{
-                                        //   pice_promotion=0;
-                                        // }
-                                        // }
-
                                         promotion = widget
                                             .newdata
                                             ?.skus?[index]
@@ -746,8 +729,8 @@ class _DetailproState extends State<Detailpro> {
                           warehouse_skus: widget.warehouse_skus,
                           promotion: promotion,
                           newData: widget.newdata,
-                          fixed_price: pice_promotion??0,
-                          base_price: price??0,
+                          fixed_price: pice_promotion ?? 0,
+                          base_price: price ?? 0,
                           price_per_unit: pice_promotion == 0
                               ? price
                               : pice_promotion,
@@ -1118,29 +1101,29 @@ class _DetailproState extends State<Detailpro> {
                                                                     onTap: () {
                                                                       setState(() {
                                                                         quantity++;
-                                                                     
-                                                                             checkPromotionForProduct(
-                                                                                promotion!,
-                                                                                quantity,
-                                                                                dilog_pice!,
-                                                                                (
-                                                                                  newPrice,
-                                                                                ) {
-                                                                                  totalBeforeDiscount =
-                                                                                      double.parse(
-                                                                                        dilog_pice.toString(),
-                                                                                      ) *
-                                                                                      quantity;
-                                                                                  totalAfterDiscount =
-                                                                                      newPrice *
-                                                                                      quantity;
-                                                                                  discountAmount =
-                                                                                      totalBeforeDiscount -
-                                                                                      totalAfterDiscount;
-                                                                                  dialog_promotion = newPrice.toInt();
-                                                                                },
-                                                                              );
-                                                                          
+
+                                                                        checkPromotionForProduct(
+                                                                          promotion!,
+                                                                          quantity,
+                                                                          dilog_pice!,
+                                                                          (
+                                                                            newPrice,
+                                                                          ) {
+                                                                            totalBeforeDiscount =
+                                                                                double.parse(
+                                                                                  dilog_pice.toString(),
+                                                                                ) *
+                                                                                quantity;
+                                                                            totalAfterDiscount =
+                                                                                newPrice *
+                                                                                quantity;
+                                                                            discountAmount =
+                                                                                totalBeforeDiscount -
+                                                                                totalAfterDiscount;
+                                                                            dialog_promotion =
+                                                                                newPrice.toInt();
+                                                                          },
+                                                                        );
                                                                       });
                                                                     },
                                                                     child: Padding(

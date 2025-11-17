@@ -27,23 +27,22 @@ List<Map<String, String>> pay = [
 
 String? selectedPay = "cash";
 
-String formatNumber(dynamic value, {int decimal = 2}) {
+String formatNumber(dynamic value) {
   double number = 0;
+
   if (value is String) {
     number = double.tryParse(value) ?? 0;
   } else if (value is num) {
     number = value.toDouble();
   }
 
-  // format โดยใช้ intl
-  final formatter = NumberFormat.currency(
-    locale: 'en_US',
-    symbol: '',
-    decimalDigits: decimal,
-  );
+  // ตัดทศนิยม 2 ตำแหน่งแบบไม่ปัด
+  double truncated = (number * 100).truncate() / 100;
 
-  return formatter.format(number).trim();
+  // ฟิกให้มี 2 ตำแหน่งเสมอ
+  return truncated.toStringAsFixed(2);
 }
+
  String formatDate(DateTime date) {
   return DateFormat('yyyy-MM-dd').format(date);
 }

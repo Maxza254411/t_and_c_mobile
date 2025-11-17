@@ -78,7 +78,7 @@ class _CompleatedState extends State<Compleated> {
   }
 
   // Future <void>testlist()async{
-  //   inspect( widget.selectedItems);
+
   // }
   Future<void> getapi() async {
     try {
@@ -1198,7 +1198,7 @@ class _CompleatedState extends State<Compleated> {
                                       );
                                     }
                                   }
-                                  // inspect(productModel);
+                     
                                   await ProductApi.createOrder(
                                     distributor_id: custommer!.customer == null
                                         ? distributor_id.toString()
