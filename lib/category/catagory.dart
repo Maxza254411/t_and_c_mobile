@@ -1,8 +1,9 @@
+import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/NewProductModel/newdata.dart';
-import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/model/warehouse.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
@@ -410,6 +411,7 @@ Widget _buildProductCard(Newdata product) {
                   ),
                   onPressed:
                        () {
+                        inspect(product);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

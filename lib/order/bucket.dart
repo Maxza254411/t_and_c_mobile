@@ -277,7 +277,7 @@ class _BucketState extends State<Bucket> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      product.fixed_price != 0
+                                      product.fixed_price != 0 ||  product.fixed_price != null
                                           ? Row(
                                               children: [
                                                 product.price_per_unit==null
@@ -509,7 +509,7 @@ class _BucketState extends State<Bucket> {
                           SizedBox(height: 8),
                           GestureDetector(
                             onTap: () {
-                              if (totalPrice > 0) {
+                              // if (totalPrice > 0) {
                                 final selectedItems = <Shoping>[];
                                 for (int i = 0; i < cart.items.length; i++) {
                                   if (checked[i]) {
@@ -530,12 +530,12 @@ class _BucketState extends State<Bucket> {
                                     ),
                                   ),
                                 );
-                              }
+                              // }
                             },
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                color: totalPrice > 0 ? kButtonColor : kbgf,
+                                color:  kButtonColor ,
                               ),
                               height: size.height * 0.05,
                               child: Center(
@@ -544,7 +544,7 @@ class _BucketState extends State<Bucket> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: totalPrice > 0 ? kbgf : Colors.white,
+                                    color:   kbgf ,
                                   ),
                                 ),
                               ),

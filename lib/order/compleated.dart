@@ -666,7 +666,7 @@ class _CompleatedState extends State<Compleated> {
                                                       ),
                                                     ],
                                                   ),
-                                                widget.selectedItems[index].fixed_price != 0
+                                           widget.selectedItems[index].fixed_price != 0
                                           ? Row(
                                               children: [
                                               widget.selectedItems[index].price_per_unit==null
