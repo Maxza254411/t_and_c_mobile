@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
@@ -36,10 +35,9 @@ class _CatagoryState extends State<Catagory> {
   int _page = 1;
   bool _isLoadingMore = false;
   bool _hasMore = true;
-  List<Newdata> allProducts = []; 
-  List<Newdata> filteredProducts = []; 
+  List<Newdata> allProducts = [];
+  List<Newdata> filteredProducts = [];
   List<Warehouse> listwarehouse = [];
-  
 
   @override
   void initState() {
@@ -122,30 +120,32 @@ class _CatagoryState extends State<Catagory> {
     }
   }
 
- void filterProducts(String keyword) {
-  if (keyword.isEmpty) {
-    filteredProducts = List.from(allProducts);
-  } else {
-    final lowerKeyword = keyword.toLowerCase();
-    filteredProducts = allProducts.where((item) {
-      final nameEn = item.name_en?.toLowerCase() ?? '';
-      final nameTh = item.name_th?.toLowerCase() ?? '';
+  void filterProducts(String keyword) {
+    if (keyword.isEmpty) {
+      filteredProducts = List.from(allProducts);
+    } else {
+      final lowerKeyword = keyword.toLowerCase();
+      filteredProducts = allProducts.where((item) {
+        final nameEn = item.name_en?.toLowerCase() ?? '';
+        final nameTh = item.name_th?.toLowerCase() ?? '';
 
-      // ดึง SKU ทั้งหมดจาก skus list
-      final skus = (item.skus ?? [])
-          .map((skuItem) => skuItem.sku?.toLowerCase() ?? '')
-          .toList();
+        // ดึง SKU ทั้งหมดจาก skus list
+        final skus = (item.skus ?? [])
+            .map((skuItem) => skuItem.sku?.toLowerCase() ?? '')
+            .toList();
 
-      // ให้ค้นได้ทั้งชื่อสินค้าไทย อังกฤษ และรหัส SKU
-      final matchName = nameEn.contains(lowerKeyword) || nameTh.contains(lowerKeyword);
-      final matchSku = skus.any((sku) => sku.contains(lowerKeyword));
+        // ให้ค้นได้ทั้งชื่อสินค้าไทย อังกฤษ และรหัส SKU
+        final matchName =
+            nameEn.contains(lowerKeyword) || nameTh.contains(lowerKeyword);
+        final matchSku = skus.any((sku) => sku.contains(lowerKeyword));
 
-      return matchName || matchSku;
-    }).toList();
+        return matchName || matchSku;
+      }).toList();
+    }
+
+    setState(() {});
   }
 
-  setState(() {});
-}
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -200,7 +200,6 @@ class _CatagoryState extends State<Catagory> {
             ),
           ),
 
-          
           filteredProducts.isEmpty
               ? Column(
                   children: [
@@ -214,7 +213,7 @@ class _CatagoryState extends State<Catagory> {
                       ),
                     ),
                   ],
-                ) 
+                )
               : Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
@@ -248,209 +247,237 @@ class _CatagoryState extends State<Catagory> {
     );
   }
 
-Widget _buildProductCard(Newdata product) {
-  // ดึง SKU ตัวแรกมาแสดง (กรณีมีหลายสี)
-  final firstSku = product.skus!.isNotEmpty ? product.skus![0] : null;
-  final isOutOfStock = firstSku == null ||
-      firstSku.warehouse_skus!.isEmpty ||
-      (firstSku.warehouse_skus![0].available ?? 0) <= 0;
+  Widget _buildProductCard(Newdata product) {
+    // ดึง SKU ตัวแรกมาแสดง (กรณีมีหลายสี)
+    final firstSku = product.skus!.isNotEmpty ? product.skus![0] : null;
+    final isOutOfStock =
+        firstSku == null ||
+        firstSku.warehouse_skus!.isEmpty ||
+        (firstSku.warehouse_skus![0].available ?? 0) <= 0;
 
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 6,
-          spreadRadius: 2,
-          offset: Offset(2, 4),
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // ---------------- รูปสินค้า ----------------
-        Expanded(
-          child: Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                child: firstSku?.image_url == null
-                    ? Image.asset(
-                        "assets/images/NoImage.jpg",
-                     
-                        width: double.infinity,
-                        height: double.infinity,
-                         fit: BoxFit.fitHeight,
-                      )
-                    : Image.network(
-                        firstSku!.image_url!,
-                           fit: BoxFit.fitHeight,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-              ),
-
-              // -------- แสดงข้อความ "สินค้าหมด" --------
-              if (isOutOfStock)
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            spreadRadius: 2,
+            offset: Offset(2, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // ---------------- รูปสินค้า ----------------
+          Expanded(
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
                   ),
-                  child: const Center(
-                    child: Text(
-                      "สินค้าหมด",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                  child: firstSku?.image_url == null
+                      ? Image.asset(
+                          "assets/images/NoImage.jpg",
+
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.fitHeight,
+                        )
+                      : Image.network(
+                          firstSku!.image_url!,
+                          fit: BoxFit.fitHeight,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                ),
+
+                // -------- แสดงข้อความ "สินค้าหมด" --------
+                if (isOutOfStock)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16),
                       ),
                     ),
+                    child: const Center(
+                      child: Text(
+                        "สินค้าหมด",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Consumer<FavoriteProvider>(
+                    builder: (context, favProvider, child) {
+                      final currentProduct = Shoping(
+                        warehouse_skus: firstSku?.warehouse_skus ?? [],
+                        sku: firstSku?.sku ?? "",
+                        image: firstSku?.image_url,
+                        product_id: product.product_id.toString(),
+                        name: product.name_en ?? "",
+                        price: formatNumber(firstSku?.base_price ?? 0),
+                        color: firstSku?.color?.name_en ?? "",
+                        nameTh: product.name_th ?? "",
+                      );
+
+                      final isFav = favProvider.isFavorite(currentProduct);
+
+                      return GestureDetector(
+                        onTap: () => favProvider.toggleFavorite(currentProduct),
+                        child: Image.asset(
+                          isFav
+                              ? "assets/icons/HertOn.png"
+                              : "assets/icons/HertOff.png",
+                          scale: 15,
+                        ),
+                      );
+                    },
                   ),
                 ),
-                 Padding(
-                   padding: const EdgeInsets.all(8.0),
-                   child: Consumer<FavoriteProvider>(
-                      builder: (context, favProvider, child) {
-                        final currentProduct = Shoping(
-                          warehouse_skus: firstSku?.warehouse_skus ?? [],
-                          sku: firstSku?.sku ?? "",
-                          image: firstSku?.image_url,
-                          product_id: product.product_id.toString(),
-                          name: product.name_en ?? "",
-                          price: formatNumber(firstSku?.base_price ?? 0),
-                          color: firstSku?.color?.name_en ?? "",
-                          nameTh: product.name_th ?? "",
-                       
-                        );
-                   
-                        final isFav = favProvider.isFavorite(currentProduct);
-                   
-                        return GestureDetector(
-                          onTap: () => favProvider.toggleFavorite(currentProduct),
-                          child: Image.asset(
-                            isFav
-                                ? "assets/icons/HertOn.png"
-                                : "assets/icons/HertOff.png",
-                            scale: 15,
-                          ),
-                        );
-                      },
-                    ),
-                 ),
-            ],
+              ],
+            ),
           ),
-        ),
 
-        // ---------------- ข้อมูลสินค้า ----------------
-        Padding(
-          padding:  EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                product.name_en ?? "",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style:  TextStyle(fontWeight: FontWeight.bold),
-              ),
-               SizedBox(height: 4),
+          // ---------------- ข้อมูลสินค้า ----------------
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product.name_en ?? "",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 4),
 
-              // -------- ราคา --------
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (firstSku != null)
-                   firstSku.promotions!.isNotEmpty
-                        ? Row(
-                            children: [
-                              Text(
-                                "฿ ${formatNumber(firstSku.promotions![0].fixed_price ?? 0)}",
-                                 maxLines: 1,
-                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "฿ ${formatNumber(firstSku.base_price ?? 0)}",
-                                 maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                  decoration: TextDecoration.lineThrough,
-                                ),
-                              ),
-                            ],
-                          )
-                        : Text(
+                // -------- ราคา --------
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (firstSku != null)
+                      () {
+                        final promos = firstSku.promotions;
+
+                        // 1. กรณีไม่มีโปรโมชัน
+                        if (promos == null || promos.isEmpty) {
+                          return Text(
                             "฿ ${formatNumber(firstSku.base_price ?? 0)}",
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),
-                          )
-                  else
-                    const Text("ไม่มีข้อมูลราคา"),
-                ],
-              ),
+                          );
+                        }
 
-              const SizedBox(height: 8),
+                        // มีโปร ตรวจ promotion_id
+                        final promo = promos.first;
 
-              // -------- ปุ่มสั่งซื้อ --------
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kButtonColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onPressed:
-                       () {
-                    //  print( firstSku?.promotions![0].promotion_id);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Detailpro(
-                                image: firstSku?.image_url,
-                                productId: product.product_id.toString(),
-                                proName: product.name_en ?? "",
-                                proPice: firstSku!.promotions!.isNotEmpty
-                                    ? formatNumber(firstSku.promotions![0].fixed_price ?? 0)
-                                    : formatNumber(firstSku.base_price ?? 0),
-                                proNameTh: product.name_th,
-                                warehouse_skus: firstSku.warehouse_skus!,
-                                namebrand: widget.namebrand,
-                                promotion: firstSku.promotions!, skulist: [], skuid: [], newdata: product,
-                                
-                              ),
+                        // 2. ถ้า promotion_id == 2 → แสดงราคาเต็ม
+                        if (promo.promotion_id == 2) {
+                          return Text(
+                            "฿ ${formatNumber(firstSku.base_price ?? 0)}",
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
                             ),
                           );
-                        },
-                  child: Text(
-                    "สั่งซื้อ",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: kbgf,
+                        }
+
+                        // 3. มีโปร และ promotion_id != 2 → แสดงราคาโปร + ขีดฆ่าราคาเต็ม
+                        return Row(
+                          children: [
+                            Text(
+                              "฿ ${formatNumber(promo.fixed_price ?? 0)}",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "฿ ${formatNumber(firstSku.base_price ?? 0)}",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+                          ],
+                        );
+                      }()
+                    else
+                      const Text("ไม่มีข้อมูลราคา"),
+                  ],
+                ),
+
+                const SizedBox(height: 8),
+
+                // -------- ปุ่มสั่งซื้อ --------
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kButtonColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: () {
+                      //  print( firstSku?.promotions![0].promotion_id);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Detailpro(
+                            image: firstSku?.image_url,
+                            productId: product.product_id.toString(),
+                            proName: product.name_en ?? "",
+                            proPice: firstSku!.promotions!.isNotEmpty
+                                ? formatNumber(
+                                    firstSku.promotions![0].fixed_price ?? 0,
+                                  )
+                                : formatNumber(firstSku.base_price ?? 0),
+                            proNameTh: product.name_th,
+                            warehouse_skus: firstSku.warehouse_skus!,
+                            namebrand: widget.namebrand,
+                            promotion: firstSku.promotions!,
+                            skulist: [],
+                            skuid: [],
+                            newdata: product,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "สั่งซื้อ",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: kbgf,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-}
-
+        ],
+      ),
+    );
+  }
 }

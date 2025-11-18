@@ -142,7 +142,7 @@ class _DetailproState extends State<Detailpro> {
     int quantity,
     int prices,
     Function(double newPrice) onPriceCalculated, // ✅ เพิ่ม callback ส่งค่ากลับ
-  ) {
+    ) {
     if (promotion.isEmpty) {
       onPriceCalculated(prices.toDouble());
       return;
@@ -608,13 +608,12 @@ class _DetailproState extends State<Detailpro> {
                                   groupValue: selectedColor,
                                   onChanged: (val) {
                                     setState(() {
-                                      selectedColor = val;
-                                      //  print(widget
+                                      // print(widget
                                       //             .newdata!
                                       //             .skus![index]
-                                      //             .promotions?[0].promotion_id);
-
-                                      // เปลี่ยน sku ตาม index ของสีที่เลือก
+                                      //             .promotions?[0]
+                                      //             .promotion_id);
+                                      selectedColor = val;                                   
                                       if (index <
                                           widget.newdata!.skus!.length) {
                                         name_th = widget.newdata!.name_th;
@@ -633,9 +632,7 @@ class _DetailproState extends State<Detailpro> {
                                             .newdata!
                                             .skus![index]
                                             .base_price;
-
                                         //โปรโมชั่น
-
                                         if (widget
                                             .newdata!
                                             .skus![index]

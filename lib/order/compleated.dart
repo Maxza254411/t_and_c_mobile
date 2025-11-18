@@ -38,7 +38,7 @@ class Compleated extends StatefulWidget {
   List<Shoping> selectedItems = []; // รับสินค้าที่ติ๊ก
   double? totalPrice;
   double? discountAmount;
-  double?originalTotal;
+  double? originalTotal;
   String? image;
   bool slipe_status;
 
@@ -666,44 +666,47 @@ class _CompleatedState extends State<Compleated> {
                                                       ),
                                                     ],
                                                   ),
-                                           widget.selectedItems[index].fixed_price != 0
-                                          ? Row(
-                                              children: [
-                                              widget.selectedItems[index].price_per_unit==null
-                                               ? Text(
-                                                  "฿ ${formatNumber(double.parse(widget.selectedItems[index].fixed_price.toString()))}",
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                )
-                                                :Text(
-                                                  "฿ ${formatNumber(double.parse( widget.selectedItems[index].price_per_unit.toString()))}",
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                                 SizedBox(width: 10),
-                                                Text(
-                                                  "฿ ${formatNumber(double.parse(widget.selectedItems[index].base_price.toString()))}",
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey,
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          : Row(
-                                              children: [
-                                                // แสดงราคาฟอร์แมต
-                                                Text(
-                                                  "฿ ${formatNumber(double.parse(widget.selectedItems[index].base_price.toString()))}",
-                                                ),
-                                              ],
-                                            ),
+                                                widget.selectedItems[index].promotion != null && widget.selectedItems[index].promotion!.isNotEmpty
+                                                      ? Row(
+                                                          children: [
+                                                            Text(
+                                                              "฿ ${formatNumber(double.parse(widget.selectedItems[index].price_per_unit.toString()))}",
+                                                              style: const TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Text(
+                                                              "฿ ${formatNumber(double.parse(widget.selectedItems[index].base_price.toString()))}",
+                                                              style: const TextStyle(
+                                                                fontSize: 14,
+                                                                color:
+                                                                    Colors.grey,
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .lineThrough,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : Row(
+                                                          children: [
+                                                            // แสดงราคาฟอร์แมต
+                                                            Text(
+                                                              "฿ ${formatNumber(double.parse(widget.selectedItems[index].base_price.toString()))}",
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            print(widget
+                                                              .selectedItems[index]
+                                                              .price_per_unit);
+                                                          },
+                                                          child: Icon(Icons.abc_outlined))
                                                 ],
                                               ),
                                             ],
@@ -1034,7 +1037,7 @@ class _CompleatedState extends State<Compleated> {
                   mainAxisSize: MainAxisSize.min, // ให้ Container สูงตามเนื้อหา
                   children: [
                     // --- แถวราคารวม ---
-                     Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -1045,16 +1048,16 @@ class _CompleatedState extends State<Compleated> {
                           ),
                         ),
                         Text(
-                          " ฿ ${formatNumber(widget.originalTotal??0.00)} ",
+                          " ฿ ${formatNumber(widget.originalTotal ?? 0.00)} ",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color:  kButtonColor,
+                            color: kButtonColor,
                           ),
                         ),
                       ],
                     ),
-                     Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -1065,7 +1068,7 @@ class _CompleatedState extends State<Compleated> {
                           ),
                         ),
                         Text(
-                          " ฿ ${formatNumber(widget.discountAmount??0.00)} ",
+                          " ฿ ${formatNumber(widget.discountAmount ?? 0.00)} ",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -1198,7 +1201,7 @@ class _CompleatedState extends State<Compleated> {
                                       );
                                     }
                                   }
-                     
+
                                   await ProductApi.createOrder(
                                     distributor_id: custommer!.customer == null
                                         ? distributor_id.toString()
@@ -1292,14 +1295,14 @@ class _CompleatedState extends State<Compleated> {
                                       i++
                                     ) {
                                       final item = widget.selectedItems[i];
-                                    
+
                                       // วนซ้อนเพื่อเข้าถึง warehouse_skus ทุกตัวของ item นั้น ๆ
                                       for (
                                         var j = 0;
                                         j < item.warehouse_skus.length;
                                         j++
                                       ) {
-                                        final sku = item.warehouse_skus[j];                                      
+                                        final sku = item.warehouse_skus[j];
                                         productModel.add(
                                           Product(
                                             item.product_id ?? "",
@@ -1313,7 +1316,6 @@ class _CompleatedState extends State<Compleated> {
                                         );
                                       }
                                     }
-                                 
 
                                     await ProductApi.createOrder(
                                       distributor_id:
@@ -1410,27 +1412,7 @@ class _CompleatedState extends State<Compleated> {
     );
   }
 
-  //  _captureScrean()async{
-  //  final image=  await _controller.capture();
-  //  }
-  // buildImage()=> Padding(
-  // padding: const EdgeInsets.all(8.0),
-  // child: ClipRRect(
-  // borderRadius: BorderRadius.circular(8),
-  // child: Image.asset(
-  //  "assets/images/LHVGYY_qrcode.png",
-  // height: 150,
-  // fit: BoxFit.cover,
-  // ),
-  // ),
-  // );
-  // Future<String>saveScreenshot(Uint8List bytes)async{
-  //   await [Permission.storage].request();
-  //   final time = DateTime.now();
-  //   final name ='Screenshot_$time';
-  //   final result = await ImageGallerySaver.saveImage(bytes,name: name);
-  //   return result['filePath'];
-  // }
+ 
 }
 
 class ContainerHeader extends StatelessWidget {
@@ -1474,20 +1456,6 @@ class ContainerHeader extends StatelessWidget {
                   color: kbgf,
                 ),
               ),
-              // status == true
-              //     ? GestureDetector(
-              //         onTap: () {
-              //           Navigator.push(
-              //             context,
-              //             MaterialPageRoute(builder: (context) => BillPage()),
-              //           );
-              //         },
-              //         child: Padding(
-              //           padding: const EdgeInsets.only(right: 10),
-              //           child: Icon(Icons.receipt_long, color: Colors.white),
-              //         ),
-              //       )
-              //     : SizedBox.shrink(),
             ],
           ),
         ),

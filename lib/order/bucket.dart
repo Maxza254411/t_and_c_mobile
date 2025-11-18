@@ -21,58 +21,27 @@ class Bucket extends StatefulWidget {
 
 class _BucketState extends State<Bucket> {
   List<bool> checked = [];
-  List<int> quantities = [];
   List<TextEditingController> qtyControllers = [];
   List<Brands> allbands = [];
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final cart = Provider.of<CartProvider>(context);
-
-    checked = List.generate(cart.items.length, (_) => false);
-    quantities = List.generate(cart.items.length, (_) => 1);
-
-    // init controllers
-    while (qtyControllers.length < cart.items.length) {
-      qtyControllers.add(TextEditingController());
-    }
-    for (int i = 0; i < cart.items.length; i++) {
-      qtyControllers[i].text = cart.items[i].quantity.toString();
-    }
-
-    // เช็คโปรโมชั่นทุกสินค้าในตะกร้า ตอนเข้าหน้า
-    for (var product in cart.items) {
-      checkPromotionForProduct(product);
-    }
-
-    // Apply Tier Promotion per Brand
-    applyTierPromotionPerBrand(cart);
-
-    setState(() {});
-  }
-
-  @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getapi();
+      await getBrands();
+      final cart = Provider.of<CartProvider>(context, listen: false);
+      if (allbands.isNotEmpty) {
+        applyTierPromotionPerBrand(cart);
+        setState(() {});
+      }
     });
   }
 
-  @override
-  void dispose() {
-    for (var c in qtyControllers) {
-      c.dispose();
-    }
-    super.dispose();
-  }
-
-  Future<void> getapi() async {
+  Future<void> getBrands() async {
     try {
       allbands = await ProductApi.listbrands();
-      setState(() {});
-    } on Exception catch (e) {
+    } catch (e) {
       await showDialog(
         context: context,
         builder: (context) => AlertDialogYes(
@@ -93,12 +62,62 @@ class _BucketState extends State<Bucket> {
   }
 
   double parsePrice(dynamic price) {
-    if (price is String) {
-      return double.tryParse(price.replaceAll(',', '')) ?? 0;
-    } else if (price is num) {
-      return price.toDouble();
-    } else {
-      return 0;
+    if (price is String) return double.tryParse(price.replaceAll(',', '')) ?? 0;
+    if (price is num) return price.toDouble();
+    return 0;
+  }
+
+  String formatNumber(double number) {
+    return NumberFormat("#,##0.00").format(number);
+  }
+
+  // ---------------------------------------------------------
+  // APPLY TIER AND OTHER PROMOTIONS
+  // ---------------------------------------------------------
+  void applyTierPromotionPerBrand(CartProvider cart) {
+    for (var brand in allbands) {
+      final brandName = brand.name ?? "";
+
+      final brandCount = cart.items
+          .where((item) => item.namebrand == brandName)
+          .fold<int>(0, (sum, item) => sum + item.quantity);
+
+      for (var product in cart.items.where((i) => i.namebrand == brandName)) {
+        double basePrice = parsePrice(product.base_price ?? product.price);
+        double finalPrice = basePrice;
+        bool hasPromo2 = false;
+
+        if (product.promotion != null && product.promotion!.isNotEmpty) {
+          for (var promo in product.promotion!) {
+            // -----------------------------
+            // Case 1: Tier Promotion (ID = 2)
+            // -----------------------------
+            if (promo.promotion_id == 2) {
+              hasPromo2 = true;
+
+              for (var tier in promo.tiers) {
+                if (brandCount >= (tier.min_qty ?? 0) &&
+                    brandCount <= (tier.max_qty ?? 999999)) {
+                  finalPrice = tier.price_per_unit!.toDouble();
+                  break;
+                }
+              }
+            }
+            // -----------------------------
+            // Case 2: No tier but has other promo
+            // -----------------------------
+            else if (!hasPromo2) {
+              if (promo.fixed_price != null && promo.fixed_price! > 0) {
+                finalPrice = promo.fixed_price!.toDouble();
+              }
+            }
+          }
+        }
+
+        // Case 3: No promotion at all → finalPrice = basePrice (already set)
+
+        product.price_per_unit = finalPrice.toInt();
+      }
     }
   }
 
@@ -108,7 +127,7 @@ class _BucketState extends State<Bucket> {
       if (checked[i]) {
         total +=
             parsePrice(cart.items[i].price_per_unit ?? cart.items[i].price) *
-                cart.items[i].quantity;
+            cart.items[i].quantity;
       }
     }
     return total;
@@ -128,110 +147,21 @@ class _BucketState extends State<Bucket> {
     return calculateOriginalTotal(cart) - calculateTotalPrice(cart);
   }
 
-  String formatNumber(double number) {
-    final formatter = NumberFormat("#,##0.00");
-    return formatter.format(number);
-  }
-
-  // ฟังก์ชันเช็คโปรโมชั่นเฉพาะสินค้า
-  void checkPromotionForProduct(Shoping product) {
-    if (product.promotion == null || product.promotion!.isEmpty) return;
-
-    double basePrice = parsePrice(product.price);
-    double newPrice = basePrice;
-    double newPriceFromOtherPromo = basePrice;
-
-    bool tierMatched = false;
-
-    for (var promo in product.promotion!) {
-      // โปร percent / fixed
-      if (promo.promotion_id == 1 || promo.promotion_id == 3) {
-        if (promo.percent != null && promo.percent! > 0) {
-          newPriceFromOtherPromo =
-              basePrice - (basePrice * (promo.percent! / 100));
-        }
-        if (promo.fixed_price != null && promo.fixed_price! > 0) {
-          newPriceFromOtherPromo = promo.fixed_price!.toDouble();
-        }
-      }
-      // โปร 2 tier
-      else if (promo.promotion_id == 2) {
-        tierMatched = false;
-        for (var tier in promo.tiers) {
-          if (product.quantity >= (tier.min_qty ?? 0) &&
-              product.quantity <= (tier.max_qty ?? double.infinity)) {
-            newPrice = (tier.price_per_unit ?? newPriceFromOtherPromo)
-                .toDouble();
-            tierMatched = true;
-            break;
-          }
-        }
-
-        if (!tierMatched) {
-          newPrice = newPriceFromOtherPromo;
-        }
-
-        product.price_per_unit = newPrice.toInt();
-      }
-    }
-  }
-
-  // ฟังก์ชันใหม่: Apply Tier Promotion ตามจำนวนรวมของแบรนด์
-  void applyTierPromotionPerBrand(CartProvider cart) {
-    for (var brand in allbands) {
-      final brandName = brand.name ?? "";
-
-      // รวมจำนวนสินค้าของแบรนด์
-      final brandCount = cart.items
-          .where((item) => item.namebrand == brandName)
-          .fold<int>(0, (sum, item) => sum + item.quantity);
-
-      // วนทุกสินค้าในแบรนด์นั้น
-      for (var product in cart.items.where((item) => item.namebrand == brandName)) {
-        if (product.promotion == null) continue;
-
-        double basePrice = parsePrice(product.price);
-        double newPrice = basePrice;
-        double newPriceFromOtherPromo = basePrice;
-
-        for (var promo in product.promotion!) {
-          // percent/fixed
-          if (promo.promotion_id == 1 || promo.promotion_id == 3) {
-            if (promo.percent != null && promo.percent! > 0) {
-              newPriceFromOtherPromo =
-                  basePrice - (basePrice * (promo.percent! / 100));
-            }
-            if (promo.fixed_price != null && promo.fixed_price! > 0) {
-              newPriceFromOtherPromo = promo.fixed_price!.toDouble();
-            }
-          }
-          // tier 2
-          else if (promo.promotion_id == 2) {
-            bool tierMatched = false;
-            for (var tier in promo.tiers) {
-              if (brandCount >= (tier.min_qty ?? 0) &&
-                  brandCount <= (tier.max_qty ?? double.infinity)) {
-                newPrice = (tier.price_per_unit ?? newPriceFromOtherPromo)
-                    .toDouble();
-                tierMatched = true;
-                break;
-              }
-            }
-            if (!tierMatched) {
-              newPrice = newPriceFromOtherPromo;
-            }
-
-            product.price_per_unit = newPrice.toInt();
-          }
-        }
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
     final size = MediaQuery.of(context).size;
+
+    while (qtyControllers.length < cart.items.length) {
+      qtyControllers.add(TextEditingController());
+    }
+    for (int i = 0; i < cart.items.length; i++) {
+      qtyControllers[i].text = cart.items[i].quantity.toString();
+    }
+
+    while (checked.length < cart.items.length) {
+      checked.add(false);
+    }
 
     double totalPrice = calculateTotalPrice(cart);
     double originalTotal = calculateOriginalTotal(cart);
@@ -240,7 +170,6 @@ class _BucketState extends State<Bucket> {
     return Scaffold(
       backgroundColor: kbgH,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         backgroundColor: kButtonColor,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
@@ -248,18 +177,22 @@ class _BucketState extends State<Bucket> {
         ),
         title: Row(
           children: [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Image.asset("assets/icons/BucketIcon.png", scale: 15),
-            ),
+            Image.asset("assets/icons/BucketIcon.png", scale: 15),
             SizedBox(width: 10),
             Text(
               "สินค้าในตะกร้า",
-              style: TextStyle(color: kbgf, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
       ),
+
+      // -------------------------------------------------
+      // ★★ SHOW PRODUCT COUNT PER BRAND HERE ★★
+      // -------------------------------------------------
       body: cart.items.isEmpty
           ? Center(
               child: Text(
@@ -273,38 +206,83 @@ class _BucketState extends State<Bucket> {
             )
           : Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: kButtonColor, // สีปุ่ม
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        final cart = Provider.of<CartProvider>(
+                          context,
+                          listen: false,
+                        );
+                  
+                        // ถ้าไม่ใช่ทั้งหมดติ๊ก → ติ๊กทั้งหมด, ถ้าติ๊กทั้งหมดแล้ว → ยกเลิกทั้งหมด
+                        bool allChecked = checked.every((c) => c);
+                        setState(() {
+                          for (int i = 0; i < checked.length; i++) {
+                            checked[i] = !allChecked;
+                          }
+                        });
+                      },
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                             Icon(
+                              checked.every((c) => c)
+                                  ? Icons.check_box
+                                  : Icons.check_box_outline_blank,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 10,),
+                            Text(
+                              "เลือกทั้งหมด (${cart.items.fold<int>(0, (sum, item) => sum + item.quantity)} ชิ้น)",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                           
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
                 Expanded(
                   child: ListView.builder(
                     itemCount: cart.items.length,
                     itemBuilder: (context, index) {
                       final product = cart.items[index];
 
-                      if (index >= checked.length) {
-                        checked.add(false);
-                        quantities.add(product.quantity);
-                        qtyControllers.add(TextEditingController(
-                            text: product.quantity.toString()));
-                      }
-
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.white,
-                          ),
                           height: size.height * 0.18,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                           child: Row(
                             children: [
                               Checkbox(
                                 activeColor: kButtonColor,
                                 value: checked[index],
-                                onChanged: (value) {
-                                  setState(() {
-                                    checked[index] = value!;
-                                  });
+                                onChanged: (v) {
+                                  checked[index] = v!;
+                                  setState(() {});
                                 },
                               ),
+
                               Padding(
                                 padding: const EdgeInsets.only(left: 2),
                                 child: SizedBox(
@@ -324,14 +302,9 @@ class _BucketState extends State<Bucket> {
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 1,
-                                  height: size.height * 0.08,
-                                  color: kButtonColor,
-                                ),
-                              ),
+
+                              SizedBox(width: 10),
+
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -344,7 +317,7 @@ class _BucketState extends State<Bucket> {
                                         product.name,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -352,209 +325,168 @@ class _BucketState extends State<Bucket> {
                                         "สี ${product.color}",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
                                       ),
                                       Text(
                                         "SKU: ${product.sku}",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
                                       ),
-                                      product.fixed_price != null
-                                          ? Row(
-                                              children: [
-                                                product.price_per_unit == null
-                                                    ? Text(
-                                                        "฿ ${formatNumber(double.parse(product.fixed_price.toString()))}",
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      )
-                                                    : Text(
-                                                        "฿ ${formatNumber(double.parse(product.price_per_unit.toString()))}",
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                SizedBox(width: 10),
-                                                Text(
-                                                  "฿ ${formatNumber(double.parse(product.base_price.toString()))}",
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey,
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          : Row(
-                                              children: [
-                                                Text(
-                                                  "฿ ${formatNumber(double.parse(product.base_price.toString()))}",
-                                                ),
-                                              ],
-                                            ),
-                                      Text("${product.namebrand}"),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: [
-                                            // ลดจำนวน
-                                            InkWell(
-                                              onTap: () async {
-                                                if (product.quantity > 1) {
-                                                  setState(() {
-                                                    product.quantity--;
-                                                    qtyControllers[index].text =
-                                                        product.quantity.toString();
-                                                  });
-                                                  applyTierPromotionPerBrand(cart);
-                                                } else {
-                                                  final out =
-                                                      await showDialog<bool>(
-                                                    barrierDismissible: true,
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        AlertDialogYesNo(
-                                                      description:
-                                                          'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                      title: 'แจ้งเตือน',
-                                                    ),
-                                                  );
-                                                  if (out == true) {
-                                                    setState(() {
-                                                      cart.removeItem(product);
-                                                      checked.removeAt(index);
-                                                      quantities.removeAt(index);
-                                                      qtyControllers.removeAt(index);
-                                                    });
-                                                  }
-                                                }
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(2.0),
-                                                child: Image.asset(
-                                                  "assets/icons/minus.png",
-                                                  scale: 30,
-                                                ),
+
+                                      Row(
+                                        children: [
+                                          if (product.promotion != null &&
+                                              product
+                                                  .promotion!
+                                                  .isNotEmpty) ...[
+                                            // แสดงราคาโปร
+                                            Text(
+                                              "฿ ${formatNumber(parsePrice(product.price_per_unit ?? product.base_price))}",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: Colors.red,
                                               ),
                                             ),
 
                                             const SizedBox(width: 10),
 
-                                            // TextField
-                                            SizedBox(
-                                              width: 50,
-                                              height: 30,
-                                              child: TextField(
-                                                textAlign: TextAlign.center,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                controller: qtyControllers[index],
-                                                onSubmitted: (value) {
-                                                  final intValue =
-                                                      int.tryParse(value) ?? product.quantity;
-
-                                                  if (intValue <= 0) {
-                                                    showDialog<bool>(
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          AlertDialogYesNo(
-                                                        title: 'แจ้งเตือน',
-                                                        description:
-                                                            'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                      ),
-                                                    ).then((out) {
-                                                      if (out == true) {
-                                                        setState(() {
-                                                          cart.removeItem(product);
-                                                          checked.removeAt(index);
-                                                          quantities.removeAt(index);
-                                                          qtyControllers.removeAt(index);
-                                                        });
-                                                      }
-                                                    });
-                                                  } else {
-                                                    setState(() {
-                                                      product.quantity = intValue;
-                                                      qtyControllers[index].text =
-                                                          intValue.toString();
-                                                      applyTierPromotionPerBrand(cart);
-                                                    });
-                                                  }
-                                                },
-                                                decoration: InputDecoration(
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          vertical: 4),
-                                                  isDense: true,
-                                                  border: OutlineInputBorder(),
-                                                ),
+                                            // ราคาเต็ม ขีดฆ่า
+                                            Text(
+                                              "฿ ${formatNumber(parsePrice(product.base_price))}",
+                                              style: const TextStyle(
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                                color: Colors.grey,
                                               ),
                                             ),
-
-                                            const SizedBox(width: 10),
-
-                                            // เพิ่มจำนวน
-                                            InkWell(
-                                              onTap: () {
-                                                setState(() {
-                                                  product.quantity++;
-                                                  qtyControllers[index].text =
-                                                      product.quantity.toString();
-                                                });
-                                                applyTierPromotionPerBrand(cart);
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(2.0),
-                                                child: Image.asset(
-                                                  "assets/icons/Regular.png",
-                                                  scale: 30,
-                                                ),
-                                              ),
-                                            ),
-
-                                            const SizedBox(width: 10),
-
-                                            // ลบสินค้า
-                                            InkWell(
-                                              onTap: () async {
-                                                final out = await showDialog<bool>(
-                                                  barrierDismissible: true,
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      AlertDialogYesNo(
-                                                    description:
-                                                        'ต้องการลบสินค้ารายการนี้หรือไม่',
-                                                    title: 'แจ้งเตือน',
-                                                  ),
-                                                );
-
-                                                if (out == true) {
-                                                  setState(() {
-                                                    cart.removeItem(product);
-                                                    checked.removeAt(index);
-                                                    quantities.removeAt(index);
-                                                    qtyControllers.removeAt(index);
-                                                  });
-                                                }
-                                              },
-                                              child: Image.asset(
-                                                "assets/icons/Trash.png",
-                                                scale: 30,
+                                          ] else ...[
+                                            // ถ้าไม่มีโปรโมชั่น → แสดงแค่ราคาเต็ม ไม่มีขีดฆ่า
+                                            Text(
+                                              "฿ ${formatNumber(parsePrice(product.base_price))}",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
                                               ),
                                             ),
                                           ],
-                                        ),
+                                        ],
+                                      ),
+
+                                      Text("${product.namebrand}"),
+
+                                      SizedBox(height: 6),
+
+                                      Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: () async {
+                                              if (product.quantity > 1) {
+                                                product.quantity--;
+                                                qtyControllers[index].text =
+                                                    product.quantity.toString();
+
+                                                applyTierPromotionPerBrand(
+                                                  cart,
+                                                );
+                                                setState(() {});
+                                              } else {
+                                                final out = await showDialog<bool>(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      AlertDialogYesNo(
+                                                        title: "แจ้งเตือน",
+                                                        description:
+                                                            "ต้องการลบสินค้านี้ไหม?",
+                                                      ),
+                                                );
+                                                if (out == true) {
+                                                  cart.removeItem(product);
+                                                  setState(() {});
+                                                }
+                                              }
+                                            },
+                                            child: Image.asset(
+                                              "assets/icons/minus.png",
+                                              scale: 30,
+                                            ),
+                                          ),
+
+                                          SizedBox(width: 8),
+
+                                          SizedBox(
+                                            width: 50,
+                                            height: 30,
+                                            child: TextField(
+                                              controller: qtyControllers[index],
+                                              textAlign: TextAlign.center,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              onSubmitted: (value) {
+                                                int qty =
+                                                    int.tryParse(value) ?? 1;
+
+                                                if (qty <= 0) qty = 1;
+
+                                                product.quantity = qty;
+                                                qtyControllers[index].text = qty
+                                                    .toString();
+
+                                                applyTierPromotionPerBrand(
+                                                  cart,
+                                                );
+                                                setState(() {});
+                                              },
+                                              decoration: InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                isDense: true,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                      vertical: 4,
+                                                    ),
+                                              ),
+                                            ),
+                                          ),
+
+                                          SizedBox(width: 8),
+
+                                          InkWell(
+                                            onTap: () {
+                                              product.quantity++;
+                                              qtyControllers[index].text =
+                                                  product.quantity.toString();
+                                              applyTierPromotionPerBrand(cart);
+                                              setState(() {});
+                                            },
+                                            child: Image.asset(
+                                              "assets/icons/Regular.png",
+                                              scale: 30,
+                                            ),
+                                          ),
+
+                                          SizedBox(width: 10),
+
+                                          InkWell(
+                                            onTap: () async {
+                                              final out = await showDialog<bool>(
+                                                context: context,
+                                                builder: (context) =>
+                                                    AlertDialogYesNo(
+                                                      title: "แจ้งเตือน",
+                                                      description:
+                                                          "ต้องการลบสินค้านี้ไหม?",
+                                                    ),
+                                              );
+                                              if (out == true) {
+                                                cart.removeItem(product);
+                                                setState(() {});
+                                              }
+                                            },
+                                            child: Image.asset(
+                                              "assets/icons/Trash.png",
+                                              scale: 30,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -568,90 +500,78 @@ class _BucketState extends State<Bucket> {
                   ),
                 ),
 
-                // แสดงจำนวนสินค้าแยกตามแบรนด์
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    child: Consumer<CartProvider>(
-                      builder: (context, cart, child) {
-                        return Column(
-                          children: List.generate(allbands.length, (index) {
-                            final brandName = allbands[index].name ?? "";
-                            final count = cart.items
-                                .where((item) => item.namebrand == brandName)
-                                .fold<int>(0, (sum, item) => sum + item.quantity);
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(brandName),
-                                  Text("จำนวน: $count ชิ้น"),
-                                ],
-                              ),
-                            );
-                          }),
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                //  Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Container(
+                //     width: double.infinity,
+                //     decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(8),
+                //       color: Colors.white,
+                //     ),
+                //     child: Consumer<CartProvider>(
+                //       builder: (context, cart, child) {
+                //         return Column(
+                //           children: List.generate(allbands.length, (index) {
+                //             final brandName = allbands[index].name ?? "";
+                //             final count = cart.items
+                //                 .where(
+                //                     (item) => item.namebrand == brandName)
+                //                 .fold<int>(
+                //                     0, (sum, item) => sum + item.quantity);
 
-                // ราคาสรุป
+                //             return Padding(
+                //               padding: const EdgeInsets.all(8.0),
+                //               child: Row(
+                //                 mainAxisAlignment:
+                //                     MainAxisAlignment.spaceBetween,
+                //                 children: [
+                //                   Text(brandName,
+                //                       style: TextStyle(
+                //                           fontWeight: FontWeight.bold)),
+                //                   Text("จำนวน: $count ชิ้น"),
+                //                 ],
+                //               ),
+                //             );
+                //           }),
+                //         );
+                //       },
+                //     ),
+                //   ),
+                // ),
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
+                      padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.white,
                       ),
-                      padding: EdgeInsets.all(12),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("ราคาก่อนลด"),
-                              Text("฿ ${formatNumber(originalTotal)}"),
-                            ],
+                          rowSummary(
+                            "ราคาก่อนลด",
+                            "฿ ${formatNumber(originalTotal)}",
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("ส่วนลด"),
-                              Text("฿ ${formatNumber(discountAmount)}"),
-                            ],
+                          rowSummary(
+                            "ส่วนลด",
+                            "฿ ${formatNumber(discountAmount)}",
                           ),
-                          Divider(color: Colors.grey),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "ราคารวม",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "฿ ${formatNumber(totalPrice)}",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                          Divider(),
+                          rowSummary(
+                            "ราคารวม",
+                            "฿ ${formatNumber(totalPrice)}",
+                            bold: true,
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(height: 10),
                           GestureDetector(
                             onTap: () {
                               final selectedItems = <Shoping>[];
                               for (int i = 0; i < cart.items.length; i++) {
-                                if (checked[i]) {
+                                if (checked[i])
                                   selectedItems.add(cart.items[i]);
-                                }
                               }
+                              //  inspect(selectedItems);
 
                               Navigator.push(
                                 context,
@@ -668,18 +588,17 @@ class _BucketState extends State<Bucket> {
                               );
                             },
                             child: Container(
+                              height: 45,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
                                 color: kButtonColor,
                               ),
-                              height: size.height * 0.05,
                               child: Center(
                                 child: Text(
                                   "ถัดไป",
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    color: kbgf,
                                   ),
                                 ),
                               ),
@@ -692,6 +611,26 @@ class _BucketState extends State<Bucket> {
                 ),
               ],
             ),
+    );
+  }
+
+  Widget rowSummary(String label, String value, {bool bold = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ],
     );
   }
 }
