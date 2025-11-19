@@ -1,15 +1,9 @@
-import 'dart:developer';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:t_and_c_mobile/allProduct.dart';
-import 'package:t_and_c_mobile/category/catagory.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/NewProductModel/newdata.dart';
-import 'package:t_and_c_mobile/model/data.dart';
-import 'package:t_and_c_mobile/model/productTyp.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/model/warehouse.dart';
 import 'package:t_and_c_mobile/nontification.dart';
@@ -369,11 +363,6 @@ class _BrandPageState extends State<BrandPage> {
   Widget _buildProductCard(Newdata product) {
     // ดึง SKU ตัวแรกมาแสดง (กรณีมีหลายสี)
     final firstSku = product.skus!.isNotEmpty ? product.skus![0] : null;
-    final isOutOfStock =
-        firstSku == null ||
-        firstSku.warehouse_skus!.isEmpty ||
-        (firstSku.warehouse_skus![0].available ?? 0) <= 0;
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
