@@ -26,8 +26,6 @@ class Detailpro extends StatefulWidget {
     this.image,
     required this.proNameTh,
     // this.sameproduct,
-    required this.skulist,
-    required this.skuid,
     required this.warehouse_skus,
     required this.namebrand,
     this.promotion,
@@ -43,8 +41,6 @@ class Detailpro extends StatefulWidget {
   // List<Data>? sameproduct;
   String? image;
   String? proNameTh;
-  List<String?> skulist;
-  List<int> skuid;
   List<Warehouse> warehouse_skus = [];
   String namebrand;
   List<Promotione>? promotion;
@@ -75,6 +71,7 @@ class _DetailproState extends State<Detailpro> {
   int quantity = 1;
   String? name_th;
   String? name_en;
+  String? name_band;
 
   @override
   void initState() {
@@ -118,15 +115,6 @@ class _DetailproState extends State<Detailpro> {
     });
   }
 
-  void _goToPage(int index) {
-    // ✅ เช็คก่อนว่า controller attach แล้วหรือยัง
-    if (_controller.ready) {
-      _controller.animateToPage(index);
-    } else {
-      debugPrint("CarouselSlider ยังไม่พร้อม");
-    }
-  }
-
   double parsePrice(dynamic price) {
     if (price is String) {
       return double.tryParse(price.replaceAll(',', '')) ?? 0;
@@ -142,7 +130,7 @@ class _DetailproState extends State<Detailpro> {
     int quantity,
     int prices,
     Function(double newPrice) onPriceCalculated, // ✅ เพิ่ม callback ส่งค่ากลับ
-    ) {
+  ) {
     if (promotion.isEmpty) {
       onPriceCalculated(prices.toDouble());
       return;
@@ -299,22 +287,48 @@ class _DetailproState extends State<Detailpro> {
                         itemCount: widget.newdata?.skus?.length,
                         itemBuilder: (context, index, realIndex) {
                           return widget.newdata?.skus != null
-                              ? Container(
-                                  margin: const EdgeInsets.all(6.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        widget
-                                                .newdata
-                                                ?.skus?[index]
-                                                .image_url ??
-                                            "",
-                                      ),
+                              ? Stack(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.all(6.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          8.0,
+                                        ),
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                            widget
+                                                    .newdata
+                                                    ?.skus?[index]
+                                                    .image_url ??
+                                                "",
+                                          ),
 
-                                      fit: BoxFit.fitHeight,
+                                          fit: BoxFit.fitHeight,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    if (warehouse_skus == 0)
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.6),
+                                          borderRadius:
+                                              const BorderRadius.vertical(
+                                                top: Radius.circular(16),
+                                              ),
+                                        ),
+                                        child: const Center(
+                                          child: Text(
+                                            "สินค้าหมด",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
                                 )
                               : Container(
                                   margin: const EdgeInsets.all(6.0),
@@ -521,7 +535,7 @@ class _DetailproState extends State<Detailpro> {
                     ),
                   ),
                   Expanded(
-                    child: pice_promotion != 0 &&  pice_promotion != null
+                    child: pice_promotion != 0 && pice_promotion != null
                         ? Row(
                             children: [
                               Text(
@@ -556,15 +570,14 @@ class _DetailproState extends State<Detailpro> {
                         image: image,
                         product_id: widget.productId,
                         name: widget.proName,
-                        price:price.toString(),
+                        price: price.toString(),
                         colors: widget.color,
                         color: selectedColor ?? "",
                         nameTh: widget.proNameTh ?? "",
                         warehouse_skus: widget.warehouse_skus,
                         promotion: promotion,
-                        skulist: widget.skulist,
-                        skuidlist: widget.skuid,
                         newData: widget.newdata,
+                        
                       );
                       final isFav = favProvider.isFavorite(currentProduct);
                       return GestureDetector(
@@ -613,7 +626,7 @@ class _DetailproState extends State<Detailpro> {
                                       //             .skus![index]
                                       //             .promotions?[0]
                                       //             .promotion_id);
-                                      selectedColor = val;                                   
+                                      selectedColor = val;
                                       if (index <
                                           widget.newdata!.skus!.length) {
                                         name_th = widget.newdata!.name_th;
@@ -1323,7 +1336,7 @@ class _DetailproState extends State<Detailpro> {
                                                           fixed_price:
                                                               dialog_promotion,
                                                           base_price:
-                                                              dilog_pice,
+                                                              dilog_pice, newData: widget.newdata,
                                                         );
 
                                                         await Future.delayed(

@@ -58,10 +58,9 @@ class Shoping {
     this.skuid,
     this.promotion,
     this.price_per_unit,
-    this.newData,
+    required this.newData,
     this.base_price,
     this.fixed_price,
-
   });
 
   factory Shoping.fromJson(Map<String, dynamic> json) =>

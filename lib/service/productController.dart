@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_and_c_mobile/model/NewProductModel/collectiondata.dart';
 import 'package:t_and_c_mobile/model/brands.dart';
 import 'package:t_and_c_mobile/model/data.dart';
 import 'package:t_and_c_mobile/model/distributors.dart';
@@ -16,6 +17,7 @@ class ProductController extends ChangeNotifier {
   List<Order>orderlist=[];
   User? custommer;
   List<ProductTyp> producttypes = [];
+  List<Collectiondata>productcollection=[];
 
   
   listbrands() async {
@@ -51,6 +53,11 @@ class ProductController extends ChangeNotifier {
   getproducttypes() async {
     producttypes.clear();
     producttypes = await ProductApi.getproducttypes();
+    notifyListeners();
+  }
+  getproductcollection()async{
+      productcollection.clear();
+    productcollection = await ProductApi.getCollectionPro();
     notifyListeners();
   }
 }

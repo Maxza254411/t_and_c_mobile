@@ -500,44 +500,44 @@ class _BucketState extends State<Bucket> {
                   ),
                 ),
 
-                //  Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: Container(
-                //     width: double.infinity,
-                //     decoration: BoxDecoration(
-                //       borderRadius: BorderRadius.circular(8),
-                //       color: Colors.white,
-                //     ),
-                //     child: Consumer<CartProvider>(
-                //       builder: (context, cart, child) {
-                //         return Column(
-                //           children: List.generate(allbands.length, (index) {
-                //             final brandName = allbands[index].name ?? "";
-                //             final count = cart.items
-                //                 .where(
-                //                     (item) => item.namebrand == brandName)
-                //                 .fold<int>(
-                //                     0, (sum, item) => sum + item.quantity);
+                 Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
+                    ),
+                    child: Consumer<CartProvider>(
+                      builder: (context, cart, child) {
+                        return Column(
+                          children: List.generate(allbands.length, (index) {
+                            final brandName = allbands[index].name ?? "";
+                            final count = cart.items
+                                .where(
+                                    (item) => item.namebrand == brandName)
+                                .fold<int>(
+                                    0, (sum, item) => sum + item.quantity);
 
-                //             return Padding(
-                //               padding: const EdgeInsets.all(8.0),
-                //               child: Row(
-                //                 mainAxisAlignment:
-                //                     MainAxisAlignment.spaceBetween,
-                //                 children: [
-                //                   Text(brandName,
-                //                       style: TextStyle(
-                //                           fontWeight: FontWeight.bold)),
-                //                   Text("จำนวน: $count ชิ้น"),
-                //                 ],
-                //               ),
-                //             );
-                //           }),
-                //         );
-                //       },
-                //     ),
-                //   ),
-                // ),
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(brandName,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  Text("จำนวน: $count ชิ้น"),
+                                ],
+                              ),
+                            );
+                          }),
+                        );
+                      },
+                    ),
+                  ),
+                ),
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),

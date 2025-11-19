@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
 import 'package:t_and_c_mobile/model/NewProductModel/newdata.dart';
+import 'package:t_and_c_mobile/model/brands.dart';
 import 'package:t_and_c_mobile/model/shoping.dart';
 import 'package:t_and_c_mobile/model/warehouse.dart';
 import 'package:t_and_c_mobile/order/detailPro.dart';
@@ -38,6 +39,8 @@ class _CatagoryState extends State<Catagory> {
   List<Newdata> allProducts = [];
   List<Newdata> filteredProducts = [];
   List<Warehouse> listwarehouse = [];
+  List<Brands> allbands = [];
+  String? namebrand;
 
   @override
   void initState() {
@@ -62,6 +65,9 @@ class _CatagoryState extends State<Catagory> {
 
   Future<void> getapi({bool isLoadMore = false}) async {
     try {
+      if (allbands.isEmpty) {
+        allbands = await ProductApi.listbrands();  
+      }
       if (_isLoadingMore || !_hasMore) return;
       if (isLoadMore) setState(() => _isLoadingMore = true);
       if (widget.statusPage == "brand") {
@@ -84,14 +90,16 @@ class _CatagoryState extends State<Catagory> {
             filterProducts(search.text);
           });
         }
-      } else {
+      } 
+      else {
         /////////
-        final newProducts = await ProductApi.getproducttypesbyid(
+         final newProducts = await ProductApi.getProBandId(
+          brandid:0,
+          productTypid: widget.productTypid,
           page: _page,
-          id: widget.productTypid,
         );
 
-        if (newProducts.isEmpty) {
+        if (newProducts.isEmpty) { 
           setState(() => _hasMore = false);
         } else {
           setState(() {
@@ -296,29 +304,36 @@ class _CatagoryState extends State<Catagory> {
                 ),
 
                 // -------- แสดงข้อความ "สินค้าหมด" --------
-                if (isOutOfStock)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(16),
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "สินค้าหมด",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
+                // if (isOutOfStock)
+                //   Container(
+                //     decoration: BoxDecoration(
+                //       color: Colors.black.withOpacity(0.6),
+                //       borderRadius: const BorderRadius.vertical(
+                //         top: Radius.circular(16),
+                //       ),
+                //     ),
+                //     child: const Center(
+                //       child: Text(
+                //         "สินค้าหมด",
+                //         style: TextStyle(
+                //           color: Colors.white,
+                //           fontSize: 20,
+                //           fontWeight: FontWeight.bold,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Consumer<FavoriteProvider>(
+                    
                     builder: (context, favProvider, child) {
+                       if (allbands.isNotEmpty) {
+                        final brandMatch = allbands.firstWhere(
+                          (b) => b.id == product.brand_id,
+                        );
+                        namebrand = brandMatch.name;
+                      }
                       final currentProduct = Shoping(
                         warehouse_skus: firstSku?.warehouse_skus ?? [],
                         sku: firstSku?.sku ?? "",
@@ -327,7 +342,8 @@ class _CatagoryState extends State<Catagory> {
                         name: product.name_en ?? "",
                         price: formatNumber(firstSku?.base_price ?? 0),
                         color: firstSku?.color?.name_en ?? "",
-                        nameTh: product.name_th ?? "",
+                        nameTh: product.name_th ?? "", newData:product ,
+                        namebrand: namebrand,
                       );
 
                       final isFav = favProvider.isFavorite(currentProduct);
@@ -384,7 +400,7 @@ class _CatagoryState extends State<Catagory> {
                         // มีโปร ตรวจ promotion_id
                         final promo = promos.first;
 
-                        // 2. ถ้า promotion_id == 2 → แสดงราคาเต็ม
+                        //  2. ถ้า promotion_id == 2 → แสดงราคาเต็ม
                         if (promo.promotion_id == 2) {
                           return Text(
                             "฿ ${formatNumber(firstSku.base_price ?? 0)}",
@@ -440,6 +456,9 @@ class _CatagoryState extends State<Catagory> {
                     ),
                     onPressed: () {
                       //  print( firstSku?.promotions![0].promotion_id);
+                       final brandMatch = allbands.firstWhere(
+                        (b) => b.id == product.brand_id,
+                      );
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -454,11 +473,10 @@ class _CatagoryState extends State<Catagory> {
                                 : formatNumber(firstSku.base_price ?? 0),
                             proNameTh: product.name_th,
                             warehouse_skus: firstSku.warehouse_skus!,
-                            namebrand: widget.namebrand,
-                            promotion: firstSku.promotions!,
-                            skulist: [],
-                            skuid: [],
+                            namebrand: brandMatch.name??"",
+                            promotion: firstSku.promotions!,                           
                             newdata: product,
+                          
                           ),
                         ),
                       );
