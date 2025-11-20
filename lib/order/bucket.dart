@@ -220,7 +220,7 @@ class _BucketState extends State<Bucket> {
                           context,
                           listen: false,
                         );
-                  
+
                         // ถ้าไม่ใช่ทั้งหมดติ๊ก → ติ๊กทั้งหมด, ถ้าติ๊กทั้งหมดแล้ว → ยกเลิกทั้งหมด
                         bool allChecked = checked.every((c) => c);
                         setState(() {
@@ -235,15 +235,15 @@ class _BucketState extends State<Bucket> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                             Icon(
+                            Icon(
                               checked.every((c) => c)
                                   ? Icons.check_box
                                   : Icons.check_box_outline_blank,
                               color: Colors.white,
                             ),
-                            SizedBox(width: 10,),
+                            SizedBox(width: 10),
                             Text(
-                              "เลือกทั้งหมด (${cart.items.fold<int>(0, (sum, item) => sum + item.quantity)} ชิ้น)",
+                              "เลือกสินค้าทั้งหมด",
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -500,7 +500,7 @@ class _BucketState extends State<Bucket> {
                   ),
                 ),
 
-                 Padding(
+                Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     width: double.infinity,
@@ -514,10 +514,11 @@ class _BucketState extends State<Bucket> {
                           children: List.generate(allbands.length, (index) {
                             final brandName = allbands[index].name ?? "";
                             final count = cart.items
-                                .where(
-                                    (item) => item.namebrand == brandName)
+                                .where((item) => item.namebrand == brandName)
                                 .fold<int>(
-                                    0, (sum, item) => sum + item.quantity);
+                                  0,
+                                  (sum, item) => sum + item.quantity,
+                                );
 
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -525,9 +526,12 @@ class _BucketState extends State<Bucket> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(brandName,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                  Text(
+                                    brandName,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                   Text("จำนวน: $count ชิ้น"),
                                 ],
                               ),
@@ -556,6 +560,10 @@ class _BucketState extends State<Bucket> {
                           rowSummary(
                             "ส่วนลด",
                             "฿ ${formatNumber(discountAmount)}",
+                          ),
+                           rowSummary(
+                            "จำนวนสินค้า",
+                            "${(( cart.items.fold<int>(0, (sum, item) => sum + item.quantity).toString()))} ชิ้น",
                           ),
                           Divider(),
                           rowSummary(

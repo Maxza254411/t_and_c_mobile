@@ -621,11 +621,11 @@ class _DetailproState extends State<Detailpro> {
                                   groupValue: selectedColor,
                                   onChanged: (val) {
                                     setState(() {
-                                      // print(widget
-                                      //             .newdata!
-                                      //             .skus![index]
-                                      //             .promotions?[0]
-                                      //             .promotion_id);
+                                      print(widget
+                                                  .newdata!
+                                                  .skus![index]
+                                                  .promotions?[0]
+                                                  .promotion_id);
                                       selectedColor = val;
                                       if (index <
                                           widget.newdata!.skus!.length) {
@@ -1241,6 +1241,7 @@ class _DetailproState extends State<Detailpro> {
                                                           ),
                                                         ],
                                                       ),
+                                                      
                                                       const SizedBox(height: 6),
 
                                                       // 🔹 ยอดหลังส่วนลด

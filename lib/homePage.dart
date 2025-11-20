@@ -44,6 +44,8 @@ class _HomePageState extends State<HomePage> {
   List<Data> product = [];
   String? namebrand;
 
+  int? test;
+
   Future<void> getapi() async {
     try {
       await context.read<ProductController>().getproducttypes();
@@ -672,7 +674,7 @@ class _HomePageState extends State<HomePage> {
                         return Row(
                           children: [
                             Text(
-                              "฿ ${formatNumber(promo.fixed_price ?? 0)}",
+                              "฿ ${formatNumber(  promo.fixed_price ?? 0)}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -712,6 +714,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onPressed: () {
+                      // print(test);
                       final brandMatch = allbands.firstWhere(
                         (b) => b.id == product.brand_id,
                       );
