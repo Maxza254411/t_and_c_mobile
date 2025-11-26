@@ -23,18 +23,19 @@ class Shoping {
   List<Colorp?>? colors;
   List<Data>? sameproduct;
   List<String?>? skulist;
-  List<int>?skuidlist;
+  List<int>? skuidlist;
   String? qty;
   final List<Warehouse> warehouse_skus;
   String? namebrand;
   List<Promotione>? promotion;
   final String? sku;
   final int? skuid;
-  int?price_per_unit;
+  int? price_per_unit;
   Newdata? newData;
   int? base_price;
   int? fixed_price;
-   
+  bool? isFree = false;
+  String? sku_code;
 
   Shoping({
     required this.nameTh,
@@ -61,9 +62,10 @@ class Shoping {
     required this.newData,
     this.base_price,
     this.fixed_price,
+    this.isFree,
+    this.sku_code,
   });
 
-  factory Shoping.fromJson(Map<String, dynamic> json) =>
-      _$ShopingFromJson(json);
+  factory Shoping.fromJson(Map<String, dynamic> json) => _$ShopingFromJson(json);
   Map<String, dynamic> toJson() => _$ShopingToJson(this);
 }

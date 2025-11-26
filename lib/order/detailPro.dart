@@ -558,6 +558,7 @@ class _DetailproState extends State<Detailpro> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
+                      inspect(promotion);
                       if (warehouse_skus == 0) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("ไม่พบสินค้าในคลัง")));
                       } else {

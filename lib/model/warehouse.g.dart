@@ -7,7 +7,7 @@ part of 'warehouse.dart';
 // **************************************************************************
 
 Warehouse _$WarehouseFromJson(Map<String, dynamic> json) => Warehouse(
-  (json['id'] as num).toInt(),
+  (json['id'] as num?)?.toInt(),
   (json['warehouse_id'] as num?)?.toInt(),
   (json['product_sku_id'] as num?)?.toInt(),
   (json['amount'] as num?)?.toInt(),

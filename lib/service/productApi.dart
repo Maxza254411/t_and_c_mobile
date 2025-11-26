@@ -20,15 +20,11 @@ import 'package:t_and_c_mobile/widget/apiException.dart';
 class ProductApi {
   const ProductApi();
 
-
   //เส้น banner
   static Future<List<Brands>> listbrands() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
+    var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
     final url = Uri.https(publicUrl, '/api/brands');
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -43,15 +39,10 @@ class ProductApi {
   }
 
   //เอาประเภทสินค้าจากแบร์น
-  static Future<List<ProductTyp>> getproductypBybrandid({
-    required int brandid,
-   }) async {
+  static Future<List<ProductTyp>> getproductypBybrandid({required int brandid}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
+    var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
 
     final url = Uri.https(publicUrl, '/api/brands/$brandid/product-types');
     final response = await http.get(url, headers: headers);
@@ -66,23 +57,12 @@ class ProductApi {
   }
 
   // โปรดัคบาย ID
-  static Future<List<Newdata>> getProBandId({
-    required int brandid,
-    int? page,
-    required int productTypid,
-   }) async {
+  static Future<List<Newdata>> getProBandId({required int brandid, int? page, required int productTypid}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
+    var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
 
-    final url = Uri.https(
-      publicUrl,
-      '/api/brands/$brandid/$productTypid/products',
-      {"page": page?.toString() ?? "1"},
-    );
+    final url = Uri.https(publicUrl, '/api/brands/$brandid/$productTypid/products', {"page": page?.toString() ?? "1"});
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = convert.jsonDecode(response.body);
@@ -98,10 +78,7 @@ class ProductApi {
   static Future<List<Distributors>> getlistdistributors() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
+    var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
     final url = Uri.https(publicUrl, '/api/distributors');
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -114,16 +91,12 @@ class ProductApi {
       throw ApiException(data['message']);
     }
   }
-    // Addressby ID
-  static Future<List<Address>> getAddressbyid({
-    required int distributor_id,
-   }) async {
+
+  // Addressby ID
+  static Future<List<Address>> getAddressbyid({required int distributor_id}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
+    var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
 
     final url = Uri.https(publicUrl, '/api/distributors/$distributor_id/shipping-address');
     final response = await http.get(url, headers: headers);
@@ -137,7 +110,7 @@ class ProductApi {
     }
   }
 
-  // สร้าง Order 
+  // สร้าง Order
   static Future<Order> createOrder({
     required String distributor_id,
     required String qo_date,
@@ -151,7 +124,7 @@ class ProductApi {
     File? slip_image, // path ของไฟล์
     required String payment_method,
     required String is_print,
-   }) async {
+  }) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     final url = Uri.https(publicUrl, '/api/quotation');
@@ -168,10 +141,8 @@ class ProductApi {
     request.fields['address_id'] = address_id;
     request.fields['payment_method'] = payment_method;
     request.fields['is_print'] = is_print;
-    request.fields['products'] = convert.jsonEncode(
-      products.map((p) => p.toJson()).toList(),
-    );
-  
+    request.fields['products'] = convert.jsonEncode(products.map((p) => p.toJson()).toList());
+
     if (slip_image != null) {
       request.files.add(
         await http.MultipartFile.fromPath(
@@ -198,10 +169,7 @@ class ProductApi {
   static Future<List<Order>> getOrderList() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
+    var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
 
     final url = Uri.https(publicUrl, '/api/quotation');
     final response = await http.get(url, headers: headers);
@@ -214,14 +182,12 @@ class ProductApi {
       throw ApiException(data['message']);
     }
   }
-    // เส้น Quotation Details
-  static Future <Order> getOrderDetails({required int quotation_id}) async {
+
+  // เส้น Quotation Details
+  static Future<Order> getOrderDetails({required int quotation_id}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
+    var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
 
     final url = Uri.https(publicUrl, '/api/quotation/$quotation_id');
     final response = await http.get(url, headers: headers);
@@ -233,14 +199,12 @@ class ProductApi {
       throw ApiException(data['message']);
     }
   }
+
   // เส้น Quotation  delivery
-  static Future <Order> getOrderdelivery({required int delivery_id}) async {
+  static Future<Order> getOrderdelivery({required int delivery_id}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
+    var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
     final url = Uri.https(publicUrl, '/api/quotation/delivery/$delivery_id');
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -251,15 +215,12 @@ class ProductApi {
       throw ApiException(data['message']);
     }
   }
-  
+
   ///getUser
-    static Future<User> getUser() async {
+  static Future<User> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
+    var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
     final url = Uri.https(publicUrl, '/api/user');
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -270,19 +231,18 @@ class ProductApi {
       throw Exception(data['message']);
     }
   }
-  
-   static Future<Order> paymentSilp({
+
+  static Future<Order> paymentSilp({
     required String quotation_id,
     File? slip_image, // path ของไฟล์
-
-   }) async {
+  }) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     final url = Uri.https(publicUrl, '/api/quotation/upload-slip');
 
     var request = http.MultipartRequest('POST', url);
     request.headers['Authorization'] = 'Bearer $token';
-    request.fields['quotation_id'] = quotation_id;   
+    request.fields['quotation_id'] = quotation_id;
     if (slip_image != null) {
       request.files.add(
         await http.MultipartFile.fromPath(
@@ -305,7 +265,7 @@ class ProductApi {
     }
   }
 
-//เส้น getproduct ทั้งหมด
+  //เส้น getproduct ทั้งหมด
   // static Future<List<Data>> getproduct() async {
   //   final SharedPreferences prefs = await SharedPreferences.getInstance();
   //   final token = prefs.getString('token');
@@ -325,13 +285,12 @@ class ProductApi {
   //   }
   // }
 
-//เส้น ประเภทสินค้า ทั้งหมด
- static Future<List<ProductTyp>> getproducttypes() async {
+  //เส้น ประเภทสินค้า ทั้งหมด
+  static Future<List<ProductTyp>> getproducttypes() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
-    final url = Uri.https(publicUrl, '/api/product-types', 
-    );
+    final url = Uri.https(publicUrl, '/api/product-types');
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = convert.jsonDecode(response.body);
@@ -342,42 +301,30 @@ class ProductApi {
       throw ApiException(data['message']);
     }
   }
-static Future<List<Newdata>> getproducttypesbyid({required int id, int? page}) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString('token');
-  var headers = {
-    'Authorization': 'Bearer $token',
-    'Content-Type': 'application/json'
-  };
 
-  final url = Uri.https(
-    publicUrl,
-    '/api/product-types/$id/products',
-    {
-      "page": page?.toString() ?? "1",
-    },
-  );
-  final response = await http.get(url, headers: headers);
-  if (response.statusCode == 200 || response.statusCode == 201) {
-    final data = convert.jsonDecode(response.body);
-    final list = data["data"] as List;
-    return list.map((e) => Newdata.fromJson(e)).toList();
-  } else {
-    final data = convert.jsonDecode(response.body);
-    throw ApiException(data['message']);
-  }
-}
- static Future<List<Collectiondata>> getCollectionPro() async {
+  static Future<List<Newdata>> getproducttypesbyid({required int id, int? page}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    var headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
+    var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
 
-    final url = Uri.https(
-      publicUrl,
-      '/api/products/collection');
+    final url = Uri.https(publicUrl, '/api/product-types/$id/products', {"page": page?.toString() ?? "1"});
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = convert.jsonDecode(response.body);
+      final list = data["data"] as List;
+      return list.map((e) => Newdata.fromJson(e)).toList();
+    } else {
+      final data = convert.jsonDecode(response.body);
+      throw ApiException(data['message']);
+    }
+  }
+
+  static Future<List<Collectiondata>> getCollectionPro() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    var headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
+
+    final url = Uri.https(publicUrl, '/api/products/collection');
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = convert.jsonDecode(response.body);
@@ -388,5 +335,4 @@ static Future<List<Newdata>> getproducttypesbyid({required int id, int? page}) a
       throw ApiException(data['message']);
     }
   }
-
 }

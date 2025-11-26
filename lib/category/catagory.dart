@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:t_and_c_mobile/constang.dart';
@@ -11,14 +13,7 @@ import 'package:t_and_c_mobile/service/productApi.dart';
 import 'package:t_and_c_mobile/widget/dialog.dart';
 
 class Catagory extends StatefulWidget {
-  Catagory({
-    super.key,
-    required this.brandid,
-    required this.title,
-    required this.productTypid,
-    required this.statusPage,
-    required this.namebrand,
-  });
+  Catagory({super.key, required this.brandid, required this.title, required this.productTypid, required this.statusPage, required this.namebrand});
   final int brandid;
   final String title;
   final int productTypid;
@@ -47,10 +42,7 @@ class _CatagoryState extends State<Catagory> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => getapi());
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 200 &&
-          !_isLoadingMore &&
-          _hasMore) {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 && !_isLoadingMore && _hasMore) {
         getapi(isLoadMore: true);
       }
     });
@@ -66,16 +58,12 @@ class _CatagoryState extends State<Catagory> {
   Future<void> getapi({bool isLoadMore = false}) async {
     try {
       if (allbands.isEmpty) {
-        allbands = await ProductApi.listbrands();  
+        allbands = await ProductApi.listbrands();
       }
       if (_isLoadingMore || !_hasMore) return;
       if (isLoadMore) setState(() => _isLoadingMore = true);
       if (widget.statusPage == "brand") {
-        final newProducts = await ProductApi.getProBandId(
-          brandid: widget.brandid,
-          productTypid: widget.productTypid,
-          page: _page,
-        );
+        final newProducts = await ProductApi.getProBandId(brandid: widget.brandid, productTypid: widget.productTypid, page: _page);
 
         if (newProducts.isEmpty) {
           setState(() => _hasMore = false);
@@ -90,16 +78,12 @@ class _CatagoryState extends State<Catagory> {
             filterProducts(search.text);
           });
         }
-      } 
-      else {
+        inspect(newProducts);
+      } else {
         /////////
-         final newProducts = await ProductApi.getProBandId(
-          brandid:0,
-          productTypid: widget.productTypid,
-          page: _page,
-        );
+        final newProducts = await ProductApi.getProBandId(brandid: 0, productTypid: widget.productTypid, page: _page);
 
-        if (newProducts.isEmpty) { 
+        if (newProducts.isEmpty) {
           setState(() => _hasMore = false);
         } else {
           setState(() {
@@ -117,11 +101,7 @@ class _CatagoryState extends State<Catagory> {
       if (!mounted) return;
       await showDialog(
         context: context,
-        builder: (context) => AlertDialogYes(
-          title: 'แจ้งเตือน',
-          description: '$e',
-          pressYes: () => Navigator.pop(context),
-        ),
+        builder: (context) => AlertDialogYes(title: 'แจ้งเตือน', description: '$e', pressYes: () => Navigator.pop(context)),
       );
     } finally {
       setState(() => _isLoadingMore = false);
@@ -138,13 +118,10 @@ class _CatagoryState extends State<Catagory> {
         final nameTh = item.name_th?.toLowerCase() ?? '';
 
         // ดึง SKU ทั้งหมดจาก skus list
-        final skus = (item.skus ?? [])
-            .map((skuItem) => skuItem.sku?.toLowerCase() ?? '')
-            .toList();
+        final skus = (item.skus ?? []).map((skuItem) => skuItem.sku?.toLowerCase() ?? '').toList();
 
         // ให้ค้นได้ทั้งชื่อสินค้าไทย อังกฤษ และรหัส SKU
-        final matchName =
-            nameEn.contains(lowerKeyword) || nameTh.contains(lowerKeyword);
+        final matchName = nameEn.contains(lowerKeyword) || nameTh.contains(lowerKeyword);
         final matchSku = skus.any((sku) => sku.contains(lowerKeyword));
 
         return matchName || matchSku;
@@ -198,11 +175,7 @@ class _CatagoryState extends State<Catagory> {
                   borderSide: BorderSide(color: kButtonColor, width: 2),
                 ),
                 hintText: "Search Product ...",
-                hintStyle: TextStyle(
-                  fontSize: 20,
-                  fontFamily: 'IBMPlexSansThai',
-                  color: kbgM,
-                ),
+                hintStyle: TextStyle(fontSize: 20, fontFamily: 'IBMPlexSansThai', color: kbgM),
               ),
               onChanged: filterProducts,
             ),
@@ -214,11 +187,7 @@ class _CatagoryState extends State<Catagory> {
                     SizedBox(height: size.height * 0.3),
                     Text(
                       "ไม่พบสินค้า",
-                      style: TextStyle(
-                        color: kbgM,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(color: kbgM, fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                   ],
                 )
@@ -227,24 +196,14 @@ class _CatagoryState extends State<Catagory> {
                     padding: const EdgeInsets.all(12.0),
                     child: GridView.builder(
                       controller: _scrollController,
-                      itemCount:
-                          filteredProducts.length + (_isLoadingMore ? 1 : 0),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.75,
-                      ),
+                      itemCount: filteredProducts.length + (_isLoadingMore ? 1 : 0),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 0.75),
                       itemBuilder: (context, index) {
                         if (index < filteredProducts.length) {
                           final product = filteredProducts[index];
                           return _buildProductCard(product);
                         } else {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: kButtonColor,
-                            ),
-                          );
+                          return Center(child: CircularProgressIndicator(color: kButtonColor));
                         }
                       },
                     ),
@@ -258,23 +217,13 @@ class _CatagoryState extends State<Catagory> {
   Widget _buildProductCard(Newdata product) {
     // ดึง SKU ตัวแรกมาแสดง (กรณีมีหลายสี)
     final firstSku = product.skus!.isNotEmpty ? product.skus![0] : null;
-    final isOutOfStock =
-        firstSku == null ||
-        firstSku.warehouse_skus!.isEmpty ||
-        (firstSku.warehouse_skus![0].available ?? 0) <= 0;
+    final isOutOfStock = firstSku == null || firstSku.warehouse_skus!.isEmpty || (firstSku.warehouse_skus![0].available ?? 0) <= 0;
 
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            spreadRadius: 2,
-            offset: Offset(2, 4),
-          ),
-        ],
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, spreadRadius: 2, offset: Offset(2, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -284,23 +233,10 @@ class _CatagoryState extends State<Catagory> {
             child: Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                   child: firstSku?.image_url == null
-                      ? Image.asset(
-                          "assets/images/NoImage.jpg",
-
-                          width: double.infinity,
-                          height: double.infinity,
-                          fit: BoxFit.fitHeight,
-                        )
-                      : Image.network(
-                          firstSku!.image_url!,
-                          fit: BoxFit.fitHeight,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
+                      ? Image.asset("assets/images/NoImage.jpg", width: double.infinity, height: double.infinity, fit: BoxFit.fitHeight)
+                      : Image.network(firstSku!.image_url!, fit: BoxFit.fitHeight, width: double.infinity, height: double.infinity),
                 ),
 
                 // -------- แสดงข้อความ "สินค้าหมด" --------
@@ -326,12 +262,9 @@ class _CatagoryState extends State<Catagory> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Consumer<FavoriteProvider>(
-                    
                     builder: (context, favProvider, child) {
-                       if (allbands.isNotEmpty) {
-                        final brandMatch = allbands.firstWhere(
-                          (b) => b.id == product.brand_id,
-                        );
+                      if (allbands.isNotEmpty) {
+                        final brandMatch = allbands.firstWhere((b) => b.id == product.brand_id);
                         namebrand = brandMatch.name;
                       }
                       final currentProduct = Shoping(
@@ -342,7 +275,8 @@ class _CatagoryState extends State<Catagory> {
                         name: product.name_en ?? "",
                         price: formatNumber(firstSku?.base_price ?? 0),
                         color: firstSku?.color?.name_en ?? "",
-                        nameTh: product.name_th ?? "", newData:product ,
+                        nameTh: product.name_th ?? "",
+                        newData: product,
                         namebrand: namebrand,
                       );
 
@@ -350,12 +284,7 @@ class _CatagoryState extends State<Catagory> {
 
                       return GestureDetector(
                         onTap: () => favProvider.toggleFavorite(currentProduct),
-                        child: Image.asset(
-                          isFav
-                              ? "assets/icons/HertOn.png"
-                              : "assets/icons/HertOff.png",
-                          scale: 15,
-                        ),
+                        child: Image.asset(isFav ? "assets/icons/HertOn.png" : "assets/icons/HertOff.png", scale: 15),
                       );
                     },
                   ),
@@ -388,27 +317,15 @@ class _CatagoryState extends State<Catagory> {
 
                         // 1. กรณีไม่มีโปรโมชัน
                         if (promos == null || promos.isEmpty) {
-                          return Text(
-                            "฿ ${formatNumber(firstSku.base_price ?? 0)}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
+                          return Text("฿ ${formatNumber(firstSku.base_price ?? 0)}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600));
                         }
 
                         // มีโปร ตรวจ promotion_id
                         final promo = promos.first;
 
                         //  2. ถ้า promotion_id == 2 → แสดงราคาเต็ม
-                        if (promo.promotion_id == 2) {
-                          return Text(
-                            "฿ ${formatNumber(firstSku.base_price ?? 0)}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
+                        if (promo.promotion_id == 2 || promo.promotion_id == 4) {
+                          return Text("฿ ${formatNumber(firstSku.base_price ?? 0)}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600));
                         }
 
                         // 3. มีโปร และ promotion_id != 2 → แสดงราคาโปร + ขีดฆ่าราคาเต็ม
@@ -418,21 +335,14 @@ class _CatagoryState extends State<Catagory> {
                               "฿ ${formatNumber(promo.fixed_price ?? 0)}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                             ),
                             const SizedBox(width: 10),
                             Text(
                               "฿ ${formatNumber(firstSku.base_price ?? 0)}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey,
-                                decoration: TextDecoration.lineThrough,
-                              ),
+                              style: const TextStyle(fontSize: 14, color: Colors.grey, decoration: TextDecoration.lineThrough),
                             ),
                           ],
                         );
@@ -450,15 +360,11 @@ class _CatagoryState extends State<Catagory> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kButtonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
                       //  print( firstSku?.promotions![0].promotion_id);
-                       final brandMatch = allbands.firstWhere(
-                        (b) => b.id == product.brand_id,
-                      );
+                      final brandMatch = allbands.firstWhere((b) => b.id == product.brand_id);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -466,28 +372,19 @@ class _CatagoryState extends State<Catagory> {
                             image: firstSku?.image_url,
                             productId: product.product_id.toString(),
                             proName: product.name_en ?? "",
-                            proPice: firstSku!.promotions!.isNotEmpty
-                                ? formatNumber(
-                                    firstSku.promotions![0].fixed_price ?? 0,
-                                  )
-                                : formatNumber(firstSku.base_price ?? 0),
+                            proPice: firstSku!.promotions!.isNotEmpty ? formatNumber(firstSku.promotions![0].fixed_price ?? 0) : formatNumber(firstSku.base_price ?? 0),
                             proNameTh: product.name_th,
                             warehouse_skus: firstSku.warehouse_skus!,
-                            namebrand: brandMatch.name??"",
-                            promotion: firstSku.promotions!,                           
+                            namebrand: brandMatch.name ?? "",
+                            promotion: firstSku.promotions!,
                             newdata: product,
-                          
                           ),
                         ),
                       );
                     },
                     child: Text(
                       "สั่งซื้อ",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: kbgf,
-                      ),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: kbgf),
                     ),
                   ),
                 ),

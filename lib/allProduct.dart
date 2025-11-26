@@ -11,7 +11,7 @@ import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
 class Allproduct extends StatefulWidget {
-  Allproduct({super.key, required this.status, this.brandId,required this.namebrand});
+  Allproduct({super.key, required this.status, this.brandId, required this.namebrand});
   final String status;
   final int? brandId;
   String namebrand;
@@ -34,9 +34,7 @@ class _AllproductState extends State<Allproduct> {
       if (widget.status == "product") {
         producttypes = await ProductApi.getproducttypes();
       } else {
-        producttypes = await ProductApi.getproductypBybrandid(
-          brandid: widget.brandId!,
-        );
+        producttypes = await ProductApi.getproductypBybrandid(brandid: widget.brandId!);
       }
       filteredProducts = producttypes; // ✅ กำหนดค่าเริ่มต้น
       setState(() {});
@@ -81,12 +79,7 @@ class _AllproductState extends State<Allproduct> {
   void filterProducts(String value) {
     setState(() {
       keyword = value;
-      filteredProducts = producttypes
-          .where(
-            (p) =>
-                (p.name_en ?? "").toLowerCase().contains(keyword.toLowerCase()),
-          )
-          .toList();
+      filteredProducts = producttypes.where((p) => (p.name_en ?? "").toLowerCase().contains(keyword.toLowerCase())).toList();
     });
   }
 
@@ -108,11 +101,7 @@ class _AllproductState extends State<Allproduct> {
                     children: [
                       IconButton(
                         onPressed: () => Navigator.pop(context),
-                        icon: Icon(
-                          Icons.chevron_left,
-                          color: kButtonColor,
-                          size: 30,
-                        ),
+                        icon: Icon(Icons.chevron_left, color: kButtonColor, size: 30),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -123,37 +112,19 @@ class _AllproductState extends State<Allproduct> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
-                            prefixIcon: Image.asset(
-                              "assets/icons/Search.png",
-                              scale: 20,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 16,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                            prefixIcon: Image.asset("assets/icons/Search.png", scale: 20),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: kButtonColor,
-                                width: 2,
-                              ),
+                              borderSide: BorderSide(color: kButtonColor, width: 2),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                color: kButtonColor,
-                                width: 2,
-                              ),
+                              borderSide: BorderSide(color: kButtonColor, width: 2),
                             ),
                             hintText: "ค้นหาประเภทสินค้า...",
-                            hintStyle: TextStyle(
-                              fontSize: 18,
-                              fontFamily: 'IBMPlexSansThai',
-                              color: kbgM,
-                            ),
+                            hintStyle: TextStyle(fontSize: 18, fontFamily: 'IBMPlexSansThai', color: kbgM),
                           ),
                           onChanged: filterProducts,
                         ),
@@ -169,11 +140,7 @@ class _AllproductState extends State<Allproduct> {
                             SizedBox(height: size.height * 0.3),
                             Text(
                               "ไม่พบประเภทสินค้า",
-                              style: TextStyle(
-                                color: kbgM,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(color: kbgM, fontSize: 22, fontWeight: FontWeight.bold),
                             ),
                           ],
                         )
@@ -187,12 +154,9 @@ class _AllproductState extends State<Allproduct> {
                                 margin: const EdgeInsets.symmetric(vertical: 6),
                                 child: ListTile(
                                   title: Text(product.name_en ?? ""),
-                                  trailing: const Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 16,
-                                  ),
+                                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                                   onTap: () {
-                                    print( widget.namebrand);
+                                    // print( widget.namebrand);
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -200,7 +164,7 @@ class _AllproductState extends State<Allproduct> {
                                           brandid: widget.brandId ?? 1,
                                           title: product.name_en ?? "",
                                           productTypid: product.id,
-                                          statusPage:widget.status == "product"? "product":"brand", 
+                                          statusPage: widget.status == "product" ? "product" : "brand",
                                           namebrand: widget.namebrand,
                                         ),
                                       ),

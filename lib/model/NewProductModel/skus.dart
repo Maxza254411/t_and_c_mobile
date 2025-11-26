@@ -19,8 +19,7 @@ class Skus {
   int? base_price;
   List<Promotione>? promotions;
   Colorp? color;
-  List<Warehouse>?warehouse_skus;
-
+  List<Warehouse>? warehouse_skus;
 
   Skus(
     this.id,

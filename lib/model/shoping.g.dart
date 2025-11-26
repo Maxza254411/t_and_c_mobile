@@ -47,6 +47,8 @@ Shoping _$ShopingFromJson(Map<String, dynamic> json) => Shoping(
       : Newdata.fromJson(json['newData'] as Map<String, dynamic>),
   base_price: (json['base_price'] as num?)?.toInt(),
   fixed_price: (json['fixed_price'] as num?)?.toInt(),
+  isFree: json['isFree'] as bool?,
+  sku_code: json['sku_code'] as String?,
 );
 
 Map<String, dynamic> _$ShopingToJson(Shoping instance) => <String, dynamic>{
@@ -74,4 +76,6 @@ Map<String, dynamic> _$ShopingToJson(Shoping instance) => <String, dynamic>{
   'newData': instance.newData?.toJson(),
   'base_price': instance.base_price,
   'fixed_price': instance.fixed_price,
+  'isFree': instance.isFree,
+  'sku_code': instance.sku_code,
 };

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,12 +19,7 @@ import 'package:t_and_c_mobile/widget/dialog.dart';
 import 'package:t_and_c_mobile/widget/loadingDialog.dart';
 
 class BrandPage extends StatefulWidget {
-  BrandPage({
-    super.key,
-    required this.title,
-    required this.brandId,
-    required this.namebrand,
-  });
+  BrandPage({super.key, required this.title, required this.brandId, required this.namebrand});
   String title;
   int brandId;
   String namebrand;
@@ -57,42 +54,34 @@ class _BrandPageState extends State<BrandPage> {
   }
 
   Future<void> getapi({bool isLoadMore = false}) async {
-    try {
-      if (_isLoadingMore || !_hasMore) return;
-      if (isLoadMore) setState(() => _isLoadingMore = true);
+    // try {
+    if (_isLoadingMore || !_hasMore) return;
+    if (isLoadMore) setState(() => _isLoadingMore = true);
 
-      final newProducts = await ProductApi.getProBandId(
-        brandid: widget.brandId,
-        productTypid: 0,
-        page: _page,
-      );
-
-      if (newProducts.isEmpty) {
-        setState(() => _hasMore = false);
-      } else {
-        setState(() {
-          if (isLoadMore) {
-            allProducts.addAll(newProducts);
-          } else {
-            allProducts = newProducts;
-          }
-          _page++;
-          filterProducts(search.text);
-        });
-      }
-    } catch (e) {
-      if (!mounted) return;
-      await showDialog(
-        context: context,
-        builder: (context) => AlertDialogYes(
-          title: 'แจ้งเตือน',
-          description: '$e',
-          pressYes: () => Navigator.pop(context),
-        ),
-      );
-    } finally {
-      setState(() => _isLoadingMore = false);
+    final newProducts = await ProductApi.getProBandId(brandid: widget.brandId, productTypid: 0, page: _page);
+    inspect(newProducts);
+    if (newProducts.isEmpty) {
+      setState(() => _hasMore = false);
+    } else {
+      setState(() {
+        if (isLoadMore) {
+          allProducts.addAll(newProducts);
+        } else {
+          allProducts = newProducts;
+        }
+        _page++;
+        filterProducts(search.text);
+      });
     }
+    // } catch (e) {
+    //   if (!mounted) return;
+    //   await showDialog(
+    //     context: context,
+    //     builder: (context) => AlertDialogYes(title: 'แจ้งเตือน', description: '$e', pressYes: () => Navigator.pop(context)),
+    //   );
+    // } finally {
+    //   setState(() => _isLoadingMore = false);
+    // }
   }
 
   void filterProducts(String keyword) {
@@ -105,13 +94,10 @@ class _BrandPageState extends State<BrandPage> {
         final nameTh = item.name_th?.toLowerCase() ?? '';
 
         // ดึง SKU ทั้งหมดจาก skus list
-        final skus = (item.skus ?? [])
-            .map((skuItem) => skuItem.sku?.toLowerCase() ?? '')
-            .toList();
+        final skus = (item.skus ?? []).map((skuItem) => skuItem.sku?.toLowerCase() ?? '').toList();
 
         // ให้ค้นได้ทั้งชื่อสินค้าไทย อังกฤษ และรหัส SKU
-        final matchName =
-            nameEn.contains(lowerKeyword) || nameTh.contains(lowerKeyword);
+        final matchName = nameEn.contains(lowerKeyword) || nameTh.contains(lowerKeyword);
         final matchSku = skus.any((sku) => sku.contains(lowerKeyword));
 
         return matchName || matchSku;
@@ -126,10 +112,7 @@ class _BrandPageState extends State<BrandPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => getapi());
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 200 &&
-          !_isLoadingMore &&
-          _hasMore) {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 && !_isLoadingMore && _hasMore) {
         getapi(isLoadMore: true);
       }
     });
@@ -149,10 +132,7 @@ class _BrandPageState extends State<BrandPage> {
         actions: [
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Bucket()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Bucket()));
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -174,11 +154,7 @@ class _BrandPageState extends State<BrandPage> {
                         ),
                         child: Text(
                           "${cart.items.length}",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -188,15 +164,9 @@ class _BrandPageState extends State<BrandPage> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Nontification()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Nontification()));
             },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset("assets/icons/Notification.png", scale: 15),
-            ),
+            child: Padding(padding: const EdgeInsets.all(8.0), child: Image.asset("assets/icons/Notification.png", scale: 15)),
           ),
         ],
 
@@ -219,10 +189,7 @@ class _BrandPageState extends State<BrandPage> {
                         margin: const EdgeInsets.all(6.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.0),
-                          image: DecorationImage(
-                            image: AssetImage(imgList[index]),
-                            fit: BoxFit.cover,
-                          ),
+                          image: DecorationImage(image: AssetImage(imgList[index]), fit: BoxFit.cover),
                         ),
                       );
                     },
@@ -233,9 +200,7 @@ class _BrandPageState extends State<BrandPage> {
                       aspectRatio: 16 / 9,
                       autoPlayCurve: Curves.fastOutSlowIn,
                       enableInfiniteScroll: true,
-                      autoPlayAnimationDuration: const Duration(
-                        milliseconds: 800,
-                      ),
+                      autoPlayAnimationDuration: const Duration(milliseconds: 800),
                       viewportFraction: 0.8,
                       onPageChanged: (index, reason) {
                         setState(() {
@@ -258,12 +223,7 @@ class _BrandPageState extends State<BrandPage> {
                           width: 12,
                           height: 12,
                           margin: const EdgeInsets.symmetric(horizontal: 4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: _currentIndex == entry.key
-                                ? Colors.blueAccent
-                                : Colors.grey,
-                          ),
+                          decoration: BoxDecoration(shape: BoxShape.circle, color: _currentIndex == entry.key ? Colors.blueAccent : Colors.grey),
                         ),
                       );
                     }).toList(),
@@ -277,11 +237,7 @@ class _BrandPageState extends State<BrandPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Allproduct(
-                          status: 'brand',
-                          brandId: widget.brandId,
-                          namebrand: widget.namebrand,
-                        ),
+                        builder: (context) => Allproduct(status: 'brand', brandId: widget.brandId, namebrand: widget.namebrand),
                       ),
                     );
                   },
@@ -298,11 +254,7 @@ class _BrandPageState extends State<BrandPage> {
                         SizedBox(width: 8),
                         Text(
                           "ค้นหาประเภทสินค้า ...",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'IBMPlexSansThai',
-                            color: kbgM,
-                          ),
+                          style: TextStyle(fontSize: 20, fontFamily: 'IBMPlexSansThai', color: kbgM),
                         ),
                       ],
                     ),
@@ -315,11 +267,7 @@ class _BrandPageState extends State<BrandPage> {
                         SizedBox(height: size.height * 0.3),
                         Text(
                           "ไม่พบสินค้า",
-                          style: TextStyle(
-                            color: kbgM,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(color: kbgM, fontSize: 22, fontWeight: FontWeight.bold),
                         ),
                       ],
                     )
@@ -328,26 +276,14 @@ class _BrandPageState extends State<BrandPage> {
                         padding: const EdgeInsets.all(12.0),
                         child: GridView.builder(
                           controller: _scrollController,
-                          itemCount:
-                              filteredProducts.length +
-                              (_isLoadingMore ? 1 : 0),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 12,
-                                mainAxisSpacing: 12,
-                                childAspectRatio: 0.75,
-                              ),
+                          itemCount: filteredProducts.length + (_isLoadingMore ? 1 : 0),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 0.75),
                           itemBuilder: (context, index) {
                             if (index < filteredProducts.length) {
                               final product = filteredProducts[index];
                               return _buildProductCard(product);
                             } else {
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  color: kButtonColor,
-                                ),
-                              );
+                              return Center(child: CircularProgressIndicator(color: kButtonColor));
                             }
                           },
                         ),
@@ -367,14 +303,7 @@ class _BrandPageState extends State<BrandPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            spreadRadius: 2,
-            offset: Offset(2, 4),
-          ),
-        ],
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, spreadRadius: 2, offset: Offset(2, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -384,50 +313,16 @@ class _BrandPageState extends State<BrandPage> {
             child: Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                   child: firstSku?.image_url == null
-                      ? Image.asset(
-                          "assets/images/NoImage.jpg",
-
-                          width: double.infinity,
-                          height: double.infinity,
-                          fit: BoxFit.fitHeight,
-                        )
-                      : Image.network(
-                          firstSku!.image_url!,
-                          fit: BoxFit.fitHeight,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
+                      ? Image.asset("assets/images/NoImage.jpg", width: double.infinity, height: double.infinity, fit: BoxFit.fitHeight)
+                      : Image.network(firstSku!.image_url!, fit: BoxFit.fitHeight, width: double.infinity, height: double.infinity),
                 ),
 
-                // -------- แสดงข้อความ "สินค้าหมด" --------
-                // if (isOutOfStock)
-                //   Container(
-                //     decoration: BoxDecoration(
-                //       color: Colors.black.withOpacity(0.6),
-                //       borderRadius: const BorderRadius.vertical(
-                //         top: Radius.circular(16),
-                //       ),
-                //     ),
-                //     child: const Center(
-                //       child: Text(
-                //         "สินค้าหมด",
-                //         style: TextStyle(
-                //           color: Colors.white,
-                //           fontSize: 20,
-                //           fontWeight: FontWeight.bold,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Consumer<FavoriteProvider>(
                     builder: (context, favProvider, child) {
-                  
                       final currentProduct = Shoping(
                         warehouse_skus: firstSku?.warehouse_skus ?? [],
                         sku: firstSku?.sku ?? "",
@@ -438,19 +333,14 @@ class _BrandPageState extends State<BrandPage> {
                         color: firstSku?.color?.name_en ?? "",
                         nameTh: product.name_th ?? "",
                         newData: product,
-                        namebrand: widget.namebrand
+                        namebrand: widget.namebrand,
                       );
 
                       final isFav = favProvider.isFavorite(currentProduct);
 
                       return GestureDetector(
                         onTap: () => favProvider.toggleFavorite(currentProduct),
-                        child: Image.asset(
-                          isFav
-                              ? "assets/icons/HertOn.png"
-                              : "assets/icons/HertOff.png",
-                          scale: 15,
-                        ),
+                        child: Image.asset(isFav ? "assets/icons/HertOn.png" : "assets/icons/HertOff.png", scale: 15),
                       );
                     },
                   ),
@@ -483,27 +373,15 @@ class _BrandPageState extends State<BrandPage> {
 
                         // 1. กรณีไม่มีโปรโมชัน
                         if (promos == null || promos.isEmpty) {
-                          return Text(
-                            "฿ ${formatNumber(firstSku.base_price ?? 0)}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
+                          return Text("฿ ${formatNumber(firstSku.base_price ?? 0)}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600));
                         }
 
                         // มีโปร ตรวจ promotion_id
                         final promo = promos.first;
 
                         // 2. ถ้า promotion_id == 2 → แสดงราคาเต็ม
-                        if (promo.promotion_id == 2) {
-                          return Text(
-                            "฿ ${formatNumber(firstSku.base_price ?? 0)}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
+                        if (promo.promotion_id == 2 || promo.promotion_id == 4) {
+                          return Text("฿ ${formatNumber(firstSku.base_price ?? 0)}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600));
                         }
 
                         // 3. มีโปร และ promotion_id != 2 → แสดงราคาโปร + ขีดฆ่าราคาเต็ม
@@ -513,21 +391,14 @@ class _BrandPageState extends State<BrandPage> {
                               "฿ ${formatNumber(promo.fixed_price ?? 0)}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                             ),
                             const SizedBox(width: 10),
                             Text(
                               "฿ ${formatNumber(firstSku.base_price ?? 0)}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey,
-                                decoration: TextDecoration.lineThrough,
-                              ),
+                              style: const TextStyle(fontSize: 14, color: Colors.grey, decoration: TextDecoration.lineThrough),
                             ),
                           ],
                         );
@@ -545,9 +416,7 @@ class _BrandPageState extends State<BrandPage> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kButtonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
                       //  print( firstSku?.promotions![0].promotion_id);
@@ -558,11 +427,7 @@ class _BrandPageState extends State<BrandPage> {
                             image: firstSku?.image_url,
                             productId: product.product_id.toString(),
                             proName: product.name_en ?? "",
-                            proPice: firstSku!.promotions!.isNotEmpty
-                                ? formatNumber(
-                                    firstSku.promotions![0].fixed_price ?? 0,
-                                  )
-                                : formatNumber(firstSku.base_price ?? 0),
+                            proPice: firstSku!.promotions!.isNotEmpty ? formatNumber(firstSku.promotions![0].fixed_price ?? 0) : formatNumber(firstSku.base_price ?? 0),
                             proNameTh: product.name_th,
                             warehouse_skus: firstSku.warehouse_skus!,
                             namebrand: widget.namebrand,
@@ -574,11 +439,7 @@ class _BrandPageState extends State<BrandPage> {
                     },
                     child: Text(
                       "สั่งซื้อ",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: kbgf,
-                      ),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: kbgf),
                     ),
                   ),
                 ),
