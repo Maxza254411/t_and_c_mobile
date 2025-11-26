@@ -92,8 +92,7 @@ class _DetailproState extends State<Detailpro> {
     selectedColor = widget.newdata!.skus![0].color!.name_th;
     image = widget.newdata!.skus![0].image_url;
     if (widget.newdata!.skus![0].warehouse_skus!.isNotEmpty) {
-      warehouse_skus =
-          widget.newdata?.skus?[0].warehouse_skus?[0].available ?? 0;
+      warehouse_skus = widget.newdata?.skus?[0].warehouse_skus?[0].available ?? 0;
     } else {
       warehouse_skus = 0;
     }
@@ -144,8 +143,7 @@ class _DetailproState extends State<Detailpro> {
     for (var promo in promotion) {
       if (promo.promotion_id == 1 || promo.promotion_id == 3) {
         if (promo.percent != null && promo.percent! > 0) {
-          newPriceFromOtherPromo =
-              basePrice - (basePrice * (promo.percent! / 100));
+          newPriceFromOtherPromo = basePrice - (basePrice * (promo.percent! / 100));
         }
         if (promo.fixed_price != null && promo.fixed_price! > 0) {
           newPriceFromOtherPromo = promo.fixed_price!.toDouble();
@@ -153,10 +151,8 @@ class _DetailproState extends State<Detailpro> {
       } else if (promo.promotion_id == 2) {
         tierMatched = false;
         for (var tier in promo.tiers) {
-          if (quantity >= (tier.min_qty ?? 0) &&
-              quantity <= (tier.max_qty ?? double.infinity)) {
-            newPrice = (tier.price_per_unit ?? newPriceFromOtherPromo)
-                .toDouble();
+          if (quantity >= (tier.min_qty ?? 0) && quantity <= (tier.max_qty ?? double.infinity)) {
+            newPrice = (tier.price_per_unit ?? newPriceFromOtherPromo).toDouble();
             tierMatched = true;
             break;
           }
@@ -173,10 +169,8 @@ class _DetailproState extends State<Detailpro> {
 
   void _runAddToCartAnimation() {
     final overlay = Overlay.of(context);
-    final renderBoxBtn =
-        _btnKey.currentContext!.findRenderObject() as RenderBox;
-    final renderBoxCart =
-        _cartIconKey.currentContext!.findRenderObject() as RenderBox;
+    final renderBoxBtn = _btnKey.currentContext!.findRenderObject() as RenderBox;
+    final renderBoxCart = _cartIconKey.currentContext!.findRenderObject() as RenderBox;
 
     final start = renderBoxBtn.localToGlobal(Offset.zero);
     final end = renderBoxCart.localToGlobal(Offset.zero);
@@ -191,18 +185,8 @@ class _DetailproState extends State<Detailpro> {
             return Positioned(left: value.dx, top: value.dy, child: child!);
           },
           child: widget.image != null
-              ? Image.network(
-                  widget.image!,
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                )
-              : Image.asset(
-                  "assets/images/NoImage.jpg",
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.fitHeight,
-                ),
+              ? Image.network(widget.image!, width: 40, height: 40, fit: BoxFit.cover)
+              : Image.asset("assets/images/NoImage.jpg", width: 40, height: 40, fit: BoxFit.fitHeight),
         );
       },
     );
@@ -235,10 +219,7 @@ class _DetailproState extends State<Detailpro> {
             builder: (context, cart, child) {
               return GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => Bucket()),
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => Bucket()));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -260,11 +241,7 @@ class _DetailproState extends State<Detailpro> {
                             ),
                             child: Text(
                               "${cart.items.length}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -292,39 +269,20 @@ class _DetailproState extends State<Detailpro> {
                                     Container(
                                       margin: const EdgeInsets.all(6.0),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          8.0,
-                                        ),
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            widget
-                                                    .newdata
-                                                    ?.skus?[index]
-                                                    .image_url ??
-                                                "",
-                                          ),
-
-                                          fit: BoxFit.fitHeight,
-                                        ),
+                                        borderRadius: BorderRadius.circular(8.0),
+                                        image: DecorationImage(image: NetworkImage(widget.newdata?.skus?[index].image_url ?? ""), fit: BoxFit.fitHeight),
                                       ),
                                     ),
                                     if (warehouse_skus == 0)
                                       Container(
                                         decoration: BoxDecoration(
                                           color: Colors.black.withOpacity(0.6),
-                                          borderRadius:
-                                              const BorderRadius.vertical(
-                                                top: Radius.circular(16),
-                                              ),
+                                          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                                         ),
                                         child: const Center(
                                           child: Text(
                                             "สินค้าหมด",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                       ),
@@ -334,12 +292,7 @@ class _DetailproState extends State<Detailpro> {
                                   margin: const EdgeInsets.all(6.0),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8.0),
-                                    image: DecorationImage(
-                                      image: AssetImage(
-                                        "assets/images/NoImage.jpg",
-                                      ),
-                                      fit: BoxFit.cover,
-                                    ),
+                                    image: DecorationImage(image: AssetImage("assets/images/NoImage.jpg"), fit: BoxFit.cover),
                                   ),
                                 );
                         },
@@ -351,9 +304,7 @@ class _DetailproState extends State<Detailpro> {
                           autoPlayCurve: Curves.fastOutSlowIn,
                           scrollPhysics: const NeverScrollableScrollPhysics(),
                           enableInfiniteScroll: false,
-                          autoPlayAnimationDuration: const Duration(
-                            milliseconds: 800,
-                          ),
+                          autoPlayAnimationDuration: const Duration(milliseconds: 800),
                           viewportFraction: 0.8,
                           onPageChanged: (index, reason) {
                             setState(() {
@@ -365,11 +316,7 @@ class _DetailproState extends State<Detailpro> {
                       ),
                     ],
                   )
-                : Center(
-                    child: widget.image != null
-                        ? Image.network(widget.image!)
-                        : Image.asset("assets/images/NoImage.jpg"),
-                  ),
+                : Center(child: widget.image != null ? Image.network(widget.image!) : Image.asset("assets/images/NoImage.jpg")),
             SizedBox(height: 10),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
@@ -380,18 +327,11 @@ class _DetailproState extends State<Detailpro> {
                     width: 80, // กำหนดความกว้างของ Label "Name-En"
                     child: Text(
                       "Name-En:",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                   ),
                   Expanded(
-                    child: Text(
-                      name_en ?? '',
-                      style: TextStyle(fontSize: 14, color: Colors.black),
-                    ),
+                    child: Text(name_en ?? '', style: TextStyle(fontSize: 14, color: Colors.black)),
                   ),
                 ],
               ),
@@ -405,18 +345,11 @@ class _DetailproState extends State<Detailpro> {
                     width: 80, // กำหนดความกว้างของ Label "Name-En"
                     child: Text(
                       "Name-TH:",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                   ),
                   Expanded(
-                    child: Text(
-                      name_th ?? "",
-                      style: TextStyle(fontSize: 14, color: Colors.black),
-                    ),
+                    child: Text(name_th ?? "", style: TextStyle(fontSize: 14, color: Colors.black)),
                   ),
                 ],
               ),
@@ -430,18 +363,11 @@ class _DetailproState extends State<Detailpro> {
                     width: 80, // กำหนดความกว้างของ Label "Name-En"
                     child: Text(
                       "ชื่อแบร์น :",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                   ),
                   Expanded(
-                    child: Text(
-                      widget.namebrand,
-                      style: TextStyle(fontSize: 14, color: Colors.black),
-                    ),
+                    child: Text(widget.namebrand, style: TextStyle(fontSize: 14, color: Colors.black)),
                   ),
                 ],
               ),
@@ -455,18 +381,11 @@ class _DetailproState extends State<Detailpro> {
                     width: 80, // กำหนดความกว้างของ Label "Name-En"
                     child: Text(
                       "SKU:",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                   ),
                   Expanded(
-                    child: Text(
-                      "${sku}",
-                      style: TextStyle(fontSize: 14, color: Colors.black),
-                    ),
+                    child: Text("${sku}", style: TextStyle(fontSize: 14, color: Colors.black)),
                   ),
                 ],
               ),
@@ -485,31 +404,15 @@ class _DetailproState extends State<Detailpro> {
                         width: 80, // กำหนดความกว้างของ Label "Name-En"
                         child: Text(
                           "ในคลัง:",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
                         ),
                       ),
                       widget.warehouse_skus.isNotEmpty
                           ? Expanded(
-                              child: Text(
-                                "${(warehouse_skus ?? 0)} ชิ้น",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
-                                ),
-                              ),
+                              child: Text("${(warehouse_skus ?? 0)} ชิ้น", style: TextStyle(fontSize: 14, color: Colors.black)),
                             )
                           : Expanded(
-                              child: Text(
-                                "สินค้าหมด",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
-                                ),
-                              ),
+                              child: Text("สินค้าหมด", style: TextStyle(fontSize: 14, color: Colors.black)),
                             ),
                     ],
                   ),
@@ -527,32 +430,18 @@ class _DetailproState extends State<Detailpro> {
                     width: 80, // กำหนดความกว้างของ Label "Name-En"
                     child: Text(
                       "ราคา",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                   ),
                   Expanded(
                     child: pice_promotion != 0 && pice_promotion != null
                         ? Row(
                             children: [
-                              Text(
-                                "฿ ${formatNumber(pice_promotion ?? 0)}",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                              Text("฿ ${formatNumber(pice_promotion ?? 0)}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                               const SizedBox(width: 10),
                               Text(
                                 "฿ ${formatNumber(price ?? 0)}",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                  decoration: TextDecoration.lineThrough,
-                                ),
+                                style: const TextStyle(fontSize: 14, color: Colors.grey, decoration: TextDecoration.lineThrough),
                               ),
                             ],
                           )
@@ -577,17 +466,11 @@ class _DetailproState extends State<Detailpro> {
                         warehouse_skus: widget.warehouse_skus,
                         promotion: promotion,
                         newData: widget.newdata,
-                        
                       );
                       final isFav = favProvider.isFavorite(currentProduct);
                       return GestureDetector(
                         onTap: () => favProvider.toggleFavorite(currentProduct),
-                        child: Image.asset(
-                          isFav
-                              ? "assets/icons/HertOn.png"
-                              : "assets/icons/HertOff.png",
-                          scale: 10,
-                        ),
+                        child: Image.asset(isFav ? "assets/icons/HertOn.png" : "assets/icons/HertOff.png", scale: 10),
                       );
                     },
                   ),
@@ -603,9 +486,7 @@ class _DetailproState extends State<Detailpro> {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          children: widget.newdata!.skus!.asMap().entries.map((
-                            entry,
-                          ) {
+                          children: widget.newdata!.skus!.asMap().entries.map((entry) {
                             final index = entry.key;
                             final colorItem = entry.value;
                             if (colorItem.color!.name_th == null) {
@@ -621,66 +502,30 @@ class _DetailproState extends State<Detailpro> {
                                   groupValue: selectedColor,
                                   onChanged: (val) {
                                     setState(() {
-                                      print(widget
-                                                  .newdata!
-                                                  .skus![index]
-                                                  .promotions?[0]
-                                                  .promotion_id);
                                       selectedColor = val;
-                                      if (index <
-                                          widget.newdata!.skus!.length) {
+                                      if (index < widget.newdata!.skus!.length) {
                                         name_th = widget.newdata!.name_th;
                                         name_en = widget.newdata!.name_en;
                                         sku = widget.newdata!.skus![index].sku;
-                                        skuid = widget
-                                            .newdata!
-                                            .skus![index]
-                                            .product_sku_id;
-                                        warehouse_skus = widget
-                                            .newdata!
-                                            .skus![index]
-                                            .warehouse_skus![0]
-                                            .available;
-                                        price = widget
-                                            .newdata!
-                                            .skus![index]
-                                            .base_price;
+                                        skuid = widget.newdata!.skus![index].product_sku_id;
+                                        warehouse_skus = widget.newdata!.skus![index].warehouse_skus![0].available;
+                                        price = widget.newdata!.skus![index].base_price;
                                         //โปรโมชั่น
-                                        if (widget
-                                            .newdata!
-                                            .skus![index]
-                                            .promotions!
-                                            .isNotEmpty) {
-                                          if (widget
-                                                  .newdata!
-                                                  .skus![index]
-                                                  .promotions?[0]
-                                                  .promotion_id ==
-                                              2) {
+                                        if (widget.newdata!.skus![index].promotions!.isNotEmpty) {
+                                          if (widget.newdata!.skus![index].promotions?[0].promotion_id == 2) {
                                             pice_promotion = 0;
                                           } else {
-                                            pice_promotion = widget
-                                                .newdata!
-                                                .skus![index]
-                                                .promotions?[0]
-                                                .fixed_price;
+                                            pice_promotion = widget.newdata!.skus![index].promotions?[0].fixed_price;
                                           }
                                         } else {
                                           pice_promotion = 0;
                                         }
-                                        promotion = widget
-                                            .newdata
-                                            ?.skus?[index]
-                                            .promotions;
+                                        promotion = widget.newdata?.skus?[index].promotions;
                                       }
                                     });
 
                                     // ถ้ามี PageView ให้เลื่อนตามสี
-                                    _controller.animateToPage(
-                                      index,
-                                      duration: Duration(milliseconds: 500),
-                                      curve: Curves.easeInOut,
-                                    );
+                                    _controller.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
                                   },
                                   typ: 'color',
                                 ),
@@ -710,20 +555,14 @@ class _DetailproState extends State<Detailpro> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kButtonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
                       if (warehouse_skus == 0) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
-                        );
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("ไม่พบสินค้าในคลัง")));
                       } else {
                         if (selectedColor == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
-                          );
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("กรุณาเลือกสีสินค้า")));
                           return;
                         }
                         final shoping = Shoping(
@@ -741,24 +580,15 @@ class _DetailproState extends State<Detailpro> {
                           newData: widget.newdata,
                           fixed_price: pice_promotion ?? 0,
                           base_price: price ?? 0,
-                          price_per_unit: pice_promotion == 0
-                              ? price
-                              : pice_promotion,
+                          price_per_unit: pice_promotion == 0 ? price : pice_promotion,
                         );
-                        Provider.of<CartProvider>(
-                          context,
-                          listen: false,
-                        ).addItem(shoping);
+                        Provider.of<CartProvider>(context, listen: false).addItem(shoping);
                         _runAddToCartAnimation();
                       }
                     },
                     child: Text(
                       "เพิ่มในตะกร้า",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: kbgf,
-                      ),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kbgf),
                     ),
                   ),
                 ),
@@ -772,40 +602,26 @@ class _DetailproState extends State<Detailpro> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       side: BorderSide(color: kButtonColor, width: 2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () async {
                       if (warehouse_skus == 0) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("ไม่พบสินค้าในคลัง")),
-                        );
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("ไม่พบสินค้าในคลัง")));
                       } else {
                         if (selectedColor == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("กรุณาเลือกสีสินค้า")),
-                          );
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("กรุณาเลือกสีสินค้า")));
                           return;
                         }
                         setState(() {
                           dilog_pice = price;
                           dialog_promotion = pice_promotion;
 
-                          checkPromotionForProduct(
-                            promotion!,
-                            quantity,
-                            dilog_pice!,
-                            (newPrice) {
-                              totalBeforeDiscount =
-                                  double.parse(dilog_pice.toString()) *
-                                  quantity;
-                              totalAfterDiscount = newPrice * quantity;
-                              discountAmount =
-                                  totalBeforeDiscount - totalAfterDiscount;
-                              // dialog_promotion = newPrice.toInt();
-                            },
-                          );
+                          checkPromotionForProduct(promotion!, quantity, dilog_pice!, (newPrice) {
+                            totalBeforeDiscount = double.parse(dilog_pice.toString()) * quantity;
+                            totalAfterDiscount = newPrice * quantity;
+                            discountAmount = totalBeforeDiscount - totalAfterDiscount;
+                            // dialog_promotion = newPrice.toInt();
+                          });
                           // print(
                           //   "${totalBeforeDiscount},${totalAfterDiscount},${discountAmount}",
                           // );
@@ -813,11 +629,7 @@ class _DetailproState extends State<Detailpro> {
                         showModalBottomSheet(
                           backgroundColor: Colors.white,
                           context: context,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16),
-                            ),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
                           isScrollControlled: true, // ให้เลื่อนขึ้นลงได้
                           builder: (BuildContext context) {
                             // int quantity = 1;
@@ -832,279 +644,132 @@ class _DetailproState extends State<Detailpro> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
+                                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                                             child: Padding(
                                               padding: EdgeInsets.all(8.0),
                                               child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  color: Colors.white,
-                                                ),
+                                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.white),
                                                 height: size.height * 0.18,
                                                 child: Row(
                                                   children: [
                                                     Padding(
-                                                      padding: EdgeInsets.only(
-                                                        left: 2,
-                                                      ),
+                                                      padding: EdgeInsets.only(left: 2),
                                                       child: SizedBox(
-                                                        width:
-                                                            size.width *
-                                                            0.2, // กำหนดความกว้าง
-                                                        height:
-                                                            size.height *
-                                                            0.08, // กำหนดความสูง
+                                                        width: size.width * 0.2, // กำหนดความกว้าง
+                                                        height: size.height * 0.08, // กำหนดความสูง
                                                         child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                8,
-                                                              ), // ถ้าอยากให้มุมโค้ง
+                                                          borderRadius: BorderRadius.circular(8), // ถ้าอยากให้มุมโค้ง
                                                           child: image == null
-                                                              ? Image.asset(
-                                                                  "assets/images/NoImage.jpg",
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                )
-                                                              : Image.network(
-                                                                  image!,
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                ),
+                                                              ? Image.asset("assets/images/NoImage.jpg", fit: BoxFit.cover)
+                                                              : Image.network(image!, fit: BoxFit.cover),
                                                         ),
                                                       ),
                                                     ),
 
                                                     Padding(
-                                                      padding: EdgeInsets.all(
-                                                        8.0,
-                                                      ),
-                                                      child: Container(
-                                                        width: 1,
-                                                        height:
-                                                            size.height * 0.08,
-                                                        color: kButtonColor,
-                                                      ),
+                                                      padding: EdgeInsets.all(8.0),
+                                                      child: Container(width: 1, height: size.height * 0.08, color: kButtonColor),
                                                     ),
                                                     Expanded(
                                                       child: Padding(
-                                                        padding: EdgeInsets.all(
-                                                          8.0,
-                                                        ),
+                                                        padding: EdgeInsets.all(8.0),
                                                         child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
                                                             Text(
                                                               widget.proName,
                                                               maxLines: 1,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
+                                                              overflow: TextOverflow.ellipsis,
+                                                              style: TextStyle(fontWeight: FontWeight.bold),
                                                             ),
                                                             Text(
                                                               "สี $selectedColor",
                                                               maxLines: 1,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
+                                                              overflow: TextOverflow.ellipsis,
+                                                              style: TextStyle(fontWeight: FontWeight.bold),
                                                             ),
                                                             Text(
                                                               "SKU: $sku",
                                                               maxLines: 1,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
+                                                              overflow: TextOverflow.ellipsis,
+                                                              style: TextStyle(fontWeight: FontWeight.bold),
                                                             ),
                                                             pice_promotion != 0
                                                                 ? Row(
                                                                     children: [
-                                                                      Text(
-                                                                        "฿ ${formatNumber(dialog_promotion ?? 0)}",
-                                                                        style: TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          fontWeight:
-                                                                              FontWeight.w600,
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width:
-                                                                            10,
-                                                                      ),
+                                                                      Text("฿ ${formatNumber(dialog_promotion ?? 0)}", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                                                                      SizedBox(width: 10),
                                                                       Text(
                                                                         "฿ ${formatNumber(dilog_pice ?? 0)}",
-                                                                        style: TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          color:
-                                                                              Colors.grey,
-                                                                          decoration:
-                                                                              TextDecoration.lineThrough,
-                                                                        ),
+                                                                        style: TextStyle(fontSize: 14, color: Colors.grey, decoration: TextDecoration.lineThrough),
                                                                       ),
                                                                     ],
                                                                   )
                                                                 : Row(
                                                                     children: [
                                                                       // แสดงราคาฟอร์แมต
-                                                                      Text(
-                                                                        "฿ ${formatNumber(dilog_pice)}",
-                                                                      ),
+                                                                      Text("฿ ${formatNumber(dilog_pice)}"),
                                                                     ],
                                                                   ),
                                                             Padding(
-                                                              padding:
-                                                                  EdgeInsets.all(
-                                                                    8.0,
-                                                                  ),
+                                                              padding: EdgeInsets.all(8.0),
                                                               child: Row(
                                                                 children: [
                                                                   // ลดจำนวน
                                                                   InkWell(
                                                                     onTap: () async {
-                                                                      if (quantity >
-                                                                          1) {
+                                                                      if (quantity > 1) {
                                                                         setState(() {
                                                                           quantity--;
-                                                                          dialog_promotion ==
-                                                                                  null
-                                                                              ? checkPromotionForProduct(
-                                                                                  promotion!,
-                                                                                  quantity,
-                                                                                  dilog_pice!,
-                                                                                  (
-                                                                                    newPrice,
-                                                                                  ) {
-                                                                                    totalBeforeDiscount =
-                                                                                        double.parse(
-                                                                                          dilog_pice.toString(),
-                                                                                        ) *
-                                                                                        quantity;
-                                                                                    totalAfterDiscount =
-                                                                                        newPrice *
-                                                                                        quantity;
-                                                                                    discountAmount =
-                                                                                        totalBeforeDiscount -
-                                                                                        totalAfterDiscount;
-                                                                                    dialog_promotion = newPrice.toInt();
-                                                                                  },
-                                                                                )
-                                                                              : checkPromotionForProduct(
-                                                                                  promotion!,
-                                                                                  quantity,
-                                                                                  dialog_promotion!,
-                                                                                  (
-                                                                                    newPrice,
-                                                                                  ) {
-                                                                                    totalBeforeDiscount =
-                                                                                        double.parse(
-                                                                                          dilog_pice.toString(),
-                                                                                        ) *
-                                                                                        quantity;
-                                                                                    totalAfterDiscount =
-                                                                                        newPrice *
-                                                                                        quantity;
-                                                                                    discountAmount =
-                                                                                        totalBeforeDiscount -
-                                                                                        totalAfterDiscount;
-                                                                                    dialog_promotion = newPrice.toInt();
-                                                                                  },
-                                                                                );
+                                                                          dialog_promotion == null
+                                                                              ? checkPromotionForProduct(promotion!, quantity, dilog_pice!, (newPrice) {
+                                                                                  totalBeforeDiscount = double.parse(dilog_pice.toString()) * quantity;
+                                                                                  totalAfterDiscount = newPrice * quantity;
+                                                                                  discountAmount = totalBeforeDiscount - totalAfterDiscount;
+                                                                                  dialog_promotion = newPrice.toInt();
+                                                                                })
+                                                                              : checkPromotionForProduct(promotion!, quantity, dialog_promotion!, (newPrice) {
+                                                                                  totalBeforeDiscount = double.parse(dilog_pice.toString()) * quantity;
+                                                                                  totalAfterDiscount = newPrice * quantity;
+                                                                                  discountAmount = totalBeforeDiscount - totalAfterDiscount;
+                                                                                  dialog_promotion = newPrice.toInt();
+                                                                                });
                                                                         });
                                                                       } else {
-                                                                        debugPrint(
-                                                                          "ต้องการลบสินค้า",
-                                                                        );
+                                                                        debugPrint("ต้องการลบสินค้า");
                                                                       }
                                                                     },
-                                                                    child: Padding(
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                            2.0,
-                                                                          ),
-                                                                      child: Image.asset(
-                                                                        "assets/icons/minus.png",
-                                                                        scale:
-                                                                            30,
-                                                                      ),
-                                                                    ),
+                                                                    child: Padding(padding: EdgeInsets.all(2.0), child: Image.asset("assets/icons/minus.png", scale: 30)),
                                                                   ),
 
-                                                                  SizedBox(
-                                                                    width: 10,
-                                                                  ),
+                                                                  SizedBox(width: 10),
 
                                                                   // ✅ ช่องกรอกจำนวน
                                                                   SizedBox(
                                                                     width: 50,
                                                                     height: 30,
                                                                     child: TextField(
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      keyboardType:
-                                                                          TextInputType
-                                                                              .number,
-                                                                      controller: TextEditingController(
-                                                                        text: quantity
-                                                                            .toString(),
-                                                                      ),
+                                                                      textAlign: TextAlign.center,
+                                                                      keyboardType: TextInputType.number,
+                                                                      controller: TextEditingController(text: quantity.toString()),
                                                                       onChanged: (value) {
-                                                                        final intValue =
-                                                                            int.tryParse(
-                                                                              value,
-                                                                            );
-                                                                        if (intValue !=
-                                                                                null &&
-                                                                            intValue >
-                                                                                0) {
-                                                                          setState(
-                                                                            () {
-                                                                              quantity = intValue;
-                                                                            },
-                                                                          );
+                                                                        final intValue = int.tryParse(value);
+                                                                        if (intValue != null && intValue > 0) {
+                                                                          setState(() {
+                                                                            quantity = intValue;
+                                                                          });
                                                                         }
                                                                       },
                                                                       decoration: InputDecoration(
-                                                                        contentPadding: EdgeInsets.symmetric(
-                                                                          vertical:
-                                                                              4,
-                                                                        ),
-                                                                        isDense:
-                                                                            true,
-                                                                        border:
-                                                                            OutlineInputBorder(),
+                                                                        contentPadding: EdgeInsets.symmetric(vertical: 4),
+                                                                        isDense: true,
+                                                                        border: OutlineInputBorder(),
                                                                       ),
                                                                     ),
                                                                   ),
 
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
+                                                                  const SizedBox(width: 10),
 
                                                                   // เพิ่มจำนวน
                                                                   InkWell(
@@ -1112,41 +777,15 @@ class _DetailproState extends State<Detailpro> {
                                                                       setState(() {
                                                                         quantity++;
 
-                                                                        checkPromotionForProduct(
-                                                                          promotion!,
-                                                                          quantity,
-                                                                          dilog_pice!,
-                                                                          (
-                                                                            newPrice,
-                                                                          ) {
-                                                                            totalBeforeDiscount =
-                                                                                double.parse(
-                                                                                  dilog_pice.toString(),
-                                                                                ) *
-                                                                                quantity;
-                                                                            totalAfterDiscount =
-                                                                                newPrice *
-                                                                                quantity;
-                                                                            discountAmount =
-                                                                                totalBeforeDiscount -
-                                                                                totalAfterDiscount;
-                                                                            dialog_promotion =
-                                                                                newPrice.toInt();
-                                                                          },
-                                                                        );
+                                                                        checkPromotionForProduct(promotion!, quantity, dilog_pice!, (newPrice) {
+                                                                          totalBeforeDiscount = double.parse(dilog_pice.toString()) * quantity;
+                                                                          totalAfterDiscount = newPrice * quantity;
+                                                                          discountAmount = totalBeforeDiscount - totalAfterDiscount;
+                                                                          dialog_promotion = newPrice.toInt();
+                                                                        });
                                                                       });
                                                                     },
-                                                                    child: Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.all(
-                                                                            2.0,
-                                                                          ),
-                                                                      child: Image.asset(
-                                                                        "assets/icons/Regular.png",
-                                                                        scale:
-                                                                            30,
-                                                                      ),
-                                                                    ),
+                                                                    child: Padding(padding: const EdgeInsets.all(2.0), child: Image.asset("assets/icons/Regular.png", scale: 30)),
                                                                   ),
                                                                 ],
                                                               ),
@@ -1164,47 +803,25 @@ class _DetailproState extends State<Detailpro> {
                                           Padding(
                                             padding: const EdgeInsets.all(12.0),
                                             child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 // ✅ สรุปยอดรวมทั้งหมด
                                                 Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       // 🔹 ราคารวมก่อนส่วนลด
                                                       Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
                                                           const Text(
                                                             "ราคารวม",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                            ),
+                                                            style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
                                                           ),
                                                           Text(
                                                             "฿ ${formatNumber(totalBeforeDiscount)}",
-                                                            style:
-                                                                const TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
+                                                            style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
                                                           ),
                                                         ],
                                                       ),
@@ -1212,80 +829,37 @@ class _DetailproState extends State<Detailpro> {
 
                                                       // 🔹 ส่วนลด
                                                       Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
                                                           const Text(
                                                             "ส่วนลด",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                            ),
+                                                            style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
                                                           ),
                                                           Text(
                                                             "฿ ${formatNumber(discountAmount)}",
-                                                            style:
-                                                                const TextStyle(
-                                                                  color: Colors
-                                                                      .red,
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
+                                                            style: const TextStyle(color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
                                                           ),
                                                         ],
                                                       ),
-                                                      
+
                                                       const SizedBox(height: 6),
 
                                                       // 🔹 ยอดหลังส่วนลด
                                                       Container(
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                              vertical: 4,
-                                                            ),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                              border: Border(
-                                                                top: BorderSide(
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .shade300,
-                                                                ),
-                                                              ),
-                                                            ),
+                                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                                        decoration: BoxDecoration(
+                                                          border: Border(top: BorderSide(color: Colors.grey.shade300)),
+                                                        ),
                                                         child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             const Text(
                                                               "ยอดหลังส่วนลด",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700,
-                                                              ),
+                                                              style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w700),
                                                             ),
                                                             Text(
                                                               "฿ ${formatNumber(totalAfterDiscount)}",
-                                                              style: TextStyle(
-                                                                color:
-                                                                    kButtonColor,
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w900,
-                                                              ),
+                                                              style: TextStyle(color: kButtonColor, fontSize: 16, fontWeight: FontWeight.w900),
                                                             ),
                                                           ],
                                                         ),
@@ -1302,106 +876,59 @@ class _DetailproState extends State<Detailpro> {
                                                   width: 120,
                                                   child: ElevatedButton(
                                                     style: ElevatedButton.styleFrom(
-                                                      backgroundColor:
-                                                          kButtonColor,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              10,
-                                                            ),
-                                                      ),
+                                                      backgroundColor: kButtonColor,
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                       elevation: 3,
                                                     ),
                                                     onPressed: () async {
-                                                      if (dilog_pice != 0 ||
-                                                          dialog_promotion !=
-                                                              0) {
+                                                      if (dilog_pice != 0 || dialog_promotion != 0) {
                                                         final shoping = Shoping(
                                                           skuid: skuid,
                                                           sku: sku,
-                                                          product_id:
-                                                              widget.productId,
+                                                          product_id: widget.productId,
                                                           quantity: quantity,
                                                           image: image,
                                                           name: widget.proName,
                                                           price: widget.proPice,
-                                                          color:
-                                                              selectedColor ??
-                                                              "",
-                                                          nameTh:
-                                                              widget
-                                                                  .proNameTh ??
-                                                              "",
-                                                          warehouse_skus: widget
-                                                              .warehouse_skus,
-                                                          fixed_price:
-                                                              dialog_promotion,
-                                                          base_price:
-                                                              dilog_pice, newData: widget.newdata,
+                                                          color: selectedColor ?? "",
+                                                          nameTh: widget.proNameTh ?? "",
+                                                          warehouse_skus: widget.warehouse_skus,
+                                                          fixed_price: dialog_promotion,
+                                                          base_price: dilog_pice,
+                                                          newData: widget.newdata,
                                                         );
 
-                                                        await Future.delayed(
-                                                          const Duration(
-                                                            milliseconds: 200,
-                                                          ),
-                                                        );
+                                                        await Future.delayed(const Duration(milliseconds: 200));
 
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
                                                             builder: (_) => Compleated(
-                                                              totalPrice:
-                                                                  dialog_promotion ==
-                                                                      null
-                                                                  ? double.parse(
-                                                                      dilog_pice
-                                                                          .toString(),
-                                                                    )
-                                                                  : double.parse(
-                                                                      dialog_promotion
-                                                                          .toString(),
-                                                                    ),
+                                                              totalPrice: dialog_promotion == null
+                                                                  ? double.parse(dilog_pice.toString())
+                                                                  : double.parse(dialog_promotion.toString()),
                                                               status: false,
-                                                              selectedItems: [
-                                                                shoping,
-                                                              ],
-                                                              slipe_status:
-                                                                  false,
-                                                              discountAmount:
-                                                                  discountAmount,
-                                                              originalTotal:
-                                                                  (dilog_pice ??
-                                                                      0) *
-                                                                  quantity
-                                                                      .toDouble(),
+                                                              selectedItems: [shoping],
+                                                              slipe_status: false,
+                                                              discountAmount: discountAmount,
+                                                              originalTotal: (dilog_pice ?? 0) * quantity.toDouble(),
                                                             ),
                                                           ),
                                                         );
                                                       } else {
                                                         await showDialog(
                                                           context: context,
-                                                          builder: (context) =>
-                                                              AlertDialogYes(
-                                                                title:
-                                                                    'แจ้งเตือน',
-                                                                description:
-                                                                    'ไม่สามารถทำรายการได้ \n เพราะราคามีค่าเป็น 0.00 บาท',
-                                                                pressYes: () =>
-                                                                    Navigator.pop(
-                                                                      context,
-                                                                    ),
-                                                              ),
+                                                          builder: (context) => AlertDialogYes(
+                                                            title: 'แจ้งเตือน',
+                                                            description: 'ไม่สามารถทำรายการได้ \n เพราะราคามีค่าเป็น 0.00 บาท',
+                                                            pressYes: () => Navigator.pop(context),
+                                                          ),
                                                         );
                                                       }
                                                     },
                                                     child: Text(
                                                       "สั่งซื้อ",
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: kbgf,
-                                                      ),
+                                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kbgf),
                                                     ),
                                                   ),
                                                 ),
@@ -1414,10 +941,7 @@ class _DetailproState extends State<Detailpro> {
                                     Positioned(
                                       right: 0,
                                       child: IconButton(
-                                        icon: Icon(
-                                          Icons.close,
-                                          color: Colors.black,
-                                        ),
+                                        icon: Icon(Icons.close, color: Colors.black),
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
@@ -1433,11 +957,7 @@ class _DetailproState extends State<Detailpro> {
                     },
                     child: Text(
                       "สั่งซื้อ",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: kButtonColor,
-                      ),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kButtonColor),
                     ),
                   ),
                 ),

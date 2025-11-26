@@ -65,16 +65,10 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) => AlertDialogYes(
           title: 'แจ้งเตือน',
-          description: '$e' == "Unauthenticated"
-              ? 'การเข้าสู่ระบบหมดอายุ'
-              : '$e',
+          description: '$e' == "Unauthenticated" ? 'การเข้าสู่ระบบหมดอายุ' : '$e',
           pressYes: () {
             if (!mounted) return;
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => Loginpage()),
-              (route) => false,
-            );
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Loginpage()), (route) => false);
           },
         ),
       );
@@ -112,9 +106,7 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildSearchBar(context),
-                    allbands.isEmpty
-                        ? SizedBox.shrink()
-                        : _buildSectionTitle("แบรนด์สินค้า"),
+                    allbands.isEmpty ? SizedBox.shrink() : _buildSectionTitle("แบรนด์สินค้า"),
                     allbands.isEmpty
                         ? SizedBox.shrink()
                         : SizedBox(
@@ -130,11 +122,7 @@ class _HomePageState extends State<HomePage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => BrandPage(
-                                          title: brand.name ?? "",
-                                          brandId: brand.id,
-                                          namebrand: '${brand.name}',
-                                        ),
+                                        builder: (_) => BrandPage(title: brand.name ?? "", brandId: brand.id, namebrand: '${brand.name}'),
                                       ),
                                     );
                                   },
@@ -143,22 +131,15 @@ class _HomePageState extends State<HomePage> {
                                     child: Column(
                                       children: [
                                         Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                          ),
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
                                           child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
+                                            borderRadius: BorderRadius.circular(12),
                                             child: brand.img_path == null
                                                 // ? brand.name=="Anidary"
                                                 ? Image.asset(
                                                     brand.name == "Anidary"
                                                         ? "assets/images/Anidary.WEBP"
-                                                        : brand.name ==
-                                                              "Allducube"
+                                                        : brand.name == "Allducube"
                                                         ? "assets/images/Alldocope.WEBP"
                                                         : brand.name == "Baseus"
                                                         ? "assets/images/Baseus.WEBP"
@@ -167,22 +148,12 @@ class _HomePageState extends State<HomePage> {
                                                     height: 80,
                                                     fit: BoxFit.cover,
                                                   )
-                                                : Image.network(
-                                                    brand.img_path!,
-                                                    width: 80,
-                                                    height: 80,
-                                                    fit: BoxFit.cover,
-                                                  ),
+                                                : Image.network(brand.img_path!, width: 80, height: 80, fit: BoxFit.cover),
                                           ),
                                         ),
 
                                         SizedBox(height: 6),
-                                        Text(
-                                          brand.name ?? "",
-                                          style: TextStyle(fontSize: 12),
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                        ),
+                                        Text(brand.name ?? "", style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
                                       ],
                                     ),
                                   ),
@@ -196,53 +167,35 @@ class _HomePageState extends State<HomePage> {
                         (index) => Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.white,
-                            ),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.white),
                             child: Column(
                               children: [
-                                ContainerHeader(
-                                  size: size,
-                                  text: productcollection[index].name ?? "",
-                                ),
+                                ContainerHeader(size: size, text: productcollection[index].name ?? ""),
                                 productcollection[index].products!.isEmpty
                                     ? SizedBox(
                                         height: size.height * 0.3,
                                         child: Center(
                                           child: Text(
                                             "ไม่พบสินค้า",
-                                            style: TextStyle(
-                                              color: kbgM,
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            style: TextStyle(color: kbgM, fontSize: 22, fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                       )
                                     : Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: GridView.builder(
-                                          itemCount: productcollection[index]
-                                              .products!
-                                              .length,
+                                          itemCount: productcollection[index].products!.length,
                                           shrinkWrap: true,
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 2,
-                                                crossAxisSpacing: 12,
-                                                mainAxisSpacing: 12,
-                                                childAspectRatio: 0.75,
-                                              ),
+                                          physics: NeverScrollableScrollPhysics(),
+                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            crossAxisSpacing: 12,
+                                            mainAxisSpacing: 12,
+                                            childAspectRatio: 0.75,
+                                          ),
                                           itemBuilder: (context, index2) {
-                                            final productcollections =
-                                                productcollection[index]
-                                                    .products![index2];
-                                            return _buildProductCard(
-                                              productcollections,
-                                            );
+                                            final productcollections = productcollection[index].products![index2];
+                                            return _buildProductCard(productcollections);
                                           },
                                         ),
                                       ),
@@ -273,57 +226,33 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 30,
-                  backgroundImage: AssetImage("assets/icons/Vector.png"),
-                ),
+                CircleAvatar(backgroundColor: Colors.white, radius: 30, backgroundImage: AssetImage("assets/icons/Vector.png")),
                 SizedBox(height: 8),
                 Text(
                   "${custommer?.first_name ?? ""} ${custommer?.last_name ?? ""}",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  "${custommer?.email}",
-                  style: TextStyle(color: Colors.white70),
-                ),
+                Text("${custommer?.email}", style: TextStyle(color: Colors.white70)),
               ],
             ),
           ),
           if (custommer?.customer != null)
             ListTile(
               leading: Icon(Icons.currency_exchange),
-              title: Text(
-                'เครดิต ${formatNumber(custommer?.customer?.current_credit_used ?? "0")}/${formatNumber(custommer?.customer?.credit_limit ?? "0")}',
-              ),
+              title: Text('เครดิต ${formatNumber(custommer?.customer?.current_credit_used ?? "0")}/${formatNumber(custommer?.customer?.credit_limit ?? "0")}'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FirstPage(profile: 3),
-                  ),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => FirstPage(profile: 3)));
                 // LoadingDialog.close(context);
               },
             ),
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text('หน้าแรก'),
-            onTap: () => Navigator.pop(context),
-          ),
+          ListTile(leading: Icon(Icons.home), title: Text('หน้าแรก'), onTap: () => Navigator.pop(context)),
           ListTile(
             leading: Image.asset("assets/icons/BuyBack.png", scale: 20),
             title: Text('ตะกร้า'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => Bucket()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (_) => Bucket()));
             },
           ),
           ListTile(
@@ -331,10 +260,7 @@ class _HomePageState extends State<HomePage> {
             title: Text('การแจ้งเตือน'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => Nontification()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (_) => Nontification()));
             },
           ),
           ListTile(
@@ -342,10 +268,7 @@ class _HomePageState extends State<HomePage> {
             title: Text('เคลมสินค้า'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => ClaimPage()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (_) => ClaimPage()));
             },
           ),
         ],
@@ -364,18 +287,12 @@ class _HomePageState extends State<HomePage> {
         onTap: () {
           _scaffoldKey.currentState?.openDrawer();
         },
-        child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Image.asset("assets/icons/Vector.png", scale: 15),
-        ),
+        child: Padding(padding: EdgeInsets.all(8.0), child: Image.asset("assets/icons/Vector.png", scale: 15)),
       ),
       actions: [
         GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => Bucket()),
-            );
+            Navigator.push(context, MaterialPageRoute(builder: (_) => Bucket()));
           },
           child: Padding(
             padding: EdgeInsets.all(8.0),
@@ -396,11 +313,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: Text(
                         "${cart.items.length}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -410,15 +323,9 @@ class _HomePageState extends State<HomePage> {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => Nontification()),
-            );
+            Navigator.push(context, MaterialPageRoute(builder: (_) => Nontification()));
           },
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Image.asset("assets/icons/Notification.png", scale: 15),
-          ),
+          child: Padding(padding: EdgeInsets.all(8.0), child: Image.asset("assets/icons/Notification.png", scale: 15)),
         ),
       ],
     );
@@ -435,10 +342,7 @@ class _HomePageState extends State<HomePage> {
               margin: EdgeInsets.all(6.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
-                image: DecorationImage(
-                  image: AssetImage(imgList[index]),
-                  fit: BoxFit.cover,
-                ),
+                image: DecorationImage(image: AssetImage(imgList[index]), fit: BoxFit.cover),
               ),
             );
           },
@@ -472,12 +376,7 @@ class _HomePageState extends State<HomePage> {
                 width: 12,
                 height: 12,
                 margin: EdgeInsets.symmetric(horizontal: 4),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _currentIndex == entry.key
-                      ? Colors.blueAccent
-                      : Colors.grey,
-                ),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: _currentIndex == entry.key ? Colors.blueAccent : Colors.grey),
               ),
             );
           }).toList(),
@@ -511,11 +410,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(width: 8),
               Text(
                 "ค้นหาประเภทสินค้า ...",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: 'IBMPlexSansThai',
-                  color: kbgM,
-                ),
+                style: TextStyle(fontSize: 20, fontFamily: 'IBMPlexSansThai', color: kbgM),
               ),
             ],
           ),
@@ -526,14 +421,13 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.all(8.0),
       child: Text(
         title,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-          color: kButtonColor,
-        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: kButtonColor),
       ),
     );
   }
@@ -546,14 +440,7 @@ class _HomePageState extends State<HomePage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            spreadRadius: 2,
-            offset: Offset(2, 4),
-          ),
-        ],
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, spreadRadius: 2, offset: Offset(2, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -563,32 +450,17 @@ class _HomePageState extends State<HomePage> {
             child: Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                   child: firstSku?.image_url == null
-                      ? Image.asset(
-                          "assets/images/NoImage.jpg",
-
-                          width: double.infinity,
-                          height: double.infinity,
-                          fit: BoxFit.fitHeight,
-                        )
-                      : Image.network(
-                          firstSku!.image_url!,
-                          fit: BoxFit.fitHeight,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
-                ),              
+                      ? Image.asset("assets/images/NoImage.jpg", width: double.infinity, height: double.infinity, fit: BoxFit.fitHeight)
+                      : Image.network(firstSku!.image_url!, fit: BoxFit.fitHeight, width: double.infinity, height: double.infinity),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Consumer<FavoriteProvider>(
                     builder: (context, favProvider, child) {
                       if (allbands.isNotEmpty) {
-                        final brandMatch = allbands.firstWhere(
-                          (b) => b.id == product.brand_id,
-                        );
+                        final brandMatch = allbands.firstWhere((b) => b.id == product.brand_id);
                         namebrand = brandMatch.name;
                       }
                       final currentProduct = Shoping(
@@ -609,12 +481,7 @@ class _HomePageState extends State<HomePage> {
 
                       return GestureDetector(
                         onTap: () => favProvider.toggleFavorite(currentProduct),
-                        child: Image.asset(
-                          isFav
-                              ? "assets/icons/HertOn.png"
-                              : "assets/icons/HertOff.png",
-                          scale: 15,
-                        ),
+                        child: Image.asset(isFav ? "assets/icons/HertOn.png" : "assets/icons/HertOff.png", scale: 15),
                       );
                     },
                   ),
@@ -647,13 +514,7 @@ class _HomePageState extends State<HomePage> {
 
                         // 1. กรณีไม่มีโปรโมชัน
                         if (promos == null || promos.isEmpty) {
-                          return Text(
-                            "฿ ${formatNumber(firstSku.base_price ?? 0)}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
+                          return Text("฿ ${formatNumber(firstSku.base_price ?? 0)}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600));
                         }
 
                         // มีโปร ตรวจ promotion_id
@@ -661,37 +522,24 @@ class _HomePageState extends State<HomePage> {
 
                         // 2. ถ้า promotion_id == 2 → แสดงราคาเต็ม
                         if (promo.promotion_id == 2) {
-                          return Text(
-                            "฿ ${formatNumber(firstSku.base_price ?? 0)}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
+                          return Text("฿ ${formatNumber(firstSku.base_price ?? 0)}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600));
                         }
 
                         // 3. มีโปร และ promotion_id != 2 → แสดงราคาโปร + ขีดฆ่าราคาเต็ม
                         return Row(
                           children: [
                             Text(
-                              "฿ ${formatNumber(  promo.fixed_price ?? 0)}",
+                              "฿ ${formatNumber(promo.fixed_price ?? 0)}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                             ),
                             const SizedBox(width: 10),
                             Text(
                               "฿ ${formatNumber(firstSku.base_price ?? 0)}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey,
-                                decoration: TextDecoration.lineThrough,
-                              ),
+                              style: const TextStyle(fontSize: 14, color: Colors.grey, decoration: TextDecoration.lineThrough),
                             ),
                           ],
                         );
@@ -709,15 +557,11 @@ class _HomePageState extends State<HomePage> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kButtonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
                       // print(test);
-                      final brandMatch = allbands.firstWhere(
-                        (b) => b.id == product.brand_id,
-                      );
+                      final brandMatch = allbands.firstWhere((b) => b.id == product.brand_id);
 
                       Navigator.push(
                         context,
@@ -726,15 +570,11 @@ class _HomePageState extends State<HomePage> {
                             image: firstSku?.image_url,
                             productId: product.product_id.toString(),
                             proName: product.name_en ?? "",
-                            proPice: firstSku!.promotions!.isNotEmpty
-                                ? formatNumber(
-                                    firstSku.promotions![0].fixed_price ?? 0,
-                                  )
-                                : formatNumber(firstSku.base_price ?? 0),
+                            proPice: firstSku!.promotions!.isNotEmpty ? formatNumber(firstSku.promotions![0].fixed_price ?? 0) : formatNumber(firstSku.base_price ?? 0),
                             proNameTh: product.name_th,
                             warehouse_skus: firstSku.warehouse_skus!,
                             namebrand: brandMatch.name ?? "",
-                            promotion: firstSku.promotions!,                         
+                            promotion: firstSku.promotions!,
                             newdata: product,
                           ),
                         ),
@@ -742,11 +582,7 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: Text(
                       "สั่งซื้อ",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: kbgf,
-                      ),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: kbgf),
                     ),
                   ),
                 ),
