@@ -78,7 +78,9 @@ class _BucketState extends State<Bucket> {
       for (var product in cart.items.where((i) => i.namebrand == brandName)) {
         double basePrice = parsePrice(product.base_price ?? product.price);
         double finalPrice = basePrice;
+
         bool hasPromo2 = false;
+        bool hasOtherPromoApplied = false; // <-- เช็คว่ามีโปรอื่นทับ
 
         if (product.promotion != null && product.promotion!.isNotEmpty) {
           for (var promo in product.promotion!) {
@@ -91,29 +93,32 @@ class _BucketState extends State<Bucket> {
               for (var tier in promo.tiers) {
                 if (brandCount >= (tier.min_qty ?? 0) && brandCount <= (tier.max_qty ?? 999999)) {
                   finalPrice = tier.price_per_unit!.toDouble();
+                  hasOtherPromoApplied = true; // โปรอื่นใช้แล้ว
                   break;
                 }
               }
             }
             // -----------------------------
-            // Case 2: Other promo
+            // Case 2: No tier but has other promo
             // -----------------------------
             else if (!hasPromo2) {
               if (promo.fixed_price != null && promo.fixed_price! > 0) {
                 finalPrice = promo.fixed_price!.toDouble();
+                hasOtherPromoApplied = true; // โปรอื่นใช้แล้ว
               }
             }
-
             // -----------------------------
-            // Case 4: Promotion type 4 → แจ้งเตือน
+            // Case 4: Promotion type 4
             // -----------------------------
             if (promo.promotion_id == 4) {
-              hasPromoType4 = true;
+              // ถ้าไม่มีโปรอื่นถูกใช้ → ให้เป็น true
+              hasPromoType4 = !hasOtherPromoApplied;
             }
           }
         }
 
-        // Case 3: No promotion → finalPrice = basePrice
+        // Case 3: No promotion at all → finalPrice = basePrice (already set)
+
         product.price_per_unit = finalPrice.toInt();
       }
     }
@@ -287,25 +292,24 @@ class _BucketState extends State<Bucket> {
                                       ),
                                       Text("สี ${product.color}", maxLines: 1, overflow: TextOverflow.ellipsis),
                                       Text("SKU: ${product.sku}", maxLines: 1, overflow: TextOverflow.ellipsis),
-
                                       Row(
                                         children: [
-                                          if (product.promotion != null && product.promotion!.isNotEmpty) ...[
-                                            // แสดงราคาโปร
+                                          if (hasPromoType4) ...[
+                                            // โปรประเภท 4 → แสดงราคาเต็มเท่านั้น
+                                            Text("฿ ${formatNumber(parsePrice(product.base_price))}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                          ] else if (product.promotion != null && product.promotion!.isNotEmpty) ...[
+                                            // แสดงราคาโปรโมชั่น + ราคาเต็มขีดฆ่า
                                             Text(
                                               "฿ ${formatNumber(parsePrice(product.price_per_unit ?? product.base_price))}",
                                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.red),
                                             ),
-
                                             const SizedBox(width: 10),
-
-                                            // ราคาเต็ม ขีดฆ่า
                                             Text(
                                               "฿ ${formatNumber(parsePrice(product.base_price))}",
                                               style: const TextStyle(decoration: TextDecoration.lineThrough, color: Colors.grey),
                                             ),
                                           ] else ...[
-                                            // ถ้าไม่มีโปรโมชั่น → แสดงแค่ราคาเต็ม ไม่มีขีดฆ่า
+                                            // ไม่มีโปรโมชั่น → แสดงราคาเต็ม
                                             Text("฿ ${formatNumber(parsePrice(product.base_price))}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                                           ],
                                         ],
