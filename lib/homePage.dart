@@ -521,7 +521,7 @@ class _HomePageState extends State<HomePage> {
                         final promo = promos.first;
 
                         // 2. ถ้า promotion_id == 2 → แสดงราคาเต็ม
-                        if (promo.promotion_id == 2) {
+                        if (promo.promotion_id == 2 || promo.promotion_id == 4) {
                           return Text("฿ ${formatNumber(firstSku.base_price ?? 0)}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600));
                         }
 

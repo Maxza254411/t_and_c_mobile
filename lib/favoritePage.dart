@@ -31,9 +31,9 @@ class _FavoritePageState extends State<FavoritePage> {
       setState(() {
         filteredFavorites = favProvider.favorites.where((item) {
           final nameLower = item.name.toLowerCase();
-            final skuLower = item.sku!.toLowerCase();
+          final skuLower = item.sku!.toLowerCase();
           final searchLower = query.toLowerCase();
-          return nameLower.contains(searchLower)||skuLower.contains(searchLower) ;
+          return nameLower.contains(searchLower) || skuLower.contains(searchLower);
         }).toList();
       });
     }
@@ -60,10 +60,7 @@ class _FavoritePageState extends State<FavoritePage> {
         actions: [
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Bucket()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Bucket()));
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -84,11 +81,7 @@ class _FavoritePageState extends State<FavoritePage> {
                         ),
                         child: Text(
                           "${cart.items.length}",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -98,15 +91,9 @@ class _FavoritePageState extends State<FavoritePage> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Nontification()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Nontification()));
             },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset("assets/icons/Notification.png", scale: 15),
-            ),
+            child: Padding(padding: const EdgeInsets.all(8.0), child: Image.asset("assets/icons/Notification.png", scale: 15)),
           ),
         ],
         title: Text(
@@ -119,15 +106,11 @@ class _FavoritePageState extends State<FavoritePage> {
           ? Center(
               child: Text(
                 "ยังไม่มีสินค้าที่ชอบ",
-                style: TextStyle(
-                  color: kbgM,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: kbgM, fontSize: 22, fontWeight: FontWeight.bold),
               ),
             )
           : SingleChildScrollView(
-            child: Column(
+              child: Column(
                 children: [
                   // Search Bar
                   Padding(
@@ -144,24 +127,17 @@ class _FavoritePageState extends State<FavoritePage> {
                         controller: search,
                         style: TextStyle(fontSize: 22),
                         decoration: InputDecoration(
-                          prefixIcon: Image.asset(
-                            "assets/icons/Search.png",
-                            scale: 20,
-                          ),
+                          prefixIcon: Image.asset("assets/icons/Search.png", scale: 20),
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           hintText: "Search here ...",
-                          hintStyle: TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'IBMPlexSansThai',
-                            color: kbgM,
-                          ),
+                          hintStyle: TextStyle(fontSize: 20, fontFamily: 'IBMPlexSansThai', color: kbgM),
                         ),
                         onChanged: filterProducts,
                       ),
                     ),
                   ),
-            
+
                   // GridView
                   Padding(
                     padding: const EdgeInsets.all(12.0),
@@ -169,43 +145,28 @@ class _FavoritePageState extends State<FavoritePage> {
                       itemCount: filteredFavorites.length,
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.75,
-                      ),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 0.75),
                       itemBuilder: (context, index) {
                         final item = filteredFavorites[index];
                         return _buildProductCard(item, item.namebrand ?? "");
                       },
                     ),
                   ),
-                
                 ],
               ),
-          ),
+            ),
     );
   }
 
   Widget _buildProductCard(Shoping product, String nameband) {
     // ดึง SKU ตัวแรกมาแสดง (กรณีมีหลายสี)
-    final firstSku = product.newData!.skus!.isNotEmpty
-        ? product.newData!.skus![0]
-        : null;
+    final firstSku = product.newData!.skus!.isNotEmpty ? product.newData!.skus![0] : null;
 
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            spreadRadius: 2,
-            offset: Offset(2, 4),
-          ),
-        ],
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, spreadRadius: 2, offset: Offset(2, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -215,23 +176,10 @@ class _FavoritePageState extends State<FavoritePage> {
             child: Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                   child: firstSku?.image_url == null
-                      ? Image.asset(
-                          "assets/images/NoImage.jpg",
-
-                          width: double.infinity,
-                          height: double.infinity,
-                          fit: BoxFit.fitHeight,
-                        )
-                      : Image.network(
-                          firstSku!.image_url!,
-                          fit: BoxFit.fitHeight,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
+                      ? Image.asset("assets/images/NoImage.jpg", width: double.infinity, height: double.infinity, fit: BoxFit.fitHeight)
+                      : Image.network(firstSku!.image_url!, fit: BoxFit.fitHeight, width: double.infinity, height: double.infinity),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -248,19 +196,14 @@ class _FavoritePageState extends State<FavoritePage> {
                         nameTh: product.newData!.name_th ?? "",
                         promotion: firstSku?.promotions ?? [],
                         newData: product.newData!,
-                        namebrand: nameband ,
+                        namebrand: nameband,
                       );
 
                       final isFav = favProvider.isFavorite(currentProduct);
 
                       return GestureDetector(
                         onTap: () => favProvider.toggleFavorite(currentProduct),
-                        child: Image.asset(
-                          isFav
-                              ? "assets/icons/HertOn.png"
-                              : "assets/icons/HertOff.png",
-                          scale: 15,
-                        ),
+                        child: Image.asset(isFav ? "assets/icons/HertOn.png" : "assets/icons/HertOff.png", scale: 15),
                       );
                     },
                   ),
@@ -293,27 +236,15 @@ class _FavoritePageState extends State<FavoritePage> {
 
                         // 1. กรณีไม่มีโปรโมชัน
                         if (promos == null || promos.isEmpty) {
-                          return Text(
-                            "฿ ${formatNumber(firstSku.base_price ?? 0)}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
+                          return Text("฿ ${formatNumber(firstSku.base_price ?? 0)}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600));
                         }
 
                         // มีโปร ตรวจ promotion_id
                         final promo = promos.first;
 
                         // 2. ถ้า promotion_id == 2 → แสดงราคาเต็ม
-                        if (promo.promotion_id == 2) {
-                          return Text(
-                            "฿ ${formatNumber(firstSku.base_price ?? 0)}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
+                        if (promo.promotion_id == 2 || promo.promotion_id == 4) {
+                          return Text("฿ ${formatNumber(firstSku.base_price ?? 0)}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600));
                         }
 
                         // 3. มีโปร และ promotion_id != 2 → แสดงราคาโปร + ขีดฆ่าราคาเต็ม
@@ -323,21 +254,14 @@ class _FavoritePageState extends State<FavoritePage> {
                               "฿ ${formatNumber(promo.fixed_price ?? 0)}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                             ),
                             const SizedBox(width: 10),
                             Text(
                               "฿ ${formatNumber(firstSku.base_price ?? 0)}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey,
-                                decoration: TextDecoration.lineThrough,
-                              ),
+                              style: const TextStyle(fontSize: 14, color: Colors.grey, decoration: TextDecoration.lineThrough),
                             ),
                           ],
                         );
@@ -355,9 +279,7 @@ class _FavoritePageState extends State<FavoritePage> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kButtonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -367,28 +289,20 @@ class _FavoritePageState extends State<FavoritePage> {
                             image: firstSku?.image_url,
                             productId: product.product_id.toString(),
                             proName: product.newData!.name_en ?? "",
-                            proPice: firstSku!.promotions!.isNotEmpty
-                                ? formatNumber(
-                                    firstSku.promotions![0].fixed_price ?? 0,
-                                  )
-                                : formatNumber(firstSku.base_price ?? 0),
+                            proPice: firstSku!.promotions!.isNotEmpty ? formatNumber(firstSku.promotions![0].fixed_price ?? 0) : formatNumber(firstSku.base_price ?? 0),
                             proNameTh: product.newData!.name_th,
                             warehouse_skus: firstSku.warehouse_skus!,
                             namebrand: nameband,
                             promotion: firstSku.promotions!,
-                          
-                            newdata: product.newData!
+
+                            newdata: product.newData!,
                           ),
                         ),
                       );
                     },
                     child: Text(
                       "สั่งซื้อ",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: kbgf,
-                      ),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: kbgf),
                     ),
                   ),
                 ),

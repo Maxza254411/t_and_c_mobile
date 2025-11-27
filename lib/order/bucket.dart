@@ -408,29 +408,29 @@ class _BucketState extends State<Bucket> {
                                           if (promo.promotion_id == 4) {
                                             // เช็คว่าจำนวนสินค้าในตะกร้า >= เงื่อนไขซื้อถึงได้ของแถม
                                             if (product.quantity >= promo.free_item_rule!.buy_qty!) {
-                                              return Container(
-                                                decoration: BoxDecoration(color: Colors.yellow[100], borderRadius: BorderRadius.circular(8)),
-                                                child: Row(
-                                                  children: [
-                                                    SizedBox(width: 10),
-                                                    Icon(Icons.card_giftcard, color: Colors.orange),
-                                                    SizedBox(width: 10),
-                                                    Expanded(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text(promo.free_item_rule?.free_product_name_en ?? "", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                            Text("ของแถม", style: TextStyle(color: Colors.orange)),
-                                                            Text("จำนวน: ${promo.free_item_rule?.free_qty ?? '-'} ชิ้น"),
-                                                            Text("SKU: ${promo.free_item_rule?.free_sku_code ?? '-'}"),
-                                                          ],
+                                              return Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                  decoration: BoxDecoration(color: Colors.yellow[100], borderRadius: BorderRadius.circular(8)),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(promo.free_item_rule?.free_product_name_en ?? "", style: TextStyle(fontWeight: FontWeight.bold)),
+                                                              Text("ของแถม", style: TextStyle(color: Colors.orange)),
+                                                              Text("จำนวน: ${promo.free_item_rule?.free_qty ?? '-'} ชิ้น"),
+                                                              Text("SKU: ${promo.free_item_rule?.free_sku_code ?? '-'}"),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               );
                                             }
