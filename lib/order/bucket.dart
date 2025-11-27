@@ -506,6 +506,7 @@ class _BucketState extends State<Bucket> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Compleated(
+                                    hasPromoType4: hasPromoType4,
                                     totalPrice: totalPrice,
                                     status: false,
                                     selectedItems: selectedItems,

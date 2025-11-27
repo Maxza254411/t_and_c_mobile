@@ -33,6 +33,7 @@ class Compleated extends StatefulWidget {
     required this.slipe_status,
     required this.discountAmount,
     required this.originalTotal,
+    this.hasPromoType4,
   });
   bool status;
   List<Shoping> selectedItems = []; // รับสินค้าที่ติ๊ก
@@ -41,6 +42,7 @@ class Compleated extends StatefulWidget {
   double? originalTotal;
   String? image;
   bool slipe_status;
+  bool? hasPromoType4 = false;
 
   @override
   State<Compleated> createState() => _CompleatedState();
@@ -66,9 +68,7 @@ class _CompleatedState extends State<Compleated> {
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-    ); // หรือ camera
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery); // หรือ camera
 
     if (pickedFile != null) {
       setState(() {
@@ -88,14 +88,10 @@ class _CompleatedState extends State<Compleated> {
         await context.read<ProductController>().getlistdistributors();
         print("custommer เป็น null");
       } else {
-        addresslists = await ProductApi.getAddressbyid(
-          distributor_id: custommer!.customer!.id,
-        );
+        addresslists = await ProductApi.getAddressbyid(distributor_id: custommer!.customer!.id);
         distributor_id = custommer!.customer!.id;
         if (addresslists.isEmpty) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("กรุณาเพิ่มที่อยู่ในระบบ")));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("กรุณาเพิ่มที่อยู่ในระบบ")));
         } else {
           address_id = addresslists[0].id;
         }
@@ -128,26 +124,16 @@ class _CompleatedState extends State<Compleated> {
     try {
       final Uint8List? imageBytes = await _controller.capture();
       if (imageBytes != null) {
-        final result = await ImageGallerySaverPlus.saveImage(
-          imageBytes,
-          quality: 100,
-          name: "qr_code_promptpay",
-        );
+        final result = await ImageGallerySaverPlus.saveImage(imageBytes, quality: 100, name: "qr_code_promptpay");
 
         if (result['isSuccess'] == true) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("บันทึกรูปภาพเรียบร้อยแล้ว")),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("บันทึกรูปภาพเรียบร้อยแล้ว")));
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("บันทึกรูปภาพไม่สำเร็จ")),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("บันทึกรูปภาพไม่สำเร็จ")));
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("เกิดข้อผิดพลาด: $e")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("เกิดข้อผิดพลาด: $e")));
     }
   }
 
@@ -164,10 +150,7 @@ class _CompleatedState extends State<Compleated> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    int totalQuantity = widget.selectedItems.fold(
-      0,
-      (previousValue, element) => previousValue + element.quantity,
-    );
+    int totalQuantity = widget.selectedItems.fold(0, (previousValue, element) => previousValue + element.quantity);
 
     return Consumer<ProductController>(
       builder: (context, controller, child) {
@@ -184,12 +167,7 @@ class _CompleatedState extends State<Compleated> {
               },
               icon: Icon(Icons.chevron_left, color: Colors.white),
             ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Image.asset("assets/icons/Notification.png", scale: 15),
-              ),
-            ],
+            actions: [Padding(padding: EdgeInsets.all(8.0), child: Image.asset("assets/icons/Notification.png", scale: 15))],
             centerTitle: true,
             title: Text(
               "สั่งซื้อสินค้า",
@@ -204,10 +182,7 @@ class _CompleatedState extends State<Compleated> {
                   child: Stack(
                     children: [
                       Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.white,
-                        ),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.white),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
@@ -216,102 +191,58 @@ class _CompleatedState extends State<Compleated> {
                             children: [
                               custommer?.customer == null
                                   ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "เลือกลูกค้า",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
+                                        Text("เลือกลูกค้า", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
 
                                         SizedBox(height: 10),
                                         ConstrainedBox(
-                                          constraints: BoxConstraints(
-                                            maxWidth: size.width * 0.78,
-                                          ), // กำหนดความกว้าง
+                                          constraints: BoxConstraints(maxWidth: size.width * 0.78), // กำหนดความกว้าง
                                           child: DropdownButtonFormField<Distributors>(
                                             isExpanded: true,
                                             dropdownColor: Colors.white,
                                             decoration: InputDecoration(
                                               labelText: "เลือลูกค้า",
-                                              labelStyle: TextStyle(
-                                                color: kbgM,
-                                              ),
+                                              labelStyle: TextStyle(color: kbgM),
                                               filled: true,
                                               fillColor: Colors.white,
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 8,
-                                                  ),
+                                              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                               border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                borderSide: BorderSide(
-                                                  color: kButtonColor,
-                                                ),
+                                                borderRadius: BorderRadius.circular(12),
+                                                borderSide: BorderSide(color: kButtonColor),
                                               ),
                                               enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                borderSide: BorderSide(
-                                                  color: kButtonColor,
-                                                ),
+                                                borderRadius: BorderRadius.circular(12),
+                                                borderSide: BorderSide(color: kButtonColor),
                                               ),
                                               focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                borderSide: BorderSide(
-                                                  color: kButtonColor,
-                                                  width: 2,
-                                                ),
+                                                borderRadius: BorderRadius.circular(12),
+                                                borderSide: BorderSide(color: kButtonColor, width: 2),
                                               ),
                                             ),
-                                            items: distributors.map((
-                                              distributor,
-                                            ) {
-                                              return DropdownMenuItem<
-                                                Distributors
-                                              >(
+                                            items: distributors.map((distributor) {
+                                              return DropdownMenuItem<Distributors>(
                                                 value: distributor,
                                                 child: Text(
-                                                  distributor.company_name ??
-                                                      "", // ✅ ใช้ distributor
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+                                                  distributor.company_name ?? "", // ✅ ใช้ distributor
+                                                  overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                  ),
+                                                  style: const TextStyle(fontSize: 14),
                                                 ),
                                               );
                                             }).toList(),
                                             onChanged: (value) async {
                                               if (value != null) {
                                                 print("ID: ${value.id}");
-                                                print(
-                                                  "Company Name: ${value.company_name}",
-                                                );
+                                                print("Company Name: ${value.company_name}");
                                                 distributor_id = value.id;
-                                                company_name =
-                                                    value.company_name ?? "";
-                                                final addresslist =
-                                                    await ProductApi.getAddressbyid(
-                                                      distributor_id:
-                                                          distributor_id!,
-                                                    );
+                                                company_name = value.company_name ?? "";
+                                                final addresslist = await ProductApi.getAddressbyid(distributor_id: distributor_id!);
                                                 addresslists = addresslist;
                                                 if (addresslists.isNotEmpty) {
-                                                  address_id =
-                                                      addresslists[0].id;
-                                                  print(
-                                                    "address_id คือ ${address_id}",
-                                                  );
+                                                  address_id = addresslists[0].id;
+                                                  print("address_id คือ ${address_id}");
                                                 }
 
                                                 setState(() {});
@@ -325,131 +256,63 @@ class _CompleatedState extends State<Compleated> {
                                   : SizedBox.shrink(),
                               addresslists.isEmpty
                                   ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "ที่ต้องจัดส่ง",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
+                                        Text("ที่ต้องจัดส่ง", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                                         SizedBox(height: 10),
 
                                         Container(
                                           padding: EdgeInsets.all(8.0),
                                           decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: kButtonColor,
-                                              width: 2,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
+                                            border: Border.all(color: kButtonColor, width: 2),
+                                            borderRadius: BorderRadius.circular(8),
                                           ),
-                                          child: Text(
-                                            "ไม่พบที่อยู่",
-                                            style: TextStyle(fontSize: 16),
-                                          ),
+                                          child: Text("ไม่พบที่อยู่", style: TextStyle(fontSize: 16)),
                                         ),
                                         SizedBox(height: 10),
                                       ],
                                     )
                                   : Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "ที่ต้องจัดส่ง",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
+                                        Text("ที่ต้องจัดส่ง", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                                         SizedBox(height: 10),
 
                                         GestureDetector(
                                           onTap: () async {
-                                            final out = await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AddressPage(
-                                                      address: addresslists,
-                                                    ),
-                                              ),
-                                            );
+                                            final out = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddressPage(address: addresslists)));
                                             if (out != null) {
                                               setState(() {
                                                 address_id = out["addressid"];
-                                                selectedAddress =
-                                                    out["full_th_address"];
-                                                print(
-                                                  "address_id คือ ${address_id}",
-                                                );
+                                                selectedAddress = out["full_th_address"];
+                                                print("address_id คือ ${address_id}");
                                               });
                                             }
                                           },
                                           child: Container(
                                             padding: EdgeInsets.all(8.0),
                                             decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: kButtonColor,
-                                                width: 2,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                              border: Border.all(color: kButtonColor, width: 2),
+                                              borderRadius: BorderRadius.circular(8),
                                             ),
                                             child: selectedAddress == null
-                                                ? Text(
-                                                    addresslists[0]
-                                                            .full_th_address ??
-                                                        "",
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                    ),
-                                                  )
-                                                : Text(
-                                                    "$selectedAddress",
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
+                                                ? Text(addresslists[0].full_th_address ?? "", style: TextStyle(fontSize: 16))
+                                                : Text("$selectedAddress", style: TextStyle(fontSize: 16)),
                                           ),
                                         ),
                                         SizedBox(height: 10),
                                       ],
                                     ),
-                              Text(
-                                "รายละเอียดที่อยู่จัดส่ง",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              Text("รายละเอียดที่อยู่จัดส่ง", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                               widget.status == true
                                   ? Container(
                                       height: size.height * 0.1,
                                       width: size.width * 1,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: const Color.fromARGB(
-                                          255,
-                                          241,
-                                          241,
-                                          241,
-                                        ),
-                                      ),
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color.fromARGB(255, 241, 241, 241)),
 
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("เอาวางไว้ชั่น 2"),
-                                      ),
+                                      child: Padding(padding: const EdgeInsets.all(8.0), child: Text("เอาวางไว้ชั่น 2")),
                                     )
                                   : InputTextFormField(
                                       fontsize: 16,
@@ -471,10 +334,7 @@ class _CompleatedState extends State<Compleated> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.white),
                     // height: size.height * 0.39,
                     child: Column(
                       children: [
@@ -482,28 +342,16 @@ class _CompleatedState extends State<Compleated> {
                         Column(
                           children: [
                             ListTile(
-                              leading: Image.asset(
-                                "assets/icons/User.png",
-                                scale: 15,
-                              ),
+                              leading: Image.asset("assets/icons/User.png", scale: 15),
 
                               title: Text("ชื่อผู้รับสินค้า"),
-                              subtitle: Text(
-                                "${custommer?.first_name ?? ""} ${custommer?.last_name ?? ""}",
-                                style: TextStyle(color: kButtonColor),
-                              ),
+                              subtitle: Text("${custommer?.first_name ?? ""} ${custommer?.last_name ?? ""}", style: TextStyle(color: kButtonColor)),
                             ),
                             Divider(),
                             ListTile(
-                              leading: Image.asset(
-                                "assets/icons/PhoneCall.png",
-                                scale: 15,
-                              ),
+                              leading: Image.asset("assets/icons/PhoneCall.png", scale: 15),
                               title: Text("เบอร์โทรผู้รับสินค้า"),
-                              subtitle: Text(
-                                custommer?.tel_no ?? "-",
-                                style: TextStyle(color: kButtonColor),
-                              ),
+                              subtitle: Text(custommer?.tel_no ?? "-", style: TextStyle(color: kButtonColor)),
                             ),
                             // Divider(),
 
@@ -552,17 +400,10 @@ class _CompleatedState extends State<Compleated> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.white),
                     child: Column(
                       children: [
-                        ContainerHeader(
-                          size: size,
-                          text: 'รายการสินค้า',
-                          status: widget.slipe_status,
-                        ),
+                        ContainerHeader(size: size, text: 'รายการสินค้า', status: widget.slipe_status),
                         widget.selectedItems.isEmpty
                             ? SizedBox.shrink()
                             : Column(
@@ -573,140 +414,85 @@ class _CompleatedState extends State<Compleated> {
                                       (index) => Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                            color: Colors.white,
-                                          ),
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.white),
                                           height: size.height * 0.1,
                                           child: Row(
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.only(
-                                                  left: 12,
-                                                ),
-                                                child:
-                                                    widget
-                                                            .selectedItems[index]
-                                                            .image ==
-                                                        null
-                                                    ? Image.asset(
-                                                        "assets/images/LOGO CMYK-01.png",
-                                                      )
-                                                    : Image.network(
-                                                        widget
-                                                            .selectedItems[index]
-                                                            .image!,
-                                                      ),
+                                                padding: const EdgeInsets.only(left: 12),
+                                                child: widget.selectedItems[index].image == null
+                                                    ? Image.asset("assets/images/LOGO CMYK-01.png")
+                                                    : Image.network(widget.selectedItems[index].image!),
                                               ),
                                               Padding(
-                                                padding: const EdgeInsets.all(
-                                                  8.0,
-                                                ),
-                                                child: Container(
-                                                  width: 1,
-                                                  height: size.height * 0.05,
-                                                  color: kButtonColor,
-                                                ),
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Container(width: 1, height: size.height * 0.05, color: kButtonColor),
                                               ),
                                               Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   Row(
                                                     children: [
                                                       SizedBox(
                                                         width: size.width * 0.4,
                                                         child: Text(
-                                                          widget
-                                                              .selectedItems![index]
-                                                              .name,
+                                                          widget.selectedItems![index].name,
                                                           maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: TextStyle(fontWeight: FontWeight.bold),
                                                         ),
                                                       ),
-                                                      SizedBox(
-                                                        width: size.width * 0.1,
-                                                      ),
+                                                      SizedBox(width: size.width * 0.1),
                                                       Text(
                                                         "X ${widget.selectedItems![index].quantity.toString()}",
 
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: kbgM,
-                                                        ),
+                                                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: kbgM),
                                                       ),
                                                     ],
                                                   ),
                                                   Row(
                                                     children: [
-                                                      Text(
-                                                        "สี ",
-
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        widget
-                                                            .selectedItems![index]
-                                                            .color!,
-                                                      ),
+                                                      Text("สี ", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                                      Text(widget.selectedItems![index].color!),
                                                     ],
                                                   ),
-                                                widget.selectedItems[index].promotion != null && widget.selectedItems[index].promotion!.isNotEmpty
-                                                      ? Row(
-                                                          children: [
-                                                            Text(
-                                                              "฿ ${formatNumber(double.parse(widget.selectedItems[index].price_per_unit.toString()))}",
-                                                              style: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 10),
-                                                            Text(
-                                                              "฿ ${formatNumber(double.parse(widget.selectedItems[index].base_price.toString()))}",
-                                                              style: const TextStyle(
-                                                                fontSize: 14,
-                                                                color:
-                                                                    Colors.grey,
-                                                                decoration:
-                                                                    TextDecoration
-                                                                        .lineThrough,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : Row(
-                                                          children: [
-                                                            // แสดงราคาฟอร์แมต
-                                                            Text(
-                                                              "฿ ${formatNumber(double.parse(widget.selectedItems[index].base_price.toString()))}",
-                                                            ),
-                                                          ],
+
+                                                  Row(
+                                                    children: [
+                                                      if (widget.hasPromoType4!) ...[
+                                                        // โปร Type 4 → แสดงราคาเต็มเท่านั้น
+                                                        Text(
+                                                          "฿ ${formatNumber(double.parse(widget.selectedItems[index].base_price.toString()))}",
+                                                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                                                         ),
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            print(widget
-                                                              .selectedItems[index]
-                                                              .price_per_unit);
-                                                          },
-                                                          child: Icon(Icons.abc_outlined))
+                                                      ] else if (widget.selectedItems[index].promotion != null && widget.selectedItems[index].promotion!.isNotEmpty) ...[
+                                                        // มีโปรโมชั่นอื่น → แสดงราคาโปรโมชั่น + ราคาเต็มขีดฆ่า
+                                                        Text(
+                                                          "฿ ${formatNumber(double.parse(widget.selectedItems[index].price_per_unit.toString()))}",
+                                                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                                                        ),
+                                                        const SizedBox(width: 10),
+                                                        Text(
+                                                          "฿ ${formatNumber(double.parse(widget.selectedItems[index].base_price.toString()))}",
+                                                          style: const TextStyle(fontSize: 14, color: Colors.grey, decoration: TextDecoration.lineThrough),
+                                                        ),
+                                                      ] else ...[
+                                                        // ไม่มีโปรโมชั่น → แสดงราคาเต็ม
+                                                        Text(
+                                                          "฿ ${formatNumber(double.parse(widget.selectedItems[index].base_price.toString()))}",
+                                                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                                                        ),
+                                                      ],
+                                                    ],
+                                                  ),
+
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      print(widget.selectedItems[index].price_per_unit);
+                                                    },
+                                                    child: Icon(Icons.abc_outlined),
+                                                  ),
                                                 ],
                                               ),
                                             ],
@@ -718,16 +504,7 @@ class _CompleatedState extends State<Compleated> {
                                   Divider(),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text("ราคารวม"),
-                                        Text(
-                                          "${formatNumber(widget.totalPrice)} บาท",
-                                        ),
-                                      ],
-                                    ),
+                                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text("ราคารวม"), Text("${formatNumber(widget.totalPrice)} บาท")]),
                                   ),
                                 ],
                               ),
@@ -738,10 +515,7 @@ class _CompleatedState extends State<Compleated> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.white),
                     child: Column(
                       children: [
                         ContainerHeader(size: size, text: 'วิธีการชำระเงิน'),
@@ -774,10 +548,7 @@ class _CompleatedState extends State<Compleated> {
                   child: Container(
                     // เพิ่มความสูงหน่อยเพื่อให้มีที่วาง Tab
                     width: size.width * 1,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
                     child: Column(
                       children: [
                         selectedPay == "qrcode"
@@ -786,17 +557,8 @@ class _CompleatedState extends State<Compleated> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    ContainerHeader(
-                                      size: size,
-                                      text: 'จ่ายผ่าน QR Code ธนาคาร',
-                                    ),
-                                    Text(
-                                      "บัญชี QR Code ธนาคาร ธนาคาร",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                    ContainerHeader(size: size, text: 'จ่ายผ่าน QR Code ธนาคาร'),
+                                    Text("บัญชี QR Code ธนาคาร ธนาคาร", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                                     // 🏦 ชื่อธนาคาร
                                     Screenshot(
                                       controller: _controller,
@@ -805,13 +567,8 @@ class _CompleatedState extends State<Compleated> {
                                           Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              child: Image.asset(
-                                                "assets/images/QrCodeTnC.jpg",
-                                                height: 150,
-                                                fit: BoxFit.cover,
-                                              ),
+                                              borderRadius: BorderRadius.circular(8),
+                                              child: Image.asset("assets/images/QrCodeTnC.jpg", height: 150, fit: BoxFit.cover),
                                             ),
                                           ),
                                         ],
@@ -829,15 +586,8 @@ class _CompleatedState extends State<Compleated> {
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: kButtonColor,
                                           foregroundColor: Colors.white,
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 12,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                         ),
                                       ),
                                     ),
@@ -851,38 +601,19 @@ class _CompleatedState extends State<Compleated> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     // 🏦 ชื่อธนาคาร
-                                    ContainerHeader(
-                                      size: size,
-                                      text: 'จ่ายผ่านบัญชี',
-                                    ),
-                                    Text(
-                                      "ธนาคารกสิกรไทย",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                    ContainerHeader(size: size, text: 'จ่ายผ่านบัญชี'),
+                                    Text("ธนาคารกสิกรไทย", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
 
                                     SizedBox(height: 12),
                                     Text(
                                       "ที แอนด์ ซี",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                        letterSpacing: 2,
-                                      ),
+                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87, letterSpacing: 2),
                                     ),
                                     const SizedBox(height: 12),
                                     // 🔢 เลขบัญชี
                                     Text(
                                       "174-136-047-7",
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                        letterSpacing: 2,
-                                      ),
+                                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87, letterSpacing: 2),
                                     ),
 
                                     SizedBox(height: 20),
@@ -892,33 +623,16 @@ class _CompleatedState extends State<Compleated> {
                                       width: size.width * 0.4,
                                       child: ElevatedButton.icon(
                                         onPressed: () {
-                                          Clipboard.setData(
-                                            ClipboardData(text: "1741360477"),
-                                          );
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                "คัดลอกเลขบัญชีแล้ว",
-                                              ),
-                                            ),
-                                          );
+                                          Clipboard.setData(ClipboardData(text: "1741360477"));
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("คัดลอกเลขบัญชีแล้ว")));
                                         },
                                         icon: Icon(Icons.copy),
                                         label: Text("คัดลอกเลขบัญชี"),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: kButtonColor,
                                           foregroundColor: Colors.white,
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 12,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                         ),
                                       ),
                                     ),
@@ -932,19 +646,12 @@ class _CompleatedState extends State<Compleated> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     // 🏦 ชื่อธนาคาร
-                                    ContainerHeader(
-                                      size: size,
-                                      text: 'จ่ายผ่านเครดิต',
-                                    ),
+                                    ContainerHeader(size: size, text: 'จ่ายผ่านเครดิต'),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
                                         "เครดิตปัจจุบันมีอยู่  ${formatNumber(custommer?.customer?.current_credit_used ?? "0")}/${formatNumber(custommer?.customer?.credit_limit ?? "0")}",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: kButtonColor,
-                                        ),
+                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kButtonColor),
                                       ),
                                     ),
                                   ],
@@ -963,10 +670,7 @@ class _CompleatedState extends State<Compleated> {
                         child: Container(
                           // เพิ่มความสูงหน่อยเพื่อให้มีที่วาง Tab
                           width: size.width * 1,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
                           child: Column(
                             children: [
                               _image != null
@@ -974,22 +678,14 @@ class _CompleatedState extends State<Compleated> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
-                                        child: Image.file(
-                                          _image!,
-                                          height: 150,
-                                          fit: BoxFit.cover,
-                                        ),
+                                        child: Image.file(_image!, height: 150, fit: BoxFit.cover),
                                       ),
                                     )
                                   : Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
-                                        child: Image.asset(
-                                          "assets/images/pngtree-image-upload-icon-photo-upload-icon-png-image_2047546.jpg",
-                                          height: 150,
-                                          fit: BoxFit.cover,
-                                        ),
+                                        child: Image.asset("assets/images/pngtree-image-upload-icon-photo-upload-icon-png-image_2047546.jpg", height: 150, fit: BoxFit.cover),
                                       ),
                                     ),
                               Padding(
@@ -1003,13 +699,8 @@ class _CompleatedState extends State<Compleated> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green,
                                       foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                        vertical: 12,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                     ),
                                   ),
                                 ),
@@ -1025,14 +716,8 @@ class _CompleatedState extends State<Compleated> {
             child: Padding(
               padding: const EdgeInsets.all(12.0), // ขยายขอบนอกนิดหน่อย
               child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ), // เพิ่ม padding ข้างใน
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.white),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), // เพิ่ม padding ข้างใน
                 child: Column(
                   mainAxisSize: MainAxisSize.min, // ให้ Container สูงตามเนื้อหา
                   children: [
@@ -1040,100 +725,50 @@ class _CompleatedState extends State<Compleated> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "ราคาสินค้า",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        Text("ราคาสินค้า", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                         Text(
                           " ฿ ${formatNumber(widget.originalTotal ?? 0.00)} ",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: kButtonColor,
-                          ),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kButtonColor),
                         ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "ส่วนลดทั้งหมด",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        Text("ส่วนลดทั้งหมด", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                         Text(
                           " ฿ ${formatNumber(widget.discountAmount ?? 0.00)} ",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
                         ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "ราคาก่อน vat",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        Text("ราคาก่อน vat", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                         Text(
                           " ฿ ${formatNumber(priceBeforeVat)} ",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: kButtonColor,
-                          ),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kButtonColor),
                         ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "ราคารวม vat",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        Text("ราคารวม vat", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                         Text(
                           " ฿ ${formatNumber(widget.totalPrice)} ",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: kButtonColor,
-                          ),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kButtonColor),
                         ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "สินค้ารวม ${totalQuantity} ชิ้น",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        Text("สินค้ารวม ${totalQuantity} ชิ้น", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                         Text(
                           " ฿ ${formatNumber(widget.totalPrice)} ",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: kButtonColor,
-                          ),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kButtonColor),
                         ),
                       ],
                     ),
@@ -1142,9 +777,7 @@ class _CompleatedState extends State<Compleated> {
                     GestureDetector(
                       onTap: () async {
                         if (addresslists.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("กรุณาเพิ่มที่อยู่ในระบบ")),
-                          );
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("กรุณาเพิ่มที่อยู่ในระบบ")));
                         } else {
                           if (addresslists.isEmpty) {
                             await showDialog(
@@ -1165,27 +798,18 @@ class _CompleatedState extends State<Compleated> {
                                 context: context,
                                 builder: (context) => AlertDialogYesNo(
                                   title: 'แจ้งเตือน',
-                                  description:
-                                      'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
+                                  description: 'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
                                 ),
                               );
 
                               if (out == true) {
                                 try {
                                   List<Product> productModel = [];
-                                  for (
-                                    var i = 0;
-                                    i < widget.selectedItems.length;
-                                    i++
-                                  ) {
+                                  for (var i = 0; i < widget.selectedItems.length; i++) {
                                     final item = widget.selectedItems[i];
 
                                     // วนซ้อนเพื่อเข้าถึง warehouse_skus ทุกตัวของ item นั้น ๆ
-                                    for (
-                                      var j = 0;
-                                      j < item.warehouse_skus.length;
-                                      j++
-                                    ) {
+                                    for (var j = 0; j < item.warehouse_skus.length; j++) {
                                       final sku = item.warehouse_skus[j];
 
                                       productModel.add(
@@ -1203,29 +827,21 @@ class _CompleatedState extends State<Compleated> {
                                   }
 
                                   await ProductApi.createOrder(
-                                    distributor_id: custommer!.customer == null
-                                        ? distributor_id.toString()
-                                        : custommer!.customer!.id.toString(),
+                                    distributor_id: custommer!.customer == null ? distributor_id.toString() : custommer!.customer!.id.toString(),
                                     qo_date: formatDate(DateTime.now()),
                                     total_qty: totalQuantity.toString(),
-                                    total_cost_ex_vat: priceBeforeVat
-                                        .toString(),
-                                    total_vat_amount: widget.totalPrice
-                                        .toString(),
+                                    total_cost_ex_vat: priceBeforeVat.toString(),
+                                    total_vat_amount: widget.totalPrice.toString(),
                                     grand_total: widget.totalPrice.toString(),
                                     products: productModel,
                                     address_id: address_id.toString(),
                                     slip_image: _image,
                                     payment_method: '$selectedPay',
-                                    total_cost_inc_vat: widget.totalPrice
-                                        .toString(),
+                                    total_cost_inc_vat: widget.totalPrice.toString(),
                                     is_print: '$_wantPrint',
                                   );
 
-                                  final cart = Provider.of<CartProvider>(
-                                    context,
-                                    listen: false,
-                                  );
+                                  final cart = Provider.of<CartProvider>(context, listen: false);
 
                                   // ลบเฉพาะสินค้าที่เลือก
                                   cart.removeSelected(widget.selectedItems);
@@ -1233,20 +849,11 @@ class _CompleatedState extends State<Compleated> {
                                   final out = await showDialog(
                                     barrierDismissible: true,
                                     context: context,
-                                    builder: (context) => SucesDialog(
-                                      title: 'แจ้งเตือน',
-                                      description: 'ชำระเงินสำเร็จ',
-                                    ),
+                                    builder: (context) => SucesDialog(title: 'แจ้งเตือน', description: 'ชำระเงินสำเร็จ'),
                                   );
 
                                   if (out == true) {
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => FirstPage(),
-                                      ),
-                                      (route) => false,
-                                    );
+                                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => FirstPage()), (route) => false);
                                   }
                                 } on Exception catch (e) {
                                   if (!mounted) return;
@@ -1281,27 +888,18 @@ class _CompleatedState extends State<Compleated> {
                                   context: context,
                                   builder: (context) => AlertDialogYesNo(
                                     title: 'แจ้งเตือน',
-                                    description:
-                                        'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
+                                    description: 'คุณต้องการส่งไปยังที่หมาย\n"${selectedAddress ?? addresslists[0].full_th_address ?? ""}" \n หรือไม่',
                                   ),
                                 );
 
                                 if (out == true) {
                                   try {
                                     List<Product> productModel = [];
-                                    for (
-                                      var i = 0;
-                                      i < widget.selectedItems.length;
-                                      i++
-                                    ) {
+                                    for (var i = 0; i < widget.selectedItems.length; i++) {
                                       final item = widget.selectedItems[i];
 
                                       // วนซ้อนเพื่อเข้าถึง warehouse_skus ทุกตัวของ item นั้น ๆ
-                                      for (
-                                        var j = 0;
-                                        j < item.warehouse_skus.length;
-                                        j++
-                                      ) {
+                                      for (var j = 0; j < item.warehouse_skus.length; j++) {
                                         final sku = item.warehouse_skus[j];
                                         productModel.add(
                                           Product(
@@ -1318,30 +916,21 @@ class _CompleatedState extends State<Compleated> {
                                     }
 
                                     await ProductApi.createOrder(
-                                      distributor_id:
-                                          custommer!.customer == null
-                                          ? distributor_id.toString()
-                                          : custommer!.customer!.id.toString(),
+                                      distributor_id: custommer!.customer == null ? distributor_id.toString() : custommer!.customer!.id.toString(),
                                       qo_date: formatDate(DateTime.now()),
                                       total_qty: totalQuantity.toString(),
-                                      total_cost_ex_vat: priceBeforeVat
-                                          .toString(),
-                                      total_vat_amount: widget.totalPrice
-                                          .toString(),
+                                      total_cost_ex_vat: priceBeforeVat.toString(),
+                                      total_vat_amount: widget.totalPrice.toString(),
                                       grand_total: widget.totalPrice.toString(),
                                       products: productModel,
                                       address_id: address_id.toString(),
                                       slip_image: _image,
                                       payment_method: '$selectedPay',
-                                      total_cost_inc_vat: widget.totalPrice
-                                          .toString(),
+                                      total_cost_inc_vat: widget.totalPrice.toString(),
                                       is_print: '$_wantPrint',
                                     );
 
-                                    final cart = Provider.of<CartProvider>(
-                                      context,
-                                      listen: false,
-                                    );
+                                    final cart = Provider.of<CartProvider>(context, listen: false);
 
                                     // ลบเฉพาะสินค้าที่เลือก
                                     cart.removeSelected(widget.selectedItems);
@@ -1349,20 +938,11 @@ class _CompleatedState extends State<Compleated> {
                                     final out = await showDialog(
                                       barrierDismissible: true,
                                       context: context,
-                                      builder: (context) => SucesDialog(
-                                        title: 'แจ้งเตือน',
-                                        description: 'ชำระเงินสำเร็จ',
-                                      ),
+                                      builder: (context) => SucesDialog(title: 'แจ้งเตือน', description: 'ชำระเงินสำเร็จ'),
                                     );
 
                                     if (out == true) {
-                                      Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => FirstPage(),
-                                        ),
-                                        (route) => false,
-                                      );
+                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => FirstPage()), (route) => false);
                                     }
                                   } on Exception catch (e) {
                                     if (!mounted) return;
@@ -1386,10 +966,7 @@ class _CompleatedState extends State<Compleated> {
                       child: Container(
                         height: size.height * 0.07, // สูงขึ้นหน่อย
                         width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: kButtonColor,
-                        ),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kButtonColor),
                         child: Center(
                           child: Text(
                             "สั่งสินค้า",
@@ -1411,17 +988,10 @@ class _CompleatedState extends State<Compleated> {
       },
     );
   }
-
- 
 }
 
 class ContainerHeader extends StatelessWidget {
-  ContainerHeader({
-    super.key,
-    required this.size,
-    required this.text,
-    this.status = false,
-  });
+  ContainerHeader({super.key, required this.size, required this.text, this.status = false});
 
   final Size size;
   String text;
@@ -1436,12 +1006,7 @@ class ContainerHeader extends StatelessWidget {
         width: size.width * 1, // ความกว้าง
         decoration: BoxDecoration(
           color: kButtonColor, // สีพื้นหลัง
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            bottomLeft: Radius.circular(20),
-            topRight: Radius.circular(0),
-            bottomRight: Radius.circular(0),
-          ),
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), topRight: Radius.circular(0), bottomRight: Radius.circular(0)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -1450,11 +1015,7 @@ class ContainerHeader extends StatelessWidget {
             children: [
               Text(
                 text,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: kbgf,
-                ),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: kbgf),
               ),
             ],
           ),
