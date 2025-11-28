@@ -494,82 +494,112 @@ class _CompleatedState extends State<Compleated> {
                                                     ],
                                                   ),
 
-                                                  //  widget.hasPromoType4!
-                                                  // Column(
-                                                  //   children: List.generate(widget.selectedItems[index].promotion!.length, (index2) {
-                                                  //     final promo = widget.selectedItems[index].promotion![index2];
-                                                  //     return Padding(
-                                                  //       padding: const EdgeInsets.all(8.0),
-                                                  //       child: Container(
-                                                  //         decoration: BoxDecoration(color: Colors.yellow[100], borderRadius: BorderRadius.circular(8)),
-                                                  //         child: Row(
-                                                  //           children: [
-                                                  //             Padding(
-                                                  //               padding: const EdgeInsets.all(8.0),
-                                                  //               child: Column(
-                                                  //                 mainAxisAlignment: MainAxisAlignment.center,
-                                                  //                 crossAxisAlignment: CrossAxisAlignment.start,
-                                                  //                 children: [
-                                                  //                   SizedBox(
-                                                  //                     width: size.width * 0.5,
-                                                  //                     child: Text(promo.free_item_rule?.free_product_name_en ?? "", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                  //                   ),
-                                                  //                   Text("ของแถม", style: TextStyle(color: Colors.orange)),
-                                                  //                   Text("จำนวน: ${promo.free_item_rule?.free_qty ?? '-'} ชิ้น"),
-                                                  //                   Text("SKU: ${promo.free_item_rule?.free_sku_code ?? '-'}"),
-                                                  //                 ],
-                                                  //               ),
-                                                  //             ),
-                                                  //           ],
-                                                  //         ),
-                                                  //       ),
-                                                  //     );
-                                                  //   }),
-                                                  // ),
+                                                 
                                                   Column(
-                                                    children: List.generate(widget.selectedItems[index].promotion!.length, (index2) {
-                                                      final promo = widget.selectedItems[index].promotion![index2];
+                                        children: List.generate(widget.selectedItems[index].promotion!.length, (
+                                          index2,
+                                        ) {
+                                          final promo =
+                                              widget.selectedItems[index].promotion![index2];
 
-                                                      // เช็คว่า promotion_id ตรงกับ 4
-                                                      if (promo.promotion_id == 4) {
-                                                        // เช็คว่าจำนวนสินค้าในตะกร้า >= เงื่อนไขซื้อถึงได้ของแถม
-                                                        if (widget.selectedItems[index].quantity >= promo.free_item_rule!.buy_qty!) {
-                                                          return Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Container(
-                                                              decoration: BoxDecoration(color: Colors.yellow[100], borderRadius: BorderRadius.circular(8)),
-                                                              child: Row(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Column(
-                                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      children: [
-                                                                        SizedBox(
-                                                                          width: size.width * 0.5,
-                                                                          child: Text(
-                                                                            promo.free_item_rule?.free_product_name_en ?? "",
-                                                                            style: TextStyle(fontWeight: FontWeight.bold),
-                                                                          ),
-                                                                        ),
-                                                                        Text("ของแถม", style: TextStyle(color: Colors.orange)),
-                                                                        Text("จำนวน: ${promo.free_item_rule?.free_qty ?? '-'} ชิ้น"),
-                                                                        Text("SKU: ${promo.free_item_rule?.free_sku_code ?? '-'}"),
-                                                                      ],
+                                          // เช็คว่าเป็นโปรโมชันของแถม (id = 4)
+                                          if (promo.promotion_id == 4) {
+                                            // ถ้า free_item_rules เป็น list ก็ต้อง loop ซ้ำ
+                                            return Column(
+                                              children: List.generate(promo.free_item_rules!.length, (
+                                                index2,
+                                              ) {
+                                                final rule = promo
+                                                    .free_item_rules![index2];
+
+                                                // เงื่อนไขจำนวนซื้อ >= buy_qty
+                                                if (widget.selectedItems[index].quantity >=
+                                                    rule.buy_qty!) {
+                                                  return Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          8.0,
+                                                        ),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            Colors.yellow[100],
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          // รูปของแถม
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                  8.0,
+                                                                ),
+                                                            child: Image.network(
+                                                              rule.free_sku_image_path ??
+                                                                  "",
+                                                              width: 60,
+                                                              height: 60,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+
+                                                          // ข้อมูลของแถม
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                  8.0,
+                                                                ),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: size.width*0.4,
+                                                                  child: Text(
+                                                                    rule.free_product_name_en ??
+                                                                        "",
+                                                                    style: const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
                                                                     ),
                                                                   ),
-                                                                ],
-                                                              ),
+                                                                ),
+                                                                const Text(
+                                                                  "ของแถม",
+                                                                  style: TextStyle(
+                                                                    color: Colors
+                                                                        .orange,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  "จำนวน: ${rule.free_qty} ชิ้น",
+                                                                ),
+                                                                Text(
+                                                                  "SKU: ${rule.free_sku_code}",
+                                                                ),
+                                                              ],
                                                             ),
-                                                          );
-                                                        }
-                                                      }
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                                // ถ้าซื้อไม่ถึงก็ไม่โชว์
+                                                return const SizedBox.shrink();
+                                              }),
+                                            );
+                                          }
 
-                                                      // ถ้าไม่ตรงเงื่อนไขก็ไม่โชว์
-                                                      return SizedBox.shrink();
-                                                    }),
-                                                  ),
+                                          // ไม่ใช่โปรโมชัน id 4 → ไม่โชว์
+                                          return const SizedBox.shrink();
+                                        }),
+                                      ),
                                                 ],
                                               ),
                                             ],

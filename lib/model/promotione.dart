@@ -14,9 +14,9 @@ class Promotione {
   List<Tiers> tiers;
   int? percent;
   int? fixed_price;
-  FreeItem? free_item_rule;
+  List<FreeItem>?free_item_rules;
 
-  Promotione(this.promotion_id, this.promotion_name, this.promotion_type, this.by_type, this.percent, this.fixed_price, this.tiers, this.free_item_rule);
+  Promotione(this.promotion_id, this.promotion_name, this.promotion_type, this.by_type, this.percent, this.fixed_price, this.tiers, this.free_item_rules);
 
   factory Promotione.fromJson(Map<String, dynamic> json) => _$PromotioneFromJson(json);
   Map<String, dynamic> toJson() => _$PromotioneToJson(this);

@@ -222,7 +222,7 @@ class _OrderdetailState extends State<Orderdetail> {
                                           ),
                                           Row(children: [Text("sku : "), Text(orderData!.items![index].product_sku!.sku ?? "")]),
                                           Row(children: [Text("สี : "), Text(orderData!.items![index].product_sku!.color!.name_th ?? "")]),
-                                          Row(children: [Text("฿ ${formatNumber(orderData!.items![index].product!.srp_inc_vat ?? "")}")]),
+                                          Row(children: [Text("฿ ${formatNumber(orderData!.items![index].srp_inc_vat ?? "")}")]),
                                         ],
                                       ),
                                     ],

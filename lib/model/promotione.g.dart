@@ -16,9 +16,9 @@ Promotione _$PromotioneFromJson(Map<String, dynamic> json) => Promotione(
   (json['tiers'] as List<dynamic>)
       .map((e) => Tiers.fromJson(e as Map<String, dynamic>))
       .toList(),
-  json['free_item_rule'] == null
-      ? null
-      : FreeItem.fromJson(json['free_item_rule'] as Map<String, dynamic>),
+  (json['free_item_rules'] as List<dynamic>?)
+      ?.map((e) => FreeItem.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$PromotioneToJson(Promotione instance) =>
@@ -30,5 +30,5 @@ Map<String, dynamic> _$PromotioneToJson(Promotione instance) =>
       'tiers': instance.tiers,
       'percent': instance.percent,
       'fixed_price': instance.fixed_price,
-      'free_item_rule': instance.free_item_rule,
+      'free_item_rules': instance.free_item_rules,
     };

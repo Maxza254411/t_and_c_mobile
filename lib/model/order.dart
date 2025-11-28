@@ -19,6 +19,8 @@ class Order {
   String? total_po_cost_ex_vat;
   String? total_po_vat_amount;
   String? total_po_cost_inc_vat;
+  String? demo_cost_ex_vat;
+ String? srp_inc_vat;
   String? grand_total;
   String? slip_path;
   String? updated_at;
@@ -58,7 +60,7 @@ class Order {
     this.tracking_no,
     this.distributor,
     this.items,
-    this.delivery_orders,
+    this.delivery_orders, this.demo_cost_ex_vat, this.srp_inc_vat,
   );
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
