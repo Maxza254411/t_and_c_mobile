@@ -532,7 +532,20 @@ class _CompleatedState extends State<Compleated> {
                                                       child: Row(
                                                         children: [
                                                           // รูปของแถม
-                                                          Padding(
+                                                           rule.free_sku_image_path==null
+                                                         ? Padding(
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                  8.0,
+                                                                ),
+                                                            child: Image.asset(
+                                                              "assets/images/NoImage.jpg",
+                                                              width: 60,
+                                                              height: 60,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          )
+                                                         :Padding(
                                                             padding:
                                                                 const EdgeInsets.all(
                                                                   8.0,

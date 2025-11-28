@@ -544,8 +544,23 @@ class _BucketState extends State<Bucket> {
                                                       ),
                                                       child: Row(
                                                         children: [
+                                                          rule.free_sku_image_path==null
+                                                          ?Padding(
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                  8.0,
+                                                                ),
+                                                            child: Image.asset(
+                                                              "assets/images/NoImage.jpg",
+                                                              width: 60,
+                                                              height: 60,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          )
+                                                          :
+                       
                                                           // รูปของแถม
-                                                          Padding(
+                                                         Padding(
                                                             padding:
                                                                 const EdgeInsets.all(
                                                                   8.0,
@@ -553,7 +568,7 @@ class _BucketState extends State<Bucket> {
                                                             child: Image.network(
                                                               rule.free_sku_image_path ??
                                                                   "",
-                                                              width: 60,
+                                                              width: 60, 
                                                               height: 60,
                                                               fit: BoxFit.cover,
                                                             ),
